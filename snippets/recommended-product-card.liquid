@@ -1,0 +1,15 @@
+{% comment %} Single product card for recommended products section {% endcomment %}
+<a href="{{ product.url }}" class="recommended-products__card">
+  <div class="recommended-products__card-image">
+    {%- if product.featured_image -%}
+      <img
+        src="{{ product.featured_image | image_url: width: 500 }}"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        loading="lazy"
+        width="400"
+        height="400"
+      >
+    {%- endif -%}
+  </div>
+  <span class="recommended-products__card-title">{{ product.title }}</span>
+</a>

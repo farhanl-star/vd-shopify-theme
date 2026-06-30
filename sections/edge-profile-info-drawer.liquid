@@ -1,0 +1,617 @@
+{%- comment -%}
+  Edge Profile Info Drawer
+  - Uses the same structure/pattern as the Wood Species drawer
+  - Content (header/body/media) kept from your original snippet
+{%- endcomment -%}
+
+{%- assign drawer_uid = section.settings.drawer_id | default: 'edge-profile-drawer' -%}
+{%- assign drawer_mount_selector = section.settings.mount_selector | default: '#door-configurator-options' -%}
+{%- assign drawer_button_label = section.settings.button_label | default: 'Edge Profile' -%}
+{%- assign drawer_modal_title = section.settings.modal_title | default: 'Panel Profile' -%}
+{%- assign layout_style = section.settings.layout_style | default: 'info' -%}
+{%- assign drawer_custom_class = section.settings.drawer_custom_class -%}
+
+<div
+  class="wood-species-snippet edge-profile-drawer-snippet{% if drawer_custom_class != blank %} {{ drawer_custom_class }}{% endif %}"
+  data-drawer-id="{{ drawer_uid }}"
+  data-mount-selector="{{ drawer_mount_selector | escape }}"
+>
+  <button
+    type="button"
+    class="wood-species-open-btn common-btn btn-secondary btn-hide"
+    data-wood-drawer-open
+    aria-haspopup="dialog"
+    aria-controls="wood-species-drawer-{{ drawer_uid }}"
+  >
+    {{ drawer_button_label }}
+  </button>
+
+  <div
+    id="wood-species-drawer-{{ drawer_uid }}"
+    class="wood-species-modal common-sidebar-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="wood-species-title-{{ drawer_uid }}"
+  >
+    <div class="wood-species-modal__overlay common-sidebar-modal__overlay" data-wood-drawer-close></div>
+
+    <div class="wood-species-modal__panel common-sidebar-modal__panel" tabindex="-1">
+      <div class="common-sidebar-header mb-50 header-bottom-border">
+        <h5 id="wood-species-title-{{ drawer_uid }}" class="wood-species-modal__title">
+          {{ drawer_modal_title }}
+        </h5>
+        <button
+          type="button"
+          class="wood-species-modal__close common-sidebar-modal__close"
+          data-wood-drawer-close
+          aria-label="Close"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect width="2.11202" height="31.6804" rx="1.05601" transform="matrix(0.703968 0.710232 -0.703968 0.710232 22.5156 0)" fill="#002031"/>
+            <rect width="2.11202" height="31.6804" rx="1.05601" transform="matrix(-0.703968 0.710232 0.703968 0.710232 1.49219 0)" fill="#002031"/>
+          </svg>
+        </button>
+      </div>
+
+      {%- if layout_style == 'tabs' -%}
+        {%- assign tab_blocks = section.blocks | where: 'type', 'sidebar_tab' -%}
+        {%- if tab_blocks.size > 0 -%}
+          <div class="edge-profile-tabs common-sidebar-tabs" role="tablist" aria-label="{{ drawer_modal_title | escape }} tabs">
+            {%- for block in tab_blocks -%}
+              <button
+                class="edge-profile-tab common-sidebar-tab{% if forloop.first %} is-active{% endif %}"
+                type="button"
+                role="tab"
+                data-tab="{{ block.settings.tab_id | escape }}"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.tab_label }}
+              </button>
+            {%- endfor -%}
+          </div>
+
+          {%- for block in tab_blocks -%}
+            {%- assign tab_key = block.settings.tab_id -%}
+            <div
+              class="edge-profile-panel measure-guide-panel{% if forloop.first %} is-active{% endif %}"
+              data-tab-panel="{{ tab_key | escape }}"
+              {% unless forloop.first %}hidden{% endunless %}
+            >
+              {%- if block.settings.panel_layout == 'list' -%}
+                <div class="wood-species-grid-wrap">
+                  <div class="wood-species-grid wood-species-grid2">
+                    {%- for item in section.blocks -%}
+                      {%- if item.type == 'tab_list_item' and item.settings.tab_id == tab_key -%}
+                        <div class="wood-card" {{ item.shopify_attributes }}>
+                          {%- if item.settings.image != blank -%}
+                            <img
+                              src="{{ item.settings.image | image_url: width: 900 }}"
+                              alt="{{ item.settings.name | escape }}"
+                              loading="lazy"
+                              decoding="async"
+                              class="wood-card__image"
+                            >
+                          {%- endif -%}
+
+                          {%- if item.settings.name != blank -%}
+                            <h4 class="wood-card__title">{{ item.settings.name }}</h4>
+                          {%- endif -%}
+
+                          {%- if item.settings.description != blank -%}
+                            <div class="wood-card__text">
+                              {{ item.settings.description }}
+                            </div>
+                          {%- endif -%}
+
+                          {%- if item.settings.finish_label != blank -%}
+                            <strong>{{ item.settings.finish_label }}</strong>
+                          {%- endif -%}
+
+                          {%- if item.settings.finish_description != blank -%}
+                            <div class="wood-card__finish-desc common-content-style">
+                              {{ item.settings.finish_description }}
+                            </div>
+                          {%- endif -%}
+                        </div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- else -%}
+                <div class="measure-guide-grid">
+                  <div class="measure-guide-copy">
+                    {%- if block.settings.heading != blank -%}
+                      <h6 class="mb-8">{{ block.settings.heading }}</h6>
+                    {%- endif -%}
+                    {%- if block.settings.subheading != blank -%}
+                      <p class="measure-guide-sub p-large mb-24">{{ block.settings.subheading }}</p>
+                    {%- endif -%}
+                    {%- if block.settings.body != blank -%}
+                      <div class="measure-guide-rte common-content-style">
+                        {{ block.settings.body }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+
+                  <div class="measure-guide-image">
+                    {%- if block.settings.image != blank -%}
+                      <img
+                        src="{{ block.settings.image | image_url: width: 1200 }}"
+                        alt="{{ block.settings.image_alt | default: block.settings.tab_label | escape }}"
+                        loading="lazy"
+                        decoding="async"
+                      >
+                    {%- else -%}
+                      <div class="edge-profile-drawer__placeholder" aria-hidden="true">
+                        <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect x="1" y="1" width="118" height="118" rx="10" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
+                          <path d="M36 78L54 58L68 72L82 56L92 78H36Z" stroke="rgba(0,0,0,0.25)" stroke-width="3" fill="none" stroke-linejoin="round"/>
+                          <circle cx="72" cy="44" r="8" stroke="rgba(0,0,0,0.25)" stroke-width="3" fill="none"/>
+                        </svg>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="edge-profile-drawer__body">
+            <p class="common-content-style">
+              Add "Sidebar tab" blocks in the section settings to show tabs.
+            </p>
+          </div>
+        {%- endif -%}
+      {%- else -%}
+      <div class="edge-profile-drawer__body">
+        <style>
+          .edge-profile-drawer__grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+          }
+
+          @media (max-width: 990px) {
+            .edge-profile-drawer__grid {
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+          }
+
+          @media (max-width: 640px) {
+            .edge-profile-drawer__grid {
+              grid-template-columns: 1fr;
+            }
+          }
+
+          .edge-profile-card {
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 12px;
+            padding: 12px;
+            background: #fff;
+            display: grid;
+            gap: 10px;
+          }
+
+          .edge-profile-card__image {
+            aspect-ratio: 4 / 3;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.04);
+          }
+
+          .edge-profile-card__image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+          }
+
+          .edge-profile-card__title {
+            font-weight: 700;
+            margin: 0;
+          }
+
+          .edge-profile-card__desc {
+            margin: 0;
+          }
+          .common-sidebar-tabs {
+            gap: 0 !important;
+          }
+        </style>
+
+        <div class="wood-species-headline common-640-div mb-24">
+          {% if section.settings.edge_profile_heading != blank %}
+            <h3 class="p-xl primaryFont fw-600 mb-8">{{ section.settings.edge_profile_heading }}</h3>
+          {% endif %}
+          {% if section.settings.edge_profile_description != blank %}
+            <p>{{ section.settings.edge_profile_description }}</p>
+          {% endif %}
+        </div>
+
+        {%- if layout_style == 'grid' -%}
+          {%- assign grid_blocks = section.blocks | where: 'type', 'edge_profile' -%}
+          {%- if grid_blocks.size > 0 -%}
+            <div class="wood-species-grid-wrap">
+              <div class="wood-species-grid wood-species-grid2">
+                {%- for block in grid_blocks -%}
+                  <div class="wood-card" {{ block.shopify_attributes }}>
+                    <!-- <div class="edge-profile-card__image" aria-hidden="{% if block.settings.image == blank %}true{% else %}false{% endif %}"> -->
+                      {%- if block.settings.image != blank -%}
+                        <img
+                          src="{{ block.settings.image | image_url: width: 900 }}"
+                          alt="{{ block.settings.name | escape }}"
+                          loading="lazy"
+                          decoding="async"
+                          class="wood-card__image"
+                        >
+                      {%- endif -%}
+                    <!-- </div> -->
+
+                    {%- if block.settings.name != blank -%}
+                      <h4 class="wood-card__title">{{ block.settings.name }}</h4>
+                    {%- endif -%}
+
+                    {%- if block.settings.description != blank -%}
+                      <div class="wood-card__text">
+                        {{ block.settings.description }}
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.finish_label != blank -%}
+                      <strong class="">{{ block.settings.finish_label }}</strong>
+                    {%- endif -%}
+
+                    {%- if block.settings.finish_description != blank -%}
+                      <div class="wood-card__finish-desc common-content-style">
+                        {{ block.settings.finish_description }}
+                      </div>
+                    {%- endif -%}
+
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- else -%}
+            <p class="common-content-style">
+              Add blocks in the section settings to show the grid.
+            </p>
+          {%- endif -%}
+        {%- else -%}
+        <div>
+          <div class="measure-guide-grid">
+            <div class="measure-guide-copy">
+              {%- if section.settings.body != blank -%}
+                <div class="measure-guide-rte common-content-style">
+                  {{ section.settings.body }}
+                </div>
+              {%- else -%}
+                <div class="measure-guide-rte common-content-style">
+                  <p>This is text brief copy explaining what a panel profile is and why the default raised profile was selected for the door.</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse semper nec risus ac molestie. Donec tempor pellentesque elit, vel ullamcorper urna maximus id.</p>
+                  <p>Pellentesque pretium orci quis mollis consequat.</p>
+                </div>
+              {%- endif -%}
+            </div>
+
+            <div class="measure-guide-image">
+              {%- if section.settings.image != blank -%}
+                <img
+                  src="{{ section.settings.image | image_url: width: 1200 }}"
+                  alt="{{ section.settings.image_alt | default: section.settings.modal_title | escape }}"
+                  loading="lazy"
+                  decoding="async"
+                >
+              {%- else -%}
+                <div class="edge-profile-drawer__placeholder" aria-hidden="true">
+                  <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1" y="1" width="118" height="118" rx="10" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
+                    <path d="M36 78L54 58L68 72L82 56L92 78H36Z" stroke="rgba(0,0,0,0.25)" stroke-width="3" fill="none" stroke-linejoin="round"/>
+                    <circle cx="72" cy="44" r="8" stroke="rgba(0,0,0,0.25)" stroke-width="3" fill="none"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var roots = document.querySelectorAll('.wood-species-snippet.edge-profile-drawer-snippet[data-drawer-id]');
+    if (!roots.length) return;
+
+    roots.forEach(function (root) {
+      if (root.getAttribute('data-drawer-init') === 'true') return;
+      root.setAttribute('data-drawer-init', 'true');
+
+      var modal = root.querySelector('.wood-species-modal');
+      var panel = root.querySelector('.wood-species-modal__panel');
+      var openBtn = root.querySelector('[data-wood-drawer-open]');
+      var closeEls = root.querySelectorAll('[data-wood-drawer-close]');
+      var tabs = root.querySelectorAll('.edge-profile-tab');
+      var tabPanels = root.querySelectorAll('.edge-profile-panel[data-tab-panel]');
+      var mountSelector = root.getAttribute('data-mount-selector');
+
+      function setTab(key) {
+        tabs.forEach(function (tab) {
+          var active = tab.getAttribute('data-tab') === key;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        tabPanels.forEach(function (panelItem) {
+          var active = panelItem.getAttribute('data-tab-panel') === key;
+          panelItem.hidden = !active;
+          panelItem.classList.toggle('is-active', active);
+        });
+      }
+
+      if (mountSelector && openBtn) {
+        var mountTarget = null;
+        try { mountTarget = document.querySelector(mountSelector); } catch (e) { mountTarget = null; }
+        if (mountTarget && !mountTarget.contains(openBtn)) {
+          mountTarget.appendChild(openBtn);
+        }
+      }
+
+      function openDrawer() {
+        if (!modal) return;
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        try { panel && panel.focus(); } catch (e) {}
+      }
+
+      function closeDrawer() {
+        if (!modal) return;
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+      }
+
+      if (openBtn) openBtn.addEventListener('click', function (e) { e.preventDefault(); openDrawer(); });
+      closeEls.forEach(function (el) { el.addEventListener('click', function (e) { e.preventDefault(); closeDrawer(); }); });
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          setTab(tab.getAttribute('data-tab'));
+        });
+      });
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape') return;
+      document.querySelectorAll('.wood-species-snippet.edge-profile-drawer-snippet .wood-species-modal.is-open')
+        .forEach(function (modal) {
+          modal.classList.remove('is-open');
+          modal.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
+        });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Edge Profile Info Drawer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "drawer_id",
+      "label": "Drawer uid",
+      "default": "edge-profile"
+    },
+    {
+      "type": "text",
+      "id": "mount_selector",
+      "label": "Button mount selector",
+      "default": "#door-configurator-options",
+      "info": "CSS selector where the drawer button should be inserted."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Open button label",
+      "default": "Edge Profile"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Modal title",
+      "default": "Panel Profile"
+    },
+    {
+      "type": "text",
+      "id": "drawer_custom_class",
+      "label": "Custom CSS class",
+      "info": "Add extra CSS class(es) to the drawer wrapper. Separate multiple classes with a space."
+    },
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Body layout style",
+      "default": "info",
+      "options": [
+        { "value": "info", "label": "Info (Text + Image)" },
+        { "value": "grid", "label": "Options grid (Blocks)" },
+        { "value": "tabs", "label": "Tabs (common-sidebar-tabs)" }
+      ]
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Right image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Panel profile illustration"
+    },
+    {
+      "type": "text",
+      "id": "edge_profile_heading",
+      "label": "edge profile heading",
+    },
+    {
+      "type": "richtext",
+      "id": "edge_profile_description",
+      "label": "Edge Profile description"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "sidebar_tab",
+      "name": "Sidebar tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_id",
+          "label": "Tab ID",
+          "default": "tab-1",
+          "info": "Unique ID used to link list items to this tab. Use lowercase letters, numbers, and hyphens only."
+        },
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Tab label",
+          "default": "Tab 1"
+        },
+        {
+          "type": "select",
+          "id": "panel_layout",
+          "label": "Tab content layout",
+          "default": "info",
+          "options": [
+            { "value": "info", "label": "Content + Image" },
+            { "value": "list", "label": "List (grid blocks)" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "info": "Shown when tab content layout is Content + Image."
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading",
+          "info": "Shown when tab content layout is Content + Image."
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Body content",
+          "info": "Shown when tab content layout is Content + Image."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Shown when tab content layout is Content + Image."
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text"
+        }
+      ]
+    },
+    {
+      "type": "tab_list_item",
+      "name": "Tab list item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_id",
+          "label": "Tab ID",
+          "default": "tab-1",
+          "info": "Must match the Tab ID on the parent Sidebar tab block."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Lamb's Tongue Round"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "finish_label",
+          "label": "Title",
+          "default": "Recommended Finish:"
+        },
+        {
+          "type": "richtext",
+          "id": "finish_description",
+          "label": "Finish description",
+          "default": "<p></p>"
+        }
+      ]
+    },
+    {
+      "type": "edge_profile",
+      "name": "Edge profile option",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Lamb's Tongue Round"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "finish_label",
+          "label": "Title",
+          "default": "Recommended Finish:"
+        },
+        {
+          "type": "richtext",
+          "id": "finish_description",
+          "label": "Finish description",
+          "default": "<p></p>"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 30,
+  "presets": [
+    {
+      "name": "Edge Profile Info Drawer"
+    }
+  ]
+}
+{% endschema %}

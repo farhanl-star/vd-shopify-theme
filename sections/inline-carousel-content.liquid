@@ -1,0 +1,272 @@
+<style>
+  .inline-carousel-section {
+    background: #f3efe9;
+    padding: 80px 0;
+  }
+
+  .simple-carousel-section .section-header {
+    {% comment %} text-align: center; {% endcomment %}
+    {% comment %} margin-bottom: 60px; {% endcomment %}
+  }
+
+  .simple-carousel-section .carousel-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+  }
+
+  .simple-carousel-section .carousel-layout-section{background:var(--woodDust200Color)}
+
+  .simple-carousel-section .carousel-left h3 {
+    font-size: 28px;
+  }
+
+  .simple-carousel-section .carousel-cta {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+  }
+
+  .simple-carousel-section .carousel-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .simple-carousel-section .carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+
+  .simple-carousel-section .carousel-slide {
+    min-width: 100%;
+    
+  }
+
+  .simple-carousel-section .carousel-image img {
+    width: 20%;
+    display: block;
+  }
+
+  .simple-carousel-section .carousel-text {
+    margin-top: 16px;
+  }
+
+  .simple-carousel-section .carousel-nav {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .simple-carousel-section .carousel-nav button {
+    background: none;
+    border: 1px solid #999;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .simple-carousel-section .carousel-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+</style>
+
+<section class="simple-carousel-section"  data-section-id="{{ section.id }}">
+  <div class="section-header-mdiv pt-80 mb-40">
+    <div class="container">
+      {% if section.settings.heading != blank %}
+        <div class="section-header common-center-div center620">
+          <h4>{{ section.settings.heading }}</h4>
+          <p>{{ section.settings.subheading }}</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="carousel-layout-section py-120">
+    <div class="container">
+      <div class="carousel-layout">
+        
+        <!-- LEFT CONTENT -->
+        <div class="carousel-left">
+          <h3>{{ section.settings.left_title }}</h3>
+          <p class="left-subheading">{{ section.settings.left_subheading }}</p>
+
+            <p class="left-description">{{ section.settings.left_text }}</p>
+
+          {% if section.settings.cta_label != blank %}
+            <a href="{{ section.settings.cta_link }}" class="carousel-cta">
+              {{ section.settings.cta_label }} →
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- RIGHT CAROUSEL -->
+        <div class="carousel-right">
+
+          <div class="carousel-track">
+            {% for block in section.blocks %}
+              <div class="carousel-slide" {{ block.shopify_attributes }}>
+                <div class="carousel-image">
+                  {% if block.settings.image %}
+                    {{ block.settings.image | image_url: width: 200 | image_tag }}
+                  {% endif %}
+
+                    {% if block.settings.image_2 %}
+                    {{ block.settings.image_2 | image_url: width: 200 | image_tag }}
+                  {% endif %}
+
+                </div>
+
+                <div class="carousel-text">
+                  <strong>{{ block.settings.title }}</strong>
+                  <p>{{ block.settings.text }}</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="carousel-nav">
+            <button class="carousel-prev">←</button>
+            <button class="carousel-next">→</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+(function () {
+  const section = document.querySelector(
+    '.simple-carousel-section[data-section-id="{{ section.id }}"]'
+  );
+  if (!section) return;
+
+  section.querySelectorAll('.carousel-right').forEach((carousel) => {
+    const track = carousel.querySelector('.carousel-track');
+    const slides = carousel.querySelectorAll('.carousel-slide');
+    const prev = carousel.querySelector('.carousel-prev');
+    const next = carousel.querySelector('.carousel-next');
+
+    if (!track || slides.length === 0) return;
+
+    let index = 0;
+    const total = slides.length;
+
+    // Ensure horizontal layout
+    track.style.display = 'flex';
+    track.style.transition = 'transform 0.4s ease';
+
+    slides.forEach(slide => {
+      slide.style.minWidth = '100%';
+    });
+
+    function update() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    next.addEventListener('click', () => {
+      index = (index + 1) % total;
+      update();
+    });
+
+    prev.addEventListener('click', () => {
+      index = (index - 1 + total) % total;
+      update();
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Inline Carousel Content",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customize With Confidence"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Every choice, clearly explained — so your door fits, functions, and feels like it was always part of your home"
+    },
+    {
+      "type": "text",
+      "id": "left_title",
+      "label": "Left title",
+      "default": "Wood Options"
+    },
+
+      {
+      "type": "textarea",
+      "id": "left_subheading",
+      "label": "Left Sub heading",
+    },
+
+    {
+      "type": "textarea",
+      "id": "left_text",
+      "label": "Left description",
+      "default": "Choose the wood that fits your porch, coverage, and climate."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Explore All Wood Options"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Carousel slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+         {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+    },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "For exposed locations"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "African Mahogany and Spanish Cedar are our most weather-resistant woods."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Inline Carousel Content",
+      "blocks": [
+        { "type": "slide" },
+        { "type": "slide" },
+        { "type": "slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

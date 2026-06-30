@@ -1,0 +1,63 @@
+{% layout none %}
+{% paginate search.results by 20  %}
+{%- capture aod_check_file -%}{%- include "aod_change_price" with product -%}{%- endcapture -%}
+{% capture aod_product_json %}
+{	
+    "Products":
+        [
+            {% for product in search.results %}
+			
+                {% assign resultURL = product.url %}
+                {% assign thumbImage = product.images[0] | product_img_url: 'thumb' %}
+                {% assign MediumImage = product.images[0] | product_img_url: 'medium' %}
+				
+				{% assign aod_price_min = product.price_min %}
+				{% assign aod_price_max = product.price_max %}
+
+				{% unless aod_check_file contains "Liquid error" %}{%- include "aod_change_price" with product:product,variant:product.selected_or_first_available_variant , type:"product" -%}{% endunless %}
+                {
+				     "id"  : "{{product.id}}"
+					,"vendor" :{{product.vendor | json}}
+                    ,"options":{{ product.options | json}}
+					,"title":{{ product.title | json }}
+                    ,"min_price":"{{aod_price_min }}"
+                    ,"max_price":"{{ aod_price_max }}"
+					,"image":{{ product.media |json }}
+					{% if product.featured_image == blank %}
+						,"featured_image":"null"
+					{% else %}
+						,"featured_image":{{ product.featured_image | json }}
+					{% endif %}			
+					,"images" : {"thumb_img_src" : {{  MediumImage |json }},"medium_img_src" : {{  MediumImage |json }}}                    
+					,"variants":
+					[
+						{% for variant in product.variants %}
+						{% assign aod_price = variant.price %}
+						{% assign aod_compare_at_price = variant.compare_at_price %}
+
+						{% unless aod_check_file contains "Liquid error" %}{%- include "aod_change_price" with product:product , variant:variant  type:"variant" -%}{% endunless %}
+							{ 
+                                {% assign variant_thumbImage = variant.image  %}
+
+								"id":"{{variant.id}}"                                 
+								,"sku":{{ variant.sku | json}}
+ 								,"title":{{ variant.title | json }}
+								,"price":"{{ aod_price }}"
+								,"compare_at_price":"{{ aod_compare_at_price }}"
+								,"inventory_management":"{{variant.inventory_management}}"
+								,"inventory_policy":"{{variant.inventory_policy}}"
+								,"inventory_quantity":"{{variant.inventory_quantity}}"                                
+								,"images" : {"variant_thumbImage" : {{  variant_thumbImage |json }} }    
+							}
+						{% unless forloop.last %},{% endunless %}
+						{% endfor %}
+
+					]
+                }
+			{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+        ]
+}
+{% endcapture %}
+{% endpaginate %}
+{{ aod_product_json | strip_newlines }}

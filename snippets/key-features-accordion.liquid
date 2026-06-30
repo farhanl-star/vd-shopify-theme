@@ -1,0 +1,116 @@
+{%- comment -%}
+  Renders Key Features accordion when the product's key_features_group matches a theme block
+  and the matching shop metafield (custom.key_features_N) has content.
+  Params:
+  - blocks: section.blocks
+  - group_value: product key_features_group as string (e.g. "2")
+{%- endcomment -%}
+
+
+{%- assign group_value = product.metafields.custom.key_features_group | append: '' | strip -%}
+
+{%- assign dynamic_key = 'key_features_' | append: group_value -%}
+
+{%- assign shop_key_features = shop.metafields.custom[dynamic_key] -%}
+
+
+{%- if shop_key_features != blank -%}
+  <div class="m-faqs-section__content">
+    <details
+      class="m-collapsible kfa-collapsible mb-0"
+      {% if kf_block.settings.open_by_default %}open{% endif %}
+      {{ kf_block.shopify_attributes }}
+    >
+      <summary class="m-collapsible--button kfa-collapsible--button">
+        <span>{{ kf_block.settings.heading | default: 'Key Features' | escape }}</span>
+        <span class="m-collapsible--icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="7" width="2" height="16" rx="1" fill="#00476C"></rect>
+            <rect x="16" y="7" width="2" height="16" rx="1" transform="rotate(90 16 7)" fill="#00476C" class="vertical"></rect>
+          </svg>
+        </span>
+      </summary>
+      <div class="m-collapsible--content kfa-collapsible--content">
+        <div class="m-collapsible--content__inner rte">
+          {%- if kf_block.settings.image != blank -%}
+            <div class="kfa__image">
+              {{ kf_block.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy' }}
+            </div>
+          {%- endif -%}
+          {{ shop_key_features | metafield_tag }}
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <script>
+    document.querySelectorAll('.kfa-collapsible').forEach((el) => {
+      const btn = el.querySelector('.kfa-collapsible--button');
+      const content = el.querySelector('.kfa-collapsible--content');
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const isOpen = el.classList.contains('is-expanded');
+
+        document.querySelectorAll('.kfa-collapsible').forEach((item) => {
+          const c = item.querySelector('.kfa-collapsible--content');
+          c.style.maxHeight = c.scrollHeight + 'px';
+          c.offsetHeight;
+          item.classList.remove('is-expanded');
+          c.style.maxHeight = '0px';
+        });
+
+        if (!isOpen) {
+          el.classList.add('is-expanded');
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      });
+    });
+    document.querySelectorAll('.kfa-collapsible').forEach((el) => {
+      const btn = el.querySelector('.kfa-collapsible--button');
+
+      btn.addEventListener('click', () => {
+        const isOpen = el.getAttribute('open') === 'true';
+
+        document.querySelectorAll('.kfa-collapsible').forEach((item) => {
+          item.setAttribute('open', 'false');
+        });
+
+        el.setAttribute('open', isOpen ? 'false' : 'true');
+      });
+    });
+
+    {% comment %} if millwork open default  {% endcomment %}
+    document.addEventListener("DOMContentLoaded", function () {
+      const body = document.body;
+      const validClasses = ["millwork", "millwork-baluster", "milwork-casing"];
+
+      const hasMatch = validClasses.some(cls => body.classList.contains(cls));
+
+      if (hasMatch) {
+        document.querySelectorAll('.kfa-collapsible').forEach((el) => {
+          const content = el.querySelector('.kfa-collapsible--content');
+
+          el.classList.add('is-expanded');
+          el.setAttribute('open', 'true');
+
+          if (content) {
+            content.style.maxHeight = content.scrollHeight + 'px';
+          }
+        });
+      }
+    });
+  </script>
+
+  <style>
+    .kfa-collapsible {
+      cursor: pointer;
+    }
+    .kfa-collapsible--content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+  </style>
+{%- endif -%}

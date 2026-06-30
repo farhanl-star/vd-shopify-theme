@@ -1,0 +1,134 @@
+<section class="features-row-section">
+  <div class="features-row-container container">
+
+    <div class="features-row-grid">
+
+      {% for block in section.blocks %}
+        <div class="feature-item">
+
+          {% if block.settings.icon %}
+            <div class="feature-icon">
+              <img src="{{ block.settings.icon | img_url: '100x' }}" alt="{{ block.settings.title }}">
+            </div>
+          {% endif %}
+          <div class="feature-content">
+            <h3 class="feature-title">{{ block.settings.title }}</h3>
+
+            {% if block.settings.text %}
+              <p class="feature-text">{{ block.settings.text }}</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Features Row",
+  "settings": [
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Solid Hardwood"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Warm, weighty, with natural grain — never veneer or composite."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Features Row",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.features-row-section {
+  padding: 80px 0;
+  position:relative;
+}
+.features-row-section:before{
+  position:absolute;
+  content:'';
+  width:100%;
+  border-bottom: 1px solid var(--greys300Color);
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+
+.features-row-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 64px;
+  align-items: start;
+  justify-content:space-between;
+}
+
+.feature-item {
+  display:flex;
+  align-items:start;
+  gap:16px;
+}
+
+.feature-icon img {
+  width: 48px;
+  min-width: 48px;
+  height: auto;
+  object-fit:content;
+  margin-bottom: 15px;
+}
+
+.feature-title {
+  font-family:var(--font-stack-body);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 150%;
+  letter-spacing: 0%;
+  color:var(--sootBlackColor);
+  margin-bottom:8px;
+}
+
+@media (max-width: 991.98px) {
+  .features-row-section{padding: 60px 0;}
+  .features-row-grid {grid-template-columns: 2fr 2fr;gap: 32px;}
+  .features-row-section:before{width:calc(100% - 40px)}
+
+}
+@media (max-width: 768px) {
+  .features-row-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .features-row-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

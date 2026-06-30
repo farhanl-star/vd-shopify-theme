@@ -1,0 +1,51 @@
+
+{% assign highlightsBlock = product.metafields.custom.highlights.value %}
+{% if highlightsBlock != blank %}
+<section class="pdp-highlights-scn pdp-detail-overview-scn">
+  <div class="page-width">
+    <div class="pdp-detail-overview">
+      <div class="pdp-overview-left">
+        {% if  section.settings.title != blank %}
+        <span class="pdp-overview-title h3">{{ section.settings.title }}</span>
+        {% endif %}
+      </div>
+      <div class="pdp-overview-right">
+        <div class="highlights-view">
+          {% if highlightsBlock != blank %}
+            {% for highlights in highlightsBlock %}
+            <div class="item">
+              <i class="highlights-icon">
+                <img src="{{ highlights.image | file_url }}" alt="{{ highlights.title }}" width="50" height="50" loading="lazy">
+              </i>
+              <div class="highlights-cnt">
+                <strong>{{ highlights.title }}</strong>
+                <p>{{ highlights.description }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          {% endif %}
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}  
+          
+{% schema %}
+  {
+    "name": "Highlights",
+    "settings": [
+       {
+        "type": "textarea",
+        "id": "title",
+        "label": "Title"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Highlights"
+      }
+    ]
+  }
+{% endschema %}

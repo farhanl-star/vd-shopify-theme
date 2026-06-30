@@ -1,0 +1,9 @@
+<div class="m-pagination{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+  {{ paginate | default_pagination: next: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewBox="0 0 10 18" fill="none">
+<path d="M1 17L9 9L1 1" stroke="#806730" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>', previous: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewBox="0 0 10 18" fill="none">
+<path d="M9 17L1 9L9 1" stroke="#806730" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>' }}
+</div>
+
+

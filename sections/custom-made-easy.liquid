@@ -1,0 +1,153 @@
+<section class="custom-made-easy fade-section">
+  <div class="container">
+    <div class="m-row m:flex">
+      <!-- LEFT SIDE -->
+      <div class="cme-left lg:m:w-5/12">
+        <div>
+          {% if section.settings.heading %}
+            <h4 class="cme-heading">{{ section.settings.heading }}</h4>
+          {% endif %}
+
+          {% if section.settings.subheading %}
+            <p class="cme-subheading">{{ section.settings.subheading }}</p>
+          {% endif %}
+        </div>
+        {% if section.settings.left_image %}
+          <img 
+            src="{{ section.settings.left_image | img_url: '800x' }}" 
+            alt="Custom Made"
+            class="cme-left-image"
+          >
+        {% endif %}
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="cme-right lg:m:w-7/12">
+        <div class="cme-steps lg:flex lg:gap-6">
+
+          {%- assign column1 = section.blocks | slice: 0, 3 -%}
+          {%- assign column2 = section.blocks | slice: 3, 3 -%}
+
+          <!-- Column 1 -->
+          <div class="cme-col lg:w-6/12">
+            {% for block in column1 %}
+              <div class="cme-step-out">
+                <div class="cme-step">
+                  <div class="cme-step-number">{{ block.settings.number }}</div>
+                  <div class="cme-step-content">
+                    <h4 class="cme-step-title">{{ block.settings.title }}</h4>
+                    <p class="cme-step-text">{{ block.settings.text }}</p>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Column 2 -->
+          <div class="cme-col lg:w-6/12">
+            {% for block in column2 %}
+              <div class="cme-step-out">
+                <div class="cme-step">
+                  <div class="cme-step-number">{{ block.settings.number }}</div>
+                  <div class="cme-step-content">
+                    <h4 class="cme-step-title">{{ block.settings.title }}</h4>
+                    <p class="cme-step-text">{{ block.settings.text }}</p>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .custom-made-easy{background:linear-gradient(90deg, var(--woodDustColor) calc(33.3333333333% + 20px),var(--greysColor) calc(33.3333333333% + 20px) )}
+  .cme-container { margin: auto; }
+  .cme-heading { margin-bottom: 8px; }
+  .cme-subheading { font-weight: 400; font-size: 24px; line-height: 135%; letter-spacing: 0; color:var(--sootBlackColor); }
+  .cme-left{display:flex; flex-direction:column; gap:58px;padding-top:104px; padding-right:60px;background:var(--woodDustColor);max-width:460px;justify-content: flex-end;}
+  .cme-left-image { width: 100%; margin-top: 0px; object-fit:contain; mix-blend-mode: color-burn; }
+
+  /* Steps */
+  .cme-right{padding-left:86px;flex-grow:1;padding-block:100px; display:flex;align-items:center}
+  .cme-steps .cme-col{max-width:50%;}
+  .cme-steps .cme-col .cme-step-out{margin-bottom:40px;}
+  .cme-steps .cme-col .cme-step-out:last-of-type{margin-bottom:0;}
+  .cme-steps{display:flex;flex-wrap:wrap;}
+  .cme-steps .cme-col:nth-child(even) {padding-left:24px;}
+  .cme-steps .cme-col:nth-child(odd){padding-right:24px;}
+  .cme-step { display: flex; gap: 15px; margin-bottom: 0px; }
+  .cme-step-number { width: 42px; min-width: 42px; height: 42px; background: var(--greys500Color); font-weight: 300; font-size: 32px; line-height: 0px; letter-spacing: 0; text-align: center; display:flex; align-items:center; justify-content:center; color:var(--greysColor); border-radius:8px; }
+  .cme-step-title {margin: 0 0 4px 0;font-weight: 600; font-size: 18px; line-height: 150%; letter-spacing: 0; color:var(--sootBlackColor);font-family:var(--font-stack-body)}
+  .cme-step-text {font-weight: 400; font-size: 14px; line-height: 150%; letter-spacing: 0;color:var(--sootBlackColor)}
+
+  /* Responsive */
+  @media (max-width: 991.98px) {
+    .cme-container{flex-direction: column;padding:0;}
+    .custom-made-easy .m-row{margin:0 -20px;}
+    .custom-made-easy{background:transparent;}
+    .cme-left{width:100%;max-width:100%;padding-top: 40px;padding-inline: 20px;}
+    .cme-right{padding-top:48px;padding-inline:20px;padding-bottom:80px;}
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Made Easy",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Custom, made easy"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "From first sketch to final fit, here’s how we get it right the first time"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left Side Image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Step Number",
+          "default": "1"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Step Title",
+          "default": "Choose your door"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Step Description",
+          "default": "Start online. Browse the catalog or shop by architectural style to find a style that fits."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Custom Made Easy",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

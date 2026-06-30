@@ -1,0 +1,32 @@
+{%- comment -%}
+  Standalone PDP top bar for door products.
+  Usage: {% render 'door-pdp-topbar' %}
+  Place above the configurator snippet in your product template.
+{%- endcomment -%}
+
+{%- if product -%}
+  <div class="door-pdp-topbar-section">
+    <div class="container">
+      <div class="door-pdp-topbar">
+        <a
+          href="#"
+          class="door-pdp-back"
+          onclick="if (window.history.length > 1) { window.history.back(); return false; }"
+        >
+          <span aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M11 18L5 12L11 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="6" y="11" width="14" height="2" rx="1" fill="black"/>
+            </svg>
+          </span>
+          <span>Back</span>
+        </a>
+        <h1 class="door-pdp-title p-xl">{{ product.title }}</h1>
+        <p class="door-pdp-price">
+          <strong id="door-configured-price-inline">{{ product.price | money_without_trailing_zeros }}</strong>
+          <small>as configured</small>
+        </p>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

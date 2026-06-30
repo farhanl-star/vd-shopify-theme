@@ -1,0 +1,50 @@
+<div class="m-faqs-section__content">
+
+  {%- comment -%} 🔹 Accordion 1: Key Features {%- endcomment -%}
+  {% if product.metafields.custom.key_features %}
+    {% assign key_page = product.metafields.custom.key_features.value %}
+
+    <collapsible-tab class="m-collapsible no-js-hidden">
+      <h3 class="m-collapsible--button" data-trigger>
+        <span>Key Features</span>
+        <span class="m-collapsible--icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"> 
+            <rect x="7" width="2" height="16" rx="1" fill="#00476C"></rect> 
+            <rect x="16" y="7" width="2" height="16" rx="1" transform="rotate(90 16 7)" fill="#00476C" class="vertical"></rect>
+          </svg>
+        </span>
+      </h3>
+
+      <div class="m-collapsible--content" data-content hidden>
+        <div class="m-collapsible--content__inner rte">
+          {{ key_page.content }}
+        </div>
+      </div>
+    </collapsible-tab>
+  {% endif %}
+
+
+  {%- comment -%} 🔹 Accordion 2: Door Setup {%- endcomment -%}
+  {% if product.metafields.custom.door_setup %}
+    {% assign door_page = product.metafields.custom.door_setup.value %}
+
+    <collapsible-tab class="m-collapsible no-js-hidden">
+      <h3 class="m-collapsible--button" data-trigger>
+        <span>Door Setup</span>
+        <span class="m-collapsible--icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"> 
+            <rect x="7" width="2" height="16" rx="1" fill="#00476C"></rect> 
+            <rect x="16" y="7" width="2" height="16" rx="1" transform="rotate(90 16 7)" fill="#00476C" class="vertical"></rect>
+          </svg>
+        </span>
+      </h3>
+
+      <div class="m-collapsible--content" data-content hidden>
+        <div class="m-collapsible--content__inner rte">
+          {{ door_page.content }}
+        </div>
+      </div>
+    </collapsible-tab>
+  {% endif %}
+
+</div>

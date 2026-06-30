@@ -1,0 +1,74 @@
+{% comment %}
+  Free Gift Offer Section
+  File: sections/free-gift-offer.liquid
+{% endcomment %}
+ <style>
+  .free-gift-offer {}
+  .new-skincare-section {
+    background:none!important;
+  }
+  </style>
+<div class="page-width divfree-gift-offer">
+  
+  <div class="free-gift-offer" style="background:#f1f8f1; padding:20px; border-radius:10px; text-align:center;">
+    <!-- Image -->
+    <div class="gift-image" style="margin-bottom:15px;">
+      <img width="70" height="70" src="{{ section.settings.gift_image | image_url }}" alt="Free Gift" style="max-width:120px; margin:auto;">
+    </div>
+    <div class="gift-content-div">
+      <!-- Title -->
+      <h3 style="font-weight:600;">{{ section.settings.title }}</h3>
+      <p style="color:#555;">{{ section.settings.subtitle }}</p>
+    </div>
+    {% assign cart_total = cart.total_price | divided_by: 100 %}
+    {% assign required_amount = section.settings.threshold | plus: 0 %}
+    {% assign remaining = required_amount | minus: cart_total %}
+
+    <!-- Progress Bar -->
+    <div class="progress-wrapper" style="margin:20px 0;">
+     
+      <div class="hitsy-progress-block"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+{% schema %}
+{
+  "name": "Free Gift Offer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "gift_image",
+      "label": "Gift Image"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Spend QAR 250, Get Free Cap"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Perfect for those early morning classes!"
+    },
+    {
+      "type": "number",
+      "id": "threshold",
+      "label": "Spending Threshold (QAR)",
+      "default": 250
+    }
+  ],
+  "presets": [
+    {
+      "name": "Free Gift Offer"
+    }
+  ]
+}
+{% endschema %}

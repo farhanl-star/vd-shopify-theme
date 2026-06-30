@@ -1,0 +1,202 @@
+{% assign drawer_uid = drawer_id | default: 'measure-guide-drawer' %}
+{% assign drawer_mount_selector = mount_selector | default: '' %}
+{% assign drawer_button_label = button_label | default: 'How To Measure' %}
+{% assign drawer_title = modal_title | default: 'How To Measure for Your Door' %}
+
+<div class="measure-guide-snippet" data-drawer-id="{{ drawer_uid }}" data-mount-selector="{{ drawer_mount_selector | escape }}">
+  <button
+    type="button"
+    class="measure-guide-open-btn common-btn btn-secondary btn-hide"
+    data-measure-drawer-open
+    aria-haspopup="dialog"
+    aria-controls="measure-guide-drawer-{{ drawer_uid }}"
+  >
+    {{ drawer_button_label }}
+  </button>
+
+  <div
+    id="measure-guide-drawer-{{ drawer_uid }}"
+    class="measure-guide-modal common-sidebar-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="measure-guide-title-{{ drawer_uid }}"
+  >
+    <div class="measure-guide-modal__overlay common-sidebar-modal__overlay" data-measure-drawer-close></div>
+
+    <div class="measure-guide-modal__panel common-sidebar-modal__panel" tabindex="-1">
+      <div class="common-sidebar-header">
+        <h5 id="measure-guide-title-{{ drawer_uid }}" class="measure-guide-modal__title">{{ drawer_title }}</h5>
+        <button type="button" class="measure-guide-modal__close common-sidebar-modal__close" data-measure-drawer-close aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect width="2.11202" height="31.6804" rx="1.05601" transform="matrix(0.703968 0.710232 -0.703968 0.710232 22.5156 0)" fill="#002031"/>
+            <rect width="2.11202" height="31.6804" rx="1.05601" transform="matrix(-0.703968 0.710232 0.703968 0.710232 1.49219 0)" fill="#002031"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="measure-guide-tabs common-sidebar-tabs" role="tablist" aria-label="Measure guide tabs">
+        <button class="measure-guide-tab common-sidebar-tab is-active" type="button" role="tab" data-tab="exact" aria-selected="true">{{ tab_1_label | default: 'Exact Door Size' }}</button>
+        <button class="measure-guide-tab common-sidebar-tab" type="button" role="tab" data-tab="finished" aria-selected="false">{{ tab_2_label | default: 'Finished Opening' }}</button>
+        <button class="measure-guide-tab common-sidebar-tab" type="button" role="tab" data-tab="rough" aria-selected="false">{{ tab_3_label | default: 'Rough Opening' }}</button>
+        <button class="measure-guide-tab common-sidebar-tab" type="button" role="tab" data-tab="jamb" aria-selected="false">{{ tab_4_label | default: 'Pre-Hung on a Jamb' }}</button>
+        <button class="measure-guide-tab common-sidebar-tab" type="button" role="tab" data-tab="brick" aria-selected="false">{{ tab_5_label | default: 'Pre-Hung on Brick Molding' }}</button>
+      </div>
+
+      <div class="measure-guide-panel is-active" data-tab-panel="exact">
+        <div class="measure-guide-grid">
+          <div class="measure-guide-copy">
+            <h6 class="mb-8">{{ tab_1_heading | default: 'An Existing Door' }}</h6>
+            {% if tab_1_subheading != blank %}<p class="measure-guide-sub p-large mb-24">{{ tab_1_subheading }}</p>{% endif %}
+            <div class="measure-guide-rte common-content-style">{{ tab_1_description | default: '<p>Use this only if your current door fits well and swings smoothly.</p>' }}</div>
+          </div>
+          <div class="measure-guide-image">
+            {% if tab_1_image != blank %}
+              <img src="{{ tab_1_image | image_url: width: 1000 }}" alt="{{ tab_1_heading | default: 'Exact Door Size' | escape }}" loading="lazy">
+            {% else %}
+              <div class="measure-guide-image--ph"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="measure-guide-panel" data-tab-panel="finished" hidden>
+        <div class="measure-guide-grid">
+          <div class="measure-guide-copy">
+            <h6 class="mb-8">{{ tab_2_heading | default: 'Finished Opening' }}</h6>
+            {% if tab_2_subheading != blank %}<p class="measure-guide-sub p-large mb-24">{{ tab_2_subheading }}</p>{% endif %}
+            <div class="measure-guide-rte common-content-style">{{ tab_2_description | default: '<p>Measure the width and height of the finished opening where the door will sit.</p>' }}</div>
+          </div>
+          <div class="measure-guide-image">
+            {% if tab_2_image != blank %}
+              <img src="{{ tab_2_image | image_url: width: 1000 }}" alt="{{ tab_2_heading | default: 'Finished Opening' | escape }}" loading="lazy">
+            {% else %}
+              <div class="measure-guide-image--ph"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="measure-guide-panel" data-tab-panel="rough" hidden>
+        <div class="measure-guide-grid">
+          <div class="measure-guide-copy">
+            <h6 class="mb-8">{{ tab_3_heading | default: 'Rough Opening' }}</h6>
+            {% if tab_3_subheading != blank %}<p class="measure-guide-sub p-large mb-24">{{ tab_3_subheading }}</p>{% endif %}
+            <div class="measure-guide-rte common-content-style">{{ tab_3_description | default: '<p>Measure framing dimensions for width, height, and depth before finishing materials.</p>' }}</div>
+          </div>
+          <div class="measure-guide-image">
+            {% if tab_3_image != blank %}
+              <img src="{{ tab_3_image | image_url: width: 1000 }}" alt="{{ tab_3_heading | default: 'Rough Opening' | escape }}" loading="lazy">
+            {% else %}
+              <div class="measure-guide-image--ph"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="measure-guide-panel" data-tab-panel="jamb" hidden>
+        <div class="measure-guide-grid">
+          <div class="measure-guide-copy">
+            <h6 class="mb-8">{{ tab_4_heading | default: 'Pre-Hung on a Jamb' }}</h6>
+            {% if tab_4_subheading != blank %}<p class="measure-guide-sub p-large mb-24">{{ tab_4_subheading }}</p>{% endif %}
+            <div class="measure-guide-rte common-content-style">{{ tab_4_description | default: '<p>For a pre-hung unit on jamb, capture complete jamb dimensions and swing direction.</p>' }}</div>
+          </div>
+          <div class="measure-guide-image">
+            {% if tab_4_image != blank %}
+              <img src="{{ tab_4_image | image_url: width: 1000 }}" alt="{{ tab_4_heading | default: 'Pre-Hung on a Jamb' | escape }}" loading="lazy">
+            {% else %}
+              <div class="measure-guide-image--ph"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="measure-guide-panel" data-tab-panel="brick" hidden>
+        <div class="measure-guide-grid">
+          <div class="measure-guide-copy">
+            <h6 class="mb-8">{{ tab_5_heading | default: 'Pre-Hung on Brick Molding' }}</h6>
+            {% if tab_5_subheading != blank %}<p class="measure-guide-sub p-large mb-24">{{ tab_5_subheading }}</p>{% endif %}
+            <div class="measure-guide-rte common-content-style">{{ tab_5_description | default: '<p>Measure the outer dimensions including brick molding trim and clearances.</p>' }}</div>
+          </div>
+          <div class="measure-guide-image">
+            {% if tab_5_image != blank %}
+              <img src="{{ tab_5_image | image_url: width: 1000 }}" alt="{{ tab_5_heading | default: 'Pre-Hung on Brick Molding' | escape }}" loading="lazy">
+            {% else %}
+              <div class="measure-guide-image--ph"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .common-sidebar-tabs{gap:0 !important;}
+</style>
+
+<script>
+  (function () {
+    var roots = document.querySelectorAll('.measure-guide-snippet[data-drawer-id]');
+    if (!roots.length) return;
+
+    roots.forEach(function (root) {
+      if (root.getAttribute('data-drawer-init') === 'true') return;
+      root.setAttribute('data-drawer-init', 'true');
+
+      var modal = root.querySelector('.measure-guide-modal');
+      var panel = root.querySelector('.measure-guide-modal__panel');
+      var openBtn = root.querySelector('[data-measure-drawer-open]');
+      var closeEls = root.querySelectorAll('[data-measure-drawer-close]');
+      var tabs = root.querySelectorAll('.measure-guide-tab');
+      var tabPanels = root.querySelectorAll('[data-tab-panel]');
+      var mountSelector = root.getAttribute('data-mount-selector');
+
+      if (mountSelector && openBtn) {
+        var target = document.querySelector(mountSelector);
+        if (target && !target.contains(openBtn)) target.appendChild(openBtn);
+      }
+
+      function setTab(key) {
+        tabs.forEach(function (tab) {
+          var active = tab.getAttribute('data-tab') === key;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        tabPanels.forEach(function (panelItem) {
+          var active = panelItem.getAttribute('data-tab-panel') === key;
+          panelItem.hidden = !active;
+          panelItem.classList.toggle('is-active', active);
+        });
+      }
+
+      function openDrawer() {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        panel.focus();
+      }
+
+      function closeDrawer() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+      }
+
+      if (openBtn) openBtn.addEventListener('click', openDrawer);
+      closeEls.forEach(function (el) { el.addEventListener('click', closeDrawer); });
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          setTab(tab.getAttribute('data-tab'));
+        });
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        if (modal.classList.contains('is-open')) closeDrawer();
+      });
+    });
+  })();
+</script>

@@ -1,0 +1,100 @@
+{% render 'select-screen-drawer',
+  drawer_id: section.id,
+  mount_selector: section.settings.mount_selector,
+  button_label: section.settings.button_label,
+  modal_title: section.settings.modal_title,
+  select_screen_options_label: section.settings.select_screen_options_label,
+  select_screen_heading: section.settings.select_screen_heading,
+  
+  finish_label: section.settings.finish_label,
+  sco_blocks: section.blocks
+%}
+
+{% schema %}
+{
+  "name": "Select Screen",
+  "settings": [
+    {
+      "type": "text",
+      "id": "mount_selector",
+      "label": "Button mount selector",
+      "default": "#door-configurator-options",
+      "info": "CSS selector where the drawer button should be inserted."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Open button label",
+      "default": "Select Screen"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Modal title",
+      "default": "Select Screen"
+    },
+    {
+      "type": "text",
+      "id": "select_screen_options_label",
+      "label": "Tab label: Select Screen Options",
+    },
+    {
+      "type": "richtext",
+      "id": "select_screen_heading",
+      "label": "select screen description"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "species",
+      "name": "Select Screen",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Category",
+          "default": "sco",
+          "options": [
+            { "value": "sco", "label": "Select Screen" }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "sco_name",
+          "label": "select screen name",
+          "default": "Fiberglass"
+        },
+        {
+          "type": "text",
+          "id": "sco_subheading",
+          "label": "select screen subheading",
+          "default": "Our Standard Screen "
+        },
+        {
+          "type": "richtext",
+          "id": "sco_quote",
+          "label": "Description",
+          "default": "<p>Flexible, practical, and low-maintenance — our standard choice for everyday use.</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>It resists dents and creases, cleans easily, and allows steady airflow without glare or shine. A reliable, all-purpose option that suits most homes and climates.</p>"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 30,
+  "presets": [
+    {
+      "name": "Select Screen"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,196 @@
+{%- comment -%}
+  Door configurator: single-image preview (no slider/thumbnails).
+
+  This is intentionally separate from `snippets/product-media.liquid` so other templates are unaffected.
+{%- endcomment -%}
+
+{%- if product -%}
+{%- liquid
+  assign config_door_metafield = product.metafields.custom.config_door_image
+  assign single_door_image_url = ''
+  assign double_door_image_url = ''
+
+  if config_door_metafield != blank
+    if config_door_metafield.type contains 'list'
+      for door_image in config_door_metafield.value
+        assign door_image_src = door_image | image_url: width: 1600
+        if door_image_src == blank
+          assign door_image_src = door_image.value | image_url: width: 1600
+        endif
+
+        if forloop.index == 1
+          assign single_door_image_url = door_image_src
+        elsif forloop.index == 2
+          assign double_door_image_url = door_image_src
+        endif
+      endfor
+    else
+      assign single_door_image_url = config_door_metafield | image_url: width: 1600
+      if single_door_image_url == blank
+        assign single_door_image_url = config_door_metafield.value | image_url: width: 1600
+      endif
+    endif
+  endif
+
+  if double_door_image_url == blank
+    assign double_door_image_url = single_door_image_url
+  endif
+-%}
+  <div
+    class="door-config-media"
+    id="door-config-media"
+    data-door-config-media
+    data-single-door-image="{{ single_door_image_url }}"
+    data-double-door-image="{{ double_door_image_url }}"
+  >
+    <div class="door-config-media__stage" aria-label="Door preview image">
+      <div class="door-preview-layout" data-door-preview-layout>
+        <img
+          id="door-preview-frame"
+          src="https://cdn.shopify.com/s/files/1/0784/9059/9679/files/Untitled_7.webp?v=1777024763"
+          class="frame-img"
+          alt=""
+          loading="eager"
+          decoding="async"
+        >
+        <div class="door-preview-transom">
+          <img id="door-preview-transom-1" class="door-preview-img door-preview-img--fill" alt="" loading="lazy" decoding="async" hidden>
+        </div>
+        <div class="door-preview-bottom">
+          <div class="door-preview-sidelight door-preview-sidelight--left">
+            <img id="door-preview-sidelight-left" class="door-preview-img" alt="" loading="lazy" decoding="async" hidden>
+          </div>
+
+          <div class="door-preview-doorarea" id="door-preview-doorarea">
+            
+
+            <div class="door-preview-doors">
+              <img
+                id="door-preview-door-1"
+                class="door-preview-img door-preview-img--fill"
+                alt="{{ product.title | escape }}"
+                {% if single_door_image_url != blank %}
+                  src="{{ single_door_image_url }}"
+                {% endif %}
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              >
+            </div>
+
+            {% comment %} <div class="door-preview-wood d-none">
+              <img id="door-preview-wood-1" class="door-preview-img door-preview-img--fill" alt="" loading="lazy" decoding="async" hidden>
+              {% comment %} <img id="door-preview-wood-2" class="door-preview-img door-preview-img--fill" alt="" loading="lazy" decoding="async" hidden> {% endcomment %}
+            </div> {% endcomment %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{%- endif -%}
+
+<script>
+  (function () {
+    if (window.__doorPreviewConfigModeAttached) return;
+    window.__doorPreviewConfigModeAttached = true;
+    var mediaRoot = document.getElementById("door-config-media");
+    var SINGLE_DOOR_IMAGE = mediaRoot ? String(mediaRoot.getAttribute("data-single-door-image") || "").trim() : "";
+    var DOUBLE_DOOR_IMAGE = mediaRoot ? String(mediaRoot.getAttribute("data-double-door-image") || "").trim() : "";
+
+    var PREVIEW_CONFIG_SINGLE = {
+      "door-only": {
+        door: SINGLE_DOOR_IMAGE
+      }
+    };
+
+    var PREVIEW_CONFIG_DOUBLE = {
+      "door-only": {
+        door: DOUBLE_DOOR_IMAGE || SINGLE_DOOR_IMAGE
+      }
+    };
+
+    function getDoorUnitSelection() {
+      try {
+        var root = document.getElementById("door-configurator-options") || document.getElementById("door-configurator") || document;
+        if (!root) return "single_door";
+
+        var checked = root.querySelector('input[type="radio"][data-option-id="door_unit_design"]:checked');
+        if (checked && checked.value) return String(checked.value).trim();
+
+        var sel = root.querySelector('select[data-option-id="door_unit_design"]');
+        if (sel && sel.value) return String(sel.value).trim();
+      } catch (e) {}
+      return "single_door";
+    }
+
+    function showDoorImage(imgEl, src) {
+      if (!imgEl || !src) return;
+      imgEl.hidden = false;
+      imgEl.removeAttribute("hidden");
+      if (imgEl.getAttribute("src") !== src) {
+        imgEl.setAttribute("src", src);
+      }
+    }
+
+    function hideLayer(imgEl) {
+      if (!imgEl) return;
+      imgEl.hidden = true;
+      imgEl.removeAttribute("src");
+    }
+
+    function updatePreviewFromConfig() {
+      var media = document.getElementById("door-config-media");
+      if (!media) return;
+
+      var frameEl = document.getElementById("door-preview-frame");
+      var door1 = document.getElementById("door-preview-door-1");
+      var door2 = document.getElementById("door-preview-door-2");
+      var transom1 = document.getElementById("door-preview-transom-1");
+      var transom2 = document.getElementById("door-preview-transom-2");
+      var leftImg = document.getElementById("door-preview-sidelight-left");
+
+      var doorUnit = getDoorUnitSelection();
+      var doorCount = (doorUnit === "double_door") ? 2 : 1;
+      var cfg = (doorCount === 2 ? PREVIEW_CONFIG_DOUBLE : PREVIEW_CONFIG_SINGLE)["door-only"];
+
+      try { media.setAttribute("data-door-count", String(doorCount)); } catch (eAttr) {}
+      if (door2) door2.hidden = doorCount !== 2;
+
+      if (door1 && cfg.door) showDoorImage(door1, cfg.door);
+      if (door2 && cfg.door) showDoorImage(door2, cfg.door);
+
+      // Keep only single/double door preview visible.
+      hideLayer(frameEl);
+      hideLayer(leftImg);
+      hideLayer(transom1);
+      hideLayer(transom2);
+    }
+
+    function bind() {
+      document.addEventListener("change", function (e) {
+        var t = e && e.target;
+        if (!t || !t.getAttribute) return;
+        if (String(t.getAttribute("data-option-id") || "") === "door_unit_design") {
+          updatePreviewFromConfig();
+        }
+      }, true);
+
+      document.addEventListener("click", function (e) {
+        var t = e && e.target;
+        if (!t) return;
+        var inp = (t.matches && t.matches('input[data-option-id]')) ? t : (t.closest ? t.closest('input[data-option-id]') : null);
+        if (!inp) return;
+        if (String(inp.getAttribute("data-option-id") || "") === "door_unit_design") {
+          setTimeout(updatePreviewFromConfig, 0);
+        }
+      }, true);
+
+      updatePreviewFromConfig();
+    }
+
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+    else bind();
+  })();
+</script>

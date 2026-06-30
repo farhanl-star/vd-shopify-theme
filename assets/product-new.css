@@ -1,0 +1,465 @@
+.template-product-config .m-main-product--media,.template-product-config .m-product-form--wrapper{display:none !important;}
+
+
+/* single product page  */
+
+body.template-product-config,body.template-product-config .m-main-product{background:var(--greysColor) !important}
+.template-product-config .m-section-header:has(m-header){display:none !important}
+.template-product-config .shopify-section.shopify-section-group-footer-group.custom-liquid{display:none !important}
+.template-product-config .shopify-section.shopify-section-group-footer-group{display:none !important}
+.template-product-config{padding-bottom: 0 !important; }
+.template-product-config .product-block-group.product-block-group--title .m-product-wishlist{display:none !important}
+
+.template-product-config .main-product__block .product-block-group--title{padding:0;}
+
+/* common-check-options */
+.common-check-options{display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;}
+.common-check-options .door-setup-option{display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+.common-check-options .common-check-option-label{font-weight: 500; font-size: 16px; line-height: 135%; letter-spacing: 0;color:var(--sootBlackColor);padding:0;display:block}
+.common-check-options .common-check-option--selected .common-check-option-label{font-weight: 600;}
+.common-check-options .common-check-option-desc{display:block}
+.common-check-options .common-check-option--selected .common-check-option-desc{color:var(--primaryColor)}
+.common-check-options .common-check-option{position: relative; display: block; flex-direction: column; align-items: start; justify-content:center; border: 0px solid var(--secondaryColor); border-radius: 4px; background: transparent; cursor: pointer; padding:8px 13px; margin-bottom:0; transition:0.1s linear; box-shadow:0px 0px 0px 1px var(--secondaryColor);outline:0;}
+
+/* common-check-option:hover */
+.common-check-options .common-check-option:hover{ background:var(--secondary100Color); }
+
+.common-check-options .common-check-option--selected,
+.common-check-options .common-check-option--selected:hover,
+.common-check-options .common-check-option--selected:focus,
+.common-check-options .common-check-option--selected:focus-visible
+{ box-shadow:0px 0px 0px 2px  var(--primaryColor); background:var(--secondary200Color);}
+
+
+/* select-wood-options */
+.common-check-options.select-wood-options,
+.common-check-options.select-screen-options,
+.door-section.door-option-wrap[data-option-id="screen_type"] .common-check-options,
+.common-check-options.grid-4{grid-template-columns: 1fr 1fr 1fr 1fr;}
+
+.common-check-options.grid-2{grid-template-columns: 1fr 1fr;}
+
+
+
+/* common-check-option-image hover  */
+
+
+/* Base for items with image */
+.common-check-options .common-check-option:has(.common-check-option-image){padding: 0; display: flex; flex-direction: column; justify-content: start; overflow:hidden;}
+.common-check-options .common-check-option:has(.common-check-option-image) .common-check-option-text{padding: 8px 12px; background: transparent; transition: 0.1s linear; height: 100%; width: 100%;}
+.common-check-options .common-check-option:has(.common-check-option-image) .common-check-option-text span{display: block; }
+
+/* Hover */
+.common-check-options .common-check-option:has(.common-check-option-image):hover{background: transparent; }
+.common-check-options .common-check-option:has(.common-check-option-image):hover .common-check-option-text{background: var(--secondary100Color); }
+
+
+/* Selected (with and without hover combined) */
+.common-check-options .common-check-option.common-check-option--selected:has(.common-check-option-image){box-shadow:0px 0px 0px 2px var(--secondary500Color); background: transparent; }
+.common-check-options .common-check-option.common-check-option--selected:has(.common-check-option-image) .common-check-option-text{background: var(--secondary200Color); }
+
+/* Image */
+.common-check-options .common-check-option .common-check-option-image{height: auto; width: 100%; object-fit: contain; }
+
+
+
+/* door-pdp-topbar-section */
+
+.door-option-wrap .door-option-wrap:has(+ .door-option-wrap) .common-check-options{margin-bottom:24px !important;}
+
+.common-check-options .common-check-option.sidelight-style-option:has(.common-check-option-image){padding-top:8px;}
+.common-check-options .common-check-option.sidelight-style-option:has(.common-check-option-image) .common-check-option-text{margin-top:8px;}
+.common-check-options .common-check-option.sidelight-style-option .common-check-option-image{max-height:320px;}
+.common-check-options:has(.common-check-option.sidelight-style-option){grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;}
+
+.common-check-options .common-check-option.sidelight-style-option .common-check-option-label{font-weight:600;text-align:center}
+
+/* transom-style-option */
+.common-check-options .common-check-option.transom-style-option:has(.common-check-option-image){padding-top:8px;}
+.common-check-options .common-check-option.transom-style-option:has(.common-check-option-image) .common-check-option-text{margin-top:8px;}
+.common-check-options .common-check-option.transom-style-option .common-check-option-image{max-height:60px;padding-inline:8px;}
+.common-check-options:has(.common-check-option.transom-style-option){grid-template-columns: 1fr 1fr 1fr;}
+
+.common-check-options .common-check-option.transom-style-option .common-check-option-label{font-weight:600;text-align:center}
+
+
+/* door-pdp-topbar-section */
+.door-pdp-topbar-section{border-bottom: 1px solid var(--woodDustColor);margin-bottom: 50px;position:sticky;top:0;z-index:1000; background:var(--greysColor)}
+.door-pdp-topbar{background:transparent;padding-block:17px;display: grid;grid-template-columns: 110px 1fr auto;align-items: center;gap: 10px;}
+.door-pdp-topbar .door-pdp-back{font-weight: 500; font-size: 18px; line-height: 18px; letter-spacing: 0;display:flex;align-items:center;gap:8px;}
+.door-pdp-topbar .door-pdp-back span{text-box: trim-both cap alphabetic;}
+    
+.door-pdp-title{text-align:center}
+.door-pdp-price{font-weight: 700; font-size: 24px; line-height: 140%; letter-spacing: 0;text-align:end}
+.door-pdp-price small{font-weight: 450; font-size: 18px; line-height: 140%; letter-spacing: 0;}
+.door-section.door-option-wrap{margin-bottom:80px;}
+/* .door-section.door-option-wrap:last-of-type{margin-bottom:0;} */
+
+.door-option-header-row{margin-bottom:16px;}
+.door-dynamic-options .door-section-title.door-option-title{font-weight: 400; font-size: 32px; line-height: 135%; letter-spacing: 0;font-family:var(--font-stack-header);display: flex;align-items: center;justify-content: space-between;gap: 10px;}
+.door-option-header-row .door-option-desc{margin-top:16px;}
+.door-unit-design-group{margin-bottom:80px;}
+.door-unit-design-group .door-section.door-option-wrap{margin-bottom:40px;}
+.door-dynamic-options .door-section-title.door-option-title .common-btn{font-family:var(--font-stack-body);font-weight:450 !important;}
+.door-dynamic-options .door-section-title.door-option-title .common-btn svg{min-width:16px;width:16px;height:16px;}
+
+
+
+.door-dynamic-options .door-section.door-option-wrap.door-option-accordion{margin-bottom:0;}
+.door-dynamic-options .door-section.door-option-wrap.door-option-accordion .door-option-header-row{margin-bottom:0;}
+/* .door-dynamic-options .door-section.door-option-wrap.door-option-accordion:not(:has(+ .door-option-accordion)){margin-bottom:80px} */
+.door-dynamic-options .door-option-accordion{padding: 0; overflow: hidden;border-top: 1px solid var(--woodDustColor);}
+.door-dynamic-options .door-option-accordion .door-accordion-header{padding-block:16px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: transparent; cursor: pointer;font-weight: 600; font-size: 16px; line-height: 150%; letter-spacing: 0;}
+.door-dynamic-options .door-option-accordion:not(:has(+ .door-option-accordion)){border-bottom: 1px solid var(--woodDustColor);}
+.door-dynamic-options .door-option-accordion .door-accordion-sign{font-size: 16px; line-height: 1;color:var(--secondary400Color)}
+.door-dynamic-options .door-option-accordion .door-accordion-body{display: none; padding: var(--door-spacing); border-radius: 0; background: transparent; padding-block:8px 46px;padding-inline:3px;}
+.door-dynamic-options .door-option-accordion .door-accordion-body--open{display: block; }
+.door-dynamic-options .door-option-accordion[data-option-id="sidelight_design"] .door-option-wrap[data-option-id="sidelight_location"] .common-check-options .common-check-option-image{height:114px;object-fit:contain;}
+
+
+
+
+/* measurement section */
+
+
+
+
+
+
+
+/* ════════════════════════════════════════════   ✧ ✦ ✧ ✦ CSS VERSION 2 ✦ ✧ ✦ ✧   ════════════════════════════════════════════ */
+
+#door-configurator{--door-border: 1px solid #e0e0e0; --door-radius: 8px; --door-spacing: 1.25rem; --door-label: var(--primaryColor); --door-focus: #2563eb; --door-bg: #f9fafb; --door-accent: #1e40af; }
+/* #door-configurator .door-section{background: var(--door-bg); border: var(--door-border); border-radius: var(--door-radius); padding: var(--door-spacing); margin-bottom: var(--door-spacing); } */
+
+/* Two-column layout: preview left, options right */
+.template-product-config .m-main-product--info{width:100%;}
+
+.template-product-config .door-configurator__grid{display: flex; gap:40px; align-items: start;padding-bottom:100px;}
+.template-product-config .door-configurator__media {flex:calc(44% - 20px) 0 0;max-width:calc(44% - 20px)}
+.template-product-config .door-configurator__panel {flex:calc(56% - 20px) 0 0}
+
+
+@media (min-width: 990px) {
+.template-product-config .door-configurator__media {position: sticky;top: 76px;height: fit-content;transform: none;}
+}
+@media (max-width: 989px) {
+
+.template-product-config .door-configurator__media {position: static;width:100%}
+.template-product-config .door-configurator__grid{flex-direction:column}
+}
+
+
+
+/* sidebar preview image css  */
+
+
+
+/* .door-preview-layout{display: flex; width: 100%; height: fit-content;grid-template-columns: 15% 70% 15%; grid-template-rows: auto 1fr;align-items: stretch; justify-content:center;align-items:center;flex-direction:column}
+.door-preview-bottom{display: flex; width: fit-content; height: fit-content;grid-template-columns: 15% 70% 15%; grid-template-rows: auto 1fr;align-items: stretch;}
+.door-preview-transom{grid-column: 1 / -1;width: auto; height: auto; }
+.door-preview-sidelight{width: auto; height: auto; display: flex; }
+.door-preview-doorarea{width: auto; height: auto; display: flex; }
+.door-preview-doors{width: auto; height: auto; display: flex; }
+.door-preview-img{width: auto; height: auto; object-fit: contain;display: block; }
+div#door-preview-doorarea img{height: -webkit-fill-available; }
+/* .door-preview-layout div{height: 80vh !important; max-height: 540px; } */
+/*.door-preview-transom{height: fit-content !important; display: flex; }
+.door-preview-sidelight:has(img:not([src])),
+.door-preview-sidelight:has(img[src=""]),
+.door-preview-sidelight:has(img[hidden]) {
+  display: none;
+}
+
+div.door-preview-transom{height: fit-content !important; display: flex; }
+img#door-preview-transom-1 {}
+.door-preview-transom img{height: fit-content !important;width: 100%;}
+
+.is-double-door .door-preview-doors img,.is-double-door .door-preview-transom img{width:50%;} */
+.frame-img{position:absolute;top:0;left:0;width:100%;object-fit:contain;z-index:1;}
+
+body:has(.common-check-option.common-check-option--selected[data-choice-value="pre_hung_on_jamb"]) .door-preview-layout:after{display:block}
+.door-preview-layout{position:relative;max-height:80vh;height:80vh;}
+.door-preview-layout img{position:absolute;top:0;left:0;width: 100%;height: 100%;object-fit: contain;object-position: top;}
+
+
+
+
+
+.door-inserts-additional-options.screen-and-storm-inserts .door-accordion-header.door-inserts-additional-options-title{flex-direction:row-reverse;justify-content:start}
+.door-inserts-additional-options.screen-and-storm-inserts .door-option-accordion{border:0;}
+.door-inserts-additional-options.screen-and-storm-inserts .door-accordion-header{padding-top:32px;border:0;}
+.door-inserts-additional-options.screen-and-storm-inserts .door-accordion-header.door-inserts-additional-options-title .door-option-header-row{margin:0;}
+
+
+/* measure */
+
+/* #door-configurator .door-input-select { width: auto; min-width: 5rem; padding: 8px 8px; border: 1px solid var(--secondary400Color); border-radius: 8px; font-size: 16px; background: #fff; margin-bottom: 0; color: var(--primaryColor); -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c4a574' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; padding-right: 1.75rem; } */
+/* #door-configurator select,
+#door-configurator input[type="number"],
+#door-configurator input[type="email"] { width: 100%; padding: 0.6rem 0.75rem; border: var(--door-border); border-radius: 6px; font-size: 1rem; background: #fff; margin-bottom: 1rem; box-sizing: border-box; } */
+#door-configurator select:focus,
+#door-configurator input:focus { outline: none;  box-shadow: none; }
+#door-configurator .door-size-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+
+
+/* Measurements section (header + tabs like landing reference) */
+
+/* #door-configurator .door-measurement-type-section.door-section { background: #f3f4f6; border: 1px solid #e5e7eb; margin-bottom: 0; border-radius: var(--door-radius) var(--door-radius) 0 0; } */
+/* #door-configurator .door-measurement-type-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+#door-configurator .door-measurement-type-heading { margin: 0; font-family: Georgia, 'Times New Roman', Times, serif; font-size: 1.65rem; font-weight: 600; color: #111827; line-height: 1.2; } */
+/* #door-configurator .door-measurement-help-btn { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 0.95rem; border-radius: 999px; border: 1px solid rgba(0, 0, 0, 0.12); background: #9a7b33; color: #fff; font-weight: 600; font-size: 0.8rem; cursor: pointer; white-space: nowrap; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+#door-configurator .door-measurement-help-btn:hover { filter: brightness(0.97); } */
+/* #door-configurator .door-measurement-help-icon { width: 1.1rem; height: 1.1rem; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.75); display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; line-height: 1; font-style: italic; font-family: Georgia, serif; } */
+#door-configurator .door-measurement-type-eyebrow { display:none}
+#door-configurator .door-measure-tabs .door-measure-tab.door-hidden { display: none !important; }
+/* #door-configurator .door-measurement-type-prompt { margin-bottom: 1.1rem; } */
+/* #door-configurator .door-measurement-type-question { margin: 0 0 0.35rem 0; font-size: 1rem; color: #111827; line-height: 1.35; } */
+/* #door-configurator .door-measurement-type-sub { margin: 0; font-size: 0.92rem; color: #4b5563; line-height: 1.4; } */
+/* #door-configurator .door-measure-tabs .door-measure-tab.common-check-option { display: flex; flex: 1 1 180px; padding: 0.85rem 1rem; border: 1px solid #dcbfa0; border-radius: 8px; background: #f3f4f6; cursor: pointer; text-align: left; box-shadow: none; align-items: flex-start; justify-content: flex-start; } */
+/* #door-configurator .door-measure-tabs .door-measure-tab.common-check-option--selected,
+#door-configurator .door-measure-tabs .door-measure-tab.common-check-option.door-radio-option--selected { background: #ded5c0; border: 2px solid var(--primaryColor); } */
+/* #door-configurator .door-measure-tabs .common-check-option-label { display: block; font-weight: 700; color: #111827; font-size: 0.98rem; text-align: left; }
+#door-configurator .door-measure-tabs .common-check-option-text { align-items: flex-start; text-align: left; } */
+/* #door-configurator .door-measurement-panel-intro { margin: 0 0 1.25rem 0; font-size: 1rem; font-weight: 700; color: #111827; line-height: 1.35; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } */
+#door-configurator .door-measure-tabs{margin-bottom:40px;}
+#door-configurator .door-measurement-type-prompt.door-hidden,
+#door-configurator .door-measure-tabs.door-hidden { display: none !important; }
+#door-configurator .door-measurement-default-panels.door-hidden,
+#door-configurator .door-measurement-slab-sidelight-panels.door-hidden,
+#door-configurator .door-measurement-slab-transom-panels.door-hidden,
+#door-configurator .door-measurement-slab-combo-panels.door-hidden,
+#door-configurator .door-jamb-sidelight-addon.door-hidden,
+#door-configurator .door-jamb-transom-addon.door-hidden { display: none !important; }
+
+/* #door-configurator .door-measure-slab-sidelight-heading { margin: 0 0 1rem 0; font-size: 1rem; font-weight: 700; color: #111827; line-height: 1.35; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } */
+#door-configurator .door-measure-slab-transom-section { margin-top: 1.35rem; }
+#door-configurator .door-measure-slab-transom-section:first-child { margin-top: 0; }
+/* #door-configurator .door-measure-slab-transom-heading { margin: 0 0 1rem 0; font-size: 1rem; font-weight: 700; color: #111827; line-height: 1.35; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } */
+#door-configurator .door-measure-slab-combo-section { margin-top: 58px; }
+#door-configurator .door-measure-slab-combo-section:first-child { margin-top: 0; }
+/* #door-configurator .door-measure-slab-combo-heading { margin: 0 0 1rem 0; font-size: 1rem; font-weight: 700; color: #111827; line-height: 1.35; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } */
+
+/* Dimension rows embedded in measurement_type (single .door-option-wrap) */
+/* #door-configurator .door-measurement-type-section.door-section:has(.door-measurement-embedded-dimensions) { border-radius: var(--door-radius); margin-bottom: var(--door-spacing); } */
+/* #door-configurator .door-measurement-embedded-dimensions { border-top: 1px solid #e5e7eb; margin: 0.35rem 0 0 0; padding-top: 0;} */
+/* Until a .door-measure-tab is chosen, JS keeps .door-hidden on this wrapper — it had no display rule before. */
+#door-configurator .door-measurement-embedded-dimensions.door-hidden { display: none !important; }
+/* #door-configurator .door-measurement-embedded-dimensions .door-measure-dimension-row:last-child { border-bottom: 0; padding-bottom: 0.35rem; } */
+/* Static inch rows: hidden while parent block/panel is hidden; shown after a measurement tab is selected. */
+#door-configurator .door-measurement-embedded-dimensions.door-hidden .door-measure-dimension-row.door-measure-static-row,
+#door-configurator .door-measurement-default-panels.door-hidden .door-measure-dimension-row.door-measure-static-row,
+#door-configurator .door-measurement-slab-sidelight-panels.door-hidden .door-measure-dimension-row.door-measure-static-row,
+#door-configurator .door-measurement-slab-transom-panels.door-hidden .door-measure-dimension-row.door-measure-static-row,
+#door-configurator .door-measurement-slab-combo-panels.door-hidden .door-measure-dimension-row.door-measure-static-row,
+#door-configurator .door-measurement-static-panel.door-hidden .door-measure-dimension-row.door-measure-static-row,
+#door-configurator .door-measure-dimension-row.door-measure-static-row.door-hidden,
+#door-configurator .door-measurement-panel-intro.door-hidden{
+  display: none !important;
+}
+#door-configurator .door-jamb-sidelight-addon.door-hidden, 
+#door-configurator .door-rough-panel-jamb-sidelight.door-hidden,
+#door-configurator .door-rough-panel-default.door-hidden { display: none !important; }
+
+
+/* Add the measurements for your Door */
+#door-configurator .door-measurement-static-panel{display:flex;gap:0px;flex-direction:column}
+#door-configurator .door-measure-dimension-row { display: grid; grid-template-columns: minmax(150px, 150px) 1fr; gap: 24px; align-items: center; padding: 0rem 0;margin-top:24px}
+#door-configurator .door-measurement-static-panel .door-measure-dimension-row:first-of-type{margin-top:0;}
+#door-configurator .door-measure-svg { width: 100%; max-width: 100%; height: 190px; display: block;object-fit:contain;}
+#door-configurator .door-measure-dimension-title { margin: 0; font-size: 16px; font-weight: 600; color: var(--sootBlackColor);font-family:var(--font-stack-body)} 
+#door-configurator .door-measure-dimension-hint { margin-bottom:8px;} 
+#door-configurator .door-measure-dimension-inputs-row select.door-input-select:not(.door-native-select--enhanced) { -webkit-appearance: none; appearance: none; cursor: pointer; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8' fill='none'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%23806730' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 34px; border: 1px solid var(--secondary400Color); border-radius: 4px; margin-bottom: 0; width: auto; min-width: 5rem; padding: 8px 8px; font-size: 16px; color: var(--primaryColor);}
+
+
+
+#door-configurator .door-measure-dimension-inputs-row { display: flex; flex-wrap: wrap; gap: 8px; } 
+#door-configurator .door-unit-label { font-size: 16px; color: var(--sootBlackColor); }
+#door-configurator .door-jamb-sidelight-rough-heading { margin: 58px 0 24px 0; }
+
+#door-configurator .door-measure-slab-sidelight-section { margin-top: 58px; }
+#door-configurator .door-measure-slab-sidelight-section:first-child { margin-top: 0; }
+
+
+#door-configurator .door-measurement-static-panels { display: block; }
+#door-configurator .door-measurement-static-panel.door-hidden { display: none; }
+
+#door-configurator .door-measure-dimension-section.door-section { background: #f3f4f6; border: 1px solid #e5e7eb; border-top: none; border-radius: 0; margin-bottom: 0; padding-top: 0.35rem; padding-bottom: 0.35rem; }
+#door-configurator .door-measurement-type-section + .door-measure-dimension-section.door-section { border-top: 1px solid #e5e7eb; }
+#door-configurator-options > .door-option-wrap.door-measure-dimension-section:last-child { border-radius: 0 0 var(--door-radius) var(--door-radius); margin-bottom: var(--door-spacing); padding-bottom: var(--door-spacing); }
+
+/* box margin */
+#door-configurator .door-measure-dimension-section .door-measure-dimension-row:last-child { border-bottom: 0; padding-bottom: 0.25rem; }
+#door-configurator .door-measure-dimension-figure { display: flex; align-items: center; justify-content: center; min-height: 7rem; }
+#door-configurator .door-jamb-transom-addon,
+#door-configurator .door-jamb-sidelight-addon { margin-top: 58px; padding-top: 0;}
+
+
+
+
+/* common-icon-accordion */
+.door-dynamic-options .door-option-accordion.common-icon-accordion{border:0 !important;margin-bottom:80px;overflow:visible}
+.door-dynamic-options .door-option-accordion.common-icon-accordion .door-accordion-header{padding:0;flex-direction:row-reverse;font-weight: 400;font-size: 32px;line-height: 135%;letter-spacing: 0;justify-content:start}
+.door-dynamic-options .door-option-accordion.common-icon-accordion .door-option-header-row{margin-bottom:0;}
+.door-dynamic-options .door-option-accordion.common-icon-accordion .door-accordion-body{padding-top:24px;padding-bottom:5px}
+
+.door-section.door-option-wrap.additional-options-card{display:flex;align-items:start;gap:40px;margin-bottom:56px;}
+.door-section.door-option-wrap.additional-options-card:last-of-type{margin-bottom:0px;}
+.door-section.door-option-wrap.additional-options-card img{width:242px;object-fit:contain;height:auto}
+.door-section.door-option-wrap.additional-options-card .door-section-title.door-option-title{font-weight: 700; font-size: 18px; line-height: 150%; letter-spacing: 0;margin-bottom:8px;font-family:var(--font-stack-body)}
+.door-section.door-option-wrap.additional-options-card .door-option-desc{font-weight: 400; font-size: 16px; line-height: 135%; letter-spacing: 0;margin-block:0 24px;}
+
+.door-section select,.common-select{ -webkit-appearance: none; appearance: none; cursor: pointer; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8' fill='none'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%23806730' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 34px; border: 1px solid var(--secondary400Color); border-radius: 4px; margin-bottom: 0; width: auto; min-width: 5rem; padding: 8px 24px 8px 8px; font-size: 16px; color: var(--primaryColor);background-size: 12px 12px;}
+.door-section.door-option-wrap.additional-options-card select{max-width:160px;}
+
+.door-section.door-option-wrap.hardware-options-card .door-section-title.door-option-title{display:none;}
+.door-section.door-option-wrap.hardware-options-card .door-option-desc{margin-block:0 24px;}
+
+
+
+
+
+
+
+
+
+
+/* ------------------------- footer ------------------------------- */
+/* #door-configurator .door-price-box{position:sticky;bottom:40px} */
+#door-configurator .door-option-wrap.door-hidden { display: none; }
+#door-configurator .door-price-box { background: var(--woodDustColor); color: var(--sootBlackColor); border-radius: 8px; padding: 16px; margin: 80px 0 32px 0; text-align: center; }
+#door-configurator .door-price-box .door-price-label {font-weight: 700; font-size: 16px; line-height: 150%; letter-spacing: 0;color:var(--woodDust500Color)} 
+#door-configurator #door-estimated-price {font-weight: 700; font-size: 32px; line-height: 135%; letter-spacing: 0;} 
+
+
+#door-configurator .door-save-config { background: var(--greys100Color);border-radius:8px;padding:24px;}
+#door-configurator .door-actions { display: flex; flex-wrap: wrap;gap:24px;}
+#door-configurator .door-actions .door-btn-checkout.common-btn{display:none !important}
+#door-configurator .door-save-config .door-section-title{font-weight: 600; font-size: 20px; line-height: 150%; letter-spacing: 0;color:var(--woodDust500Color);margin-bottom:16px;}
+#door-configurator .door-save-config  .door-customer-email-logged-in{color:var(--sootBlackColor);margin-bottom:16px;}
+#door-configurator .door-save-config  .door-customer-email-logged-in strong{font-weight:700;margin-bottom:16px;}
+#door-configurator .door-save-config  label{font-weight: 600; font-size: 18px; line-height: 150%; letter-spacing: 0;color:var(--sootBlackColor);margin-bottom:4px;display:block;}
+#door-configurator .door-save-config  select{border: 1px solid var(--primaryColor);font-weight: 400; font-size: 18px; line-height: 150%; letter-spacing: 0;color:var(--secondary400Color);padding:10px 8px;border-radius:4px;width:100%}
+
+#door-configurator .door-actions .millwork-form {margin-top:0}
+
+/* config-button-div */
+.config-button-div{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+/* .config-button-div .common-btn{flex:1 0 0;} */
+.config-button-div .common-btn{flex:1 0 0;background:var(--woodDust400Color) !important;border-color:var(--woodDust400Color) !important;}
+.config-button-div .common-btn:hover{background:var(--woodDust500Color) !important;border-color:var(--woodDust500Color) !important;color:var(--silkWhiteColor) !important}
+
+.config-button-div .common-btn.btn-bordered{border-color:var(--woodDust400Color)!important;color:var(--woodDust400Color) !important;background:transparent !important}
+.config-button-div .common-btn.btn-bordered:hover{background:var(--woodDust500Color) !important;border-color:var(--woodDust500Color)!important;color:var(--silkWhiteColor) !important}
+
+
+/* extra css check after delete */
+
+#door-configurator .door-btn-checkout { text-align:center !important;padding:16px !important;width:100% !important;flex:1;} 
+#door-configurator .door-btn-checkout:hover { background: #047857; } 
+
+#door-configurator #door-save-config-message { margin-top: 0.75rem; padding: 0.6rem; border-radius: 6px; font-size: 0.9rem; }
+#door-configurator #door-save-folder { margin-bottom: 0.5rem; }
+#door-configurator #door-new-folder-name.door-visible { display: block !important; }
+#door-configurator .door-saved-in-collection { font-size: 0.85rem; color: #059669; margin: 0.5rem 0 0 0; }
+#door-configurator #door-save-config-message:not(:empty) {background: #ecfdf5;color: #065f46;border: 1px solid #a7f3d0;}
+
+
+#door-configurator .door-add-to-cart-wrap { margin-bottom: var(--door-spacing);}
+#door-configurator .door-inline-msg { margin-top: 0.5rem; font-size: 0.9rem; } 
+#door-configurator .door-configurator__panel { min-width: 0; overflow: visible; }
+
+
+
+/* door-sdl-profile-nested-wrap */
+.door-section.door-option-wrap.door-sdl-profile-nested-wrap{margin-block:32px 0;}
+.door-section.door-option-wrap.door-sdl-profile-nested-wrap .door-option-desc.door-sdl-profile-desc{font-size:18px;font-weight:600}
+.door-section.door-option-wrap.door-sdl-profile-nested-wrap .door-option-accordion .door-accordion-body{padding-bottom:0;}
+
+@media (max-width:991.98px){
+  .door-preview-layout img{position:static;}
+  .door-preview-layout{max-height: 100%;height: auto;}
+  .door-dynamic-options .door-section-title.door-option-title .common-btn{font-size:0 !important; gap:0 !important;}
+
+  .door-pdp-topbar{grid-template-columns: 53px 1fr;}
+  .door-pdp-topbar-section{margin-bottom:18px;position:sticky;top:0;}
+  .door-pdp-topbar{padding-block:8px;}
+  .door-pdp-title{display:none;}
+  .door-pdp-topbar-section > .container{padding-inline:16px;}
+  .door-pdp-price{font-size:18px;}
+  .door-pdp-price small{font-size:14px;}
+  .door-pdp-topbar .door-pdp-back{font-size:14px;line-height:14px;gap:4px;}
+  .door-pdp-topbar .door-pdp-back svg{width:16px;height:16px;}
+
+
+  .template-product-config .door-configurator__media{flex:calc(100% - 0px) 0 0;max-width:calc(100% - 0px);transition:0.2s linear;}
+  .template-product-config .door-configurator__panel{flex:calc(100% - 0px) 0 0}
+
+  body.template-product-config .door-preview-layout img{transition:0.2s linear;}
+  body.scrolled.template-product-config .door-preview-layout img{height:120px;width:120px;transition:0.2s linear;}
+
+  body.scrolled.template-product-config .m-main-product--info{transform:none !important;animation:none;opacity:1 !important;}
+  body.scrolled.template-product-config .door-preview-layout{max-height: 120px;height: 120px;transition:0.2s linear}
+  body.scrolled.template-product-config .door-configurator__media{flex:1 0 0;position:sticky;top:41px;max-width:calc(100% + 40px);width:calc(100% + 40px);height:fit-content; transition:0.2s linear;z-index:1000;opacity:1;background:var(--greysColor);padding-block:14px;border-bottom: 1px solid var(--woodDustColor);padding-inline:20px;margin-left:-20px;}
+  body.template-product-config  .door-section.door-product-name{transition:0.2s linear;}
+  body.scrolled.template-product-config .door-section.door-product-name{width:calc(100% - 176px);position:fixed;top:55px;right:20px; transition:0.2s linear;height:120px;z-index:1000;opacity:1;display:flex;align-items:center;animation:productNameAnimation 0.2s linear both}
+  body.scrolled.template-product-config .door-section.door-product-name .p-xl{font-size:18px;margin:0 !important;}
+
+  body.scrolled.template-product-config .door-configurator__panel{padding-top:18px;}
+  .door-dynamic-options .door-section-title.door-option-title{font-size: 24px; font-weight: 400; line-height: 135%;}
+  
+  /* .common-check-options */
+  .common-check-options .common-check-option:has(.common-check-option-image) .common-check-option-text{padding:8px}
+  .common-check-options .common-check-option:has(.common-check-option-image) .common-check-option-text span{font-size: 14px; font-weight: 400; line-height: 125%;}
+  .common-check-options .common-check-option:has(.common-check-option-desc) .common-check-option-text .common-check-option-label{font-weight: 500;line-height:135%;}
+  .common-check-options .common-check-option-label,.common-check-options .common-check-option--selected .common-check-option-label{font-weight:500}
+  .common-check-options .common-check-option{padding:8px 16px}
+  .door-section.door-option-wrap[data-option-id="door_unit_design"] .common-check-options{grid-template-columns: 1fr 1fr !important;}
+  .door-unit-design-group .door-section.door-option-wrap{margin-bottom:32px;}
+  .door-unit-design-group,.door-section.door-option-wrap,.door-dynamic-options .door-option-accordion.common-icon-accordion{margin-bottom:64px;}
+  .common-check-options.select-wood-options, .common-check-options.select-screen-options, .door-section.door-option-wrap[data-option-id=screen_type] .common-check-options, .common-check-options.grid-4{grid-template-columns: 1fr 1fr 1fr;}
+  .common-check-options .common-check-option img.common-check-option-image{height:140px;min-height:140px;object-fit:cover}
+
+  /* .common-check-options:has(.common-check-option.sidelight-style-option) */
+
+  .common-check-options:has(.common-check-option.sidelight-style-option){grid-template-columns: 1fr 1fr 1fr 1fr;}
+  .common-check-options .common-check-option.sidelight-style-option .common-check-option-image{object-fit:contain;height: 200px;min-height: 200px;}
+
+  /* .common-check-options:has(.common-check-option.transom-style-option) */
+  .common-check-options:has(.common-check-option.transom-style-option){grid-template-columns: 1fr 1fr;}
+  .common-check-options:has(.common-check-option.transom-style-option) .common-check-option-image{object-fit:contain;height: 60px;min-height: 60px;}
+
+  /* data-option-id="pre_hung" */
+  .door-section.door-option-wrap[data-option-id="pre_hung"] .common-check-options{grid-template-columns: 1fr;}
+  .door-section.door-option-wrap[data-option-id="pre_hung"] .common-check-options .common-check-option:has(.common-check-option-image){flex-direction:row;  }
+  .door-section.door-option-wrap[data-option-id="pre_hung"] .common-check-options .common-check-option .common-check-option-image{width:160px;}
+  .door-section.door-option-wrap[data-option-id="pre_hung"] .common-check-options .common-check-option:has(.common-check-option-image) .common-check-option-text{height:100%}
+  .door-section.door-option-wrap[data-option-id="pre_hung"] .common-check-options .common-check-option:has(.common-check-option-image) .common-check-option-text .common-check-option-label{font-weight:600;}
+  .door-section.door-option-wrap[data-option-id="pre_hung"] .common-check-options .common-check-option:has(.common-check-option-image) .common-check-option-text span{color:var(--primaryColor)}
+  .door-section.door-option-wrap[data-option-id="pre_hung"] .common-check-options .common-check-option--selected:has(.common-check-option-image) span{color:var(--sootBlackColor) !important}
+  /* door-wood-exposure-cards */
+  .common-check-options.door-wood-exposure-cards{grid-template-columns: 1fr;}
+
+  #door-configurator .door-measure-tabs{grid-template-columns: 1fr 1fr;}
+  #door-configurator .door-measure-dimension-row{grid-template-columns: minmax(100px, 100px) 1fr;}
+  
+  .door-panel-profile-hero, .door-stile-rail-hero{flex-direction:column;align-items:start;}
+
+  .door-dynamic-options .door-option-accordion.common-icon-accordion .door-accordion-header{font-size:24px;}
+
+
+  .door-section.door-option-wrap.additional-options-card{flex-direction:column-reverse;gap:16px;}
+  .door-section.door-option-wrap.additional-options-card img{width:100%;}
+  .door-dynamic-options .door-section.door-option-wrap .door-option-accordion .door-accordion-body{padding-bottom:10px;}
+}
+@keyframes productNameAnimation {
+  0% {
+    top:140px;right:150px;
+  }
+  100%{
+    top:55px;right:16px;
+  }
+}
+
+

@@ -1,0 +1,72 @@
+<section class="trust-stats py-48">
+  <div class="container">
+    <div class="trust-stats__inner">
+      {% for block in section.blocks %}
+        <div class="trust-stats__item" {{ block.shopify_attributes }}>
+
+          <div class="trust-stats__icon">
+            {% if block.settings.icon %}
+              <img
+                src="{{ block.settings.icon | image_url: width: 120 }}"
+                alt="{{ block.settings.heading }}"
+                loading="lazy"
+              >
+            {% endif %}
+          </div>
+
+          <h3 class="trust-stats__heading">
+            {{ block.settings.heading }}
+          </h3>
+
+          <p class="trust-stats__text">
+            {{ block.settings.text }}
+          </p>
+
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust Stats",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon (optional)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Over 20,000 custom doors built"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Description",
+          "default": "35 years of independent craftsmanship"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust & Credibility Stats",
+      "blocks": [
+        { "type": "stat" },
+        { "type": "stat" },
+        { "type": "stat" }
+      ]
+    }
+  ]
+}
+{% endschema %}

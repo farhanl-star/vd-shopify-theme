@@ -1,0 +1,124 @@
+<section class="product-features py-80">
+  <div class="product-features__inner container">
+    <div class="m:flex m:flex-wrap row-gap-80">
+      <!-- LEFT: FEATURES -->
+      <div class="m:column m:w-full lg:m:w-6/12 column">
+        <div class="product-features__content">
+          <h5 class="product-features__title">Key Features</h5>
+
+          <dl class="product-features__list">
+
+              {% if product.metafields.custom.construction %}
+                  <div class="product-features__row">
+                    <dt>Construction</dt>
+                    <dd>{{ product.metafields.custom.construction }}</dd>
+                  </div>
+              {% endif %} 
+
+            
+                {% if product.metafields.custom.thickness %}
+                  <div class="product-features__row">
+                    <dt>Thickness</dt>
+                    <dd>{{ product.metafields.custom.thickness }}</dd>
+                  </div>
+              {% endif %}   
+            
+              {% if product.metafields.custom.wood_options %}
+                <div class="product-features__row">
+                  <dt>Wood Options</dt>
+                  <dd>{{ product.metafields.custom.wood_options }}</dd>
+                </div>
+              {% endif %}
+
+              {% if product.metafields.custom.lites %}
+
+                <div class="product-features__row">
+                  <dt>Lites</dt>
+                  <dd>{{ product.metafields.custom.lites }}</dd> 
+                </div>
+                {% endif %}
+
+                {% if product.metafields.custom.panels %}
+                  <div class="product-features__row">
+                      <dt>Panels</dt>
+                      <dd>{{ product.metafields.custom.panels }}</dd>
+                    </div>
+              {% endif %} 
+
+                
+                {% if product.metafields.custom.insert_options %}
+                  <div class="product-features__row">
+                    <dt>Insert Options</dt>
+                    <dd>{{ product.metafields.custom.insert_options }}</dd>
+                  </div>
+                {% endif %} 
+              
+              {% if product.metafields.custom.screen_materials %}
+      
+                <div class="product-features__row">
+                  <dt>Screen Materials</dt>
+                  <dd>{{ product.metafields.custom.screen_materials }}</dd>        
+                </div>
+              {% endif %}
+
+              {% if product.metafields.custom.glass_options %}
+                  <div class="product-features__row">
+                    <dt>Glass Options</dt>
+                    <dd>{{ product.metafields.custom.glass_options }}</dd>
+                  </div>
+              {% endif %}
+
+            {% if product.metafields.custom.hardware_prep %}
+
+              <div class="product-features__row">
+                <dt>Hardware Prep</dt>
+                <dd>{{ product.metafields.custom.hardware_prep }}</dd>
+              </div>
+
+            {% endif %}   
+
+              {% if product.metafields.custom.finishing %}
+      
+                <div class="product-features__row">
+                <dt>Finishing</dt>
+                <dd>{{ product.metafields.custom.finishing }}</dd>
+
+                </div>
+              {% endif %}   
+
+
+                {% if product.metafields.custom.lead_time %}
+          
+                    <div class="product-features__row">
+                    <dt>Lead Time</dt>
+                    <dd>{{ product.metafields.custom.lead_time }}</dd>
+                
+                    </div>
+
+              {% endif %}   
+
+            {% if product.metafields.custom.usa_made %}
+                    <div class="product-features__row">
+                    <dt>USA Made</dt>
+                    <dd>{{ product.metafields.custom.usa_made }}</dd>
+
+                    </div>
+            {% endif %}   
+          </dl>
+        </div>
+      </div>
+      <!-- RIGHT: IMAGE -->
+      <div class="m:column m:w-full lg:m:w-6/12 column">
+        <div class="product-features__image">
+          {% if product.metafields.custom.features_image %}
+            <img width="300" height="300"
+            src="{{ product.metafields.custom.features_image | image_url: width: 300 }}"
+                alt="{{ product.title | escape }}"
+              loading="lazy"
+            >
+          {% endif %}
+        </div> 
+      </div>
+    </div>
+  </div>
+</section>

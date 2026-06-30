@@ -1,0 +1,149 @@
+
+<style>
+    .curated-skin-bundles {
+  padding: 50px 0;
+  background: #fef6f7;
+  text-align: center;
+}
+
+.bundles-grid {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.bundle-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  padding: 20px;
+  max-width: 350px;
+}
+
+.bundle-image {
+  position: relative;
+}
+
+.discount-badge {
+  background: #ff5678;
+  color: white;
+  font-weight: bold;
+  padding: 5px 10px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 5px;
+}
+
+.bundle-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.btn-black {
+  background: black;
+  color: white;
+}
+
+.btn-outline {
+  border: 1px solid black;
+  color: black;
+}
+
+</style>
+<section class="curated-skin-bundles">
+  <div class="container">
+      <h2 class="section-title">{{ section.settings.section_title }}</h2>
+    <p class="section-subtitle">{{ section.settings.section_subtitle }}</p>
+    
+    <div class="bundles-grid">
+      {% for block in section.blocks %}
+        <div class="bundle-card">
+            <div class="bundle-data">
+          <div class="bundle-image">
+            <span class="discount-badge">{{ block.settings.discount_text }}</span>
+            <img src="{{ block.settings.image | img_url: 'medium' }}" alt="{{ block.settings.title }}">
+          </div>
+          
+          <div class="bundle-info">
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.description }}</p>
+
+                    <ul>
+            {% if block.settings.item_1 != blank %}<li>{{ block.settings.item_1 }}</li>{% endif %}
+            {% if block.settings.item_2 != blank %}<li>{{ block.settings.item_2 }}</li>{% endif %}
+            {% if block.settings.item_3 != blank %}<li>{{ block.settings.item_3 }}</li>{% endif %}
+            {% if block.settings.item_4 != blank %}<li>{{ block.settings.item_4 }}</li>{% endif %}
+            {% if block.settings.item_5 != blank %}<li>{{ block.settings.item_5 }}</li>{% endif %}
+            </ul>
+
+
+            <div class="price-row">
+                <span class="price">{{ block.settings.price }}</span>
+                <span class="value">Value: {{ block.settings.value }}</span>
+            </div>
+          </div></div>
+
+                <div class="bundle-actions">
+            <a href="{{ block.settings.shop_now_url }}" class="button button--primary">
+                {{ block.settings.shop_now_text }}
+            </a>
+            <a href="{{ block.settings.customize_url }}" class="button button--secondary">
+                {{ block.settings.customize_text }}
+            </a>
+            </div>
+
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Skincare Bundles",
+   "settings": [
+    { "type": "text", "id": "section_title", "label": "Section Title", "default": "Curated Skincare Bundles" },
+    { "type": "textarea", "id": "section_subtitle", "label": "Section Subtitle", "default": "Expert-selected products to tackle your specific skin concerns." }
+  ],
+
+  "blocks": [
+    {
+      "type": "bundle",
+      "name": "Bundle",
+      "settings": [
+        { "type": "text", "id": "discount_text", "label": "Discount Text", "default": "Save 50%" },
+        { "type": "image_picker", "id": "image", "label": "Bundle Image" },
+        { "type": "text", "id": "title", "label": "Bundle Title" },
+        { "type": "textarea", "id": "description", "label": "Bundle Description" },
+      { "type": "text", "id": "item_1", "label": "Item 1" },
+{ "type": "text", "id": "item_2", "label": "Item 2" },
+
+ { "type": "text", "id": "item_3", "label": "Item 3" },
+{ "type": "text", "id": "item_4", "label": "Item 4" },
+{ "type": "text", "id": "item_5", "label": "Item 5" },
+
+        { "type": "text", "id": "price", "label": "Bundle Price", "default": "QAR 500" },
+        { "type": "text", "id": "value", "label": "Value", "default": "1000" },
+         { "type": "url", "id": "shop_now_url", "label": "Shop Now Link" },
+    { "type": "text", "id": "shop_now_text", "label": "Shop Now Button Text", "default": "Shop Now" },
+    { "type": "url", "id": "customize_url", "label": "Customize Link" },
+    { "type": "text", "id": "customize_text", "label": "Customize Button Text", "default": "Customize" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    { "name": "Skincare Bundles", "category": "Custom" }
+  ]
+}
+{% endschema %}

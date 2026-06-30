@@ -1,0 +1,139 @@
+{% render 'inserts-info-drawer-s',
+  drawer_id: section.id,
+  mount_selector: section.settings.mount_selector,
+  button_label: section.settings.button_label,
+  modal_title: section.settings.modal_title,
+  tab_one_title: section.settings.tab_one_title,
+  tab_two_title: section.settings.tab_two_title,
+  tab_one_heading: section.settings.tab_one_heading,
+  tab_two_heading: section.settings.tab_two_heading,
+  tab_one_sub_description: section.settings.tab_one_sub_description,
+  tab_two_sub_description: section.settings.tab_two_sub_description,
+  tab_one_description: section.settings.tab_one_description,
+  tab_two_description: section.settings.tab_two_description,
+  tab_one_image: section.settings.tab_one_image,
+  tab_two_image: section.settings.tab_two_image,
+  info_blocks: section.blocks
+%}
+
+{% schema %}
+{
+  "name": "Inserts Info Drawer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "mount_selector",
+      "label": "Button mount selector",
+      "default": "#door-configurator-options",
+      "info": "CSS selector where the drawer button should be inserted."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Open button label",
+      "default": "Inserts + Screen"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Modal title",
+      "default": "About Screen & Storm Inserts"
+    },
+    {
+      "type": "text",
+      "id": "tab_one_title",
+      "label": "Tab 1 title",
+      "default": "Screen Inserts"
+    },
+    {
+      "type": "text",
+      "id": "tab_two_title",
+      "label": "Tab 2 title",
+      "default": "Storm Glass Inserts"
+    },
+    {
+      "type": "text",
+      "id": "tab_one_heading",
+      "label": "Tab 1 heading",
+      "default": "Screen Inserts"
+    },
+    {
+      "type": "text",
+      "id": "tab_one_sub_description",
+      "label": "Tab 1 sub description",
+      "default": "Insert options for ventilation and bug protection."
+    },
+    {
+      "type": "richtext",
+      "id": "tab_one_description",
+      "label": "Tab 1 description",
+      "default": "<p>Let in fresh air while keeping bugs and weather out.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "tab_one_image",
+      "label": "Tab 1 image"
+    },
+    {
+      "type": "text",
+      "id": "tab_two_heading",
+      "label": "Tab 2 heading",
+      "default": "Storm Glass Inserts"
+    },
+    {
+      "type": "text",
+      "id": "tab_two_sub_description",
+      "label": "Tab 2 sub description",
+      "default": "Glass insert options for weather protection and insulation."
+    },
+    {
+      "type": "richtext",
+      "id": "tab_two_description",
+      "label": "Tab 2 description",
+      "default": "<p>Storm inserts can be removable or permanent depending on your climate and season.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "tab_two_image",
+      "label": "Tab 2 image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Detail item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Category",
+          "default": "screen",
+          "options": [
+            { "value": "screen", "label": "Screen Inserts tab" },
+            { "value": "storm", "label": "Storm Glass tab" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Detail title",
+          "default": "Additional Options"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Detail text",
+          "default": "<p>Add your explanatory paragraph here.</p>"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 24,
+  "presets": [
+    {
+      "name": "Inserts Info Drawer",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

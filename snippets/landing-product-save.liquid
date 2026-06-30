@@ -1,0 +1,291 @@
+{%- comment -%}
+  Save / Request a Quote block for Hardware & Millwork landing products.
+  Requires #landing-product-configurator wrapper with product + customer data attributes.
+{%- endcomment -%}
+{%- liquid
+  assign landing_logged_in = false
+  if customer and customer.id != blank and customer.email != blank
+    assign landing_logged_in = true
+  endif
+  assign profile_page_url = pages['complete-profile'].url | default: '/pages/complete-profile'
+  assign landing_login_href = '/customer_authentication/login?return_to=' | append: profile_page_url | strip | url_encode
+-%}
+
+<div class="landing-product-save-wrap millwork-price-block" data-landing-save-block="1">
+  <div class="millwork-form">
+    <div class="millwork-cart-row select-mdiv landing-product-qty-row">
+      <label class="qty-label" for="landing-config-quantity">QTY</label>
+      <div class="qty-block">
+        <div class="qty-wrapper">
+          <button type="button" class="qty-btn minus" aria-label="Decrease quantity">-</button>
+          <input type="number" id="landing-config-quantity" name="quantity" min="1" max="99" value="1" inputmode="numeric" aria-label="Quantity">
+          <button type="button" class="qty-btn plus" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="door-save-config landing-product-save-config">
+    <p class="door-section-title">Save configuration for later</p>
+
+    <div class="landing-save-guest{% if landing_logged_in %} door-hidden{% endif %}" data-landing-save-guest="1">
+      <p class="door-customer-email-logged-in">Please log in to save your configuration. We'll keep your selected options while you sign in and complete a short profile.</p>
+      <a
+        class="door-btn-save common-btn landing-login-to-save-btn"
+        id="door-login-to-save"
+        href="{{ landing_login_href }}"
+      >Log in to save</a>
+    </div>
+
+    <div class="mb-24 landing-save-logged-in{% unless landing_logged_in %} door-hidden{% endunless %}" data-landing-save-logged-in="1">
+      <p class="door-customer-email-logged-in">We'll save your configuration and follow up at <strong>{{ customer.email }}</strong></p>
+      <p id="door-returned-from-login-note" class="door-returned-from-login-note" style="display:none; margin:0 0 0.75rem 0; padding:0.5rem 0.75rem; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; color:#047857; font-size:0.9rem;">You're back! Your selected options have been restored. You can save your configuration when ready.</p>
+      <input id="door-customer-email" type="hidden" value="{{ customer.email }}">
+      <label for="door-save-folder">Save to collection <span style="color:#dc2626;">*</span></label>
+      <select id="door-save-folder" required>
+        <option value="">Select a collection...</option>
+        <option value="__new__">+ New collection...</option>
+      </select>
+      <input id="door-new-folder-name" type="text" placeholder="e.g. Kitchen project" style="display:none; margin-top:0.5rem;">
+      <p id="door-saved-in-collection" class="door-saved-in-collection" style="display:none;"></p>
+      <div class="config-button-div">
+        <button type="button" id="door-save-config-button" class="door-btn-save common-btn btn-secondary">Save configuration</button>
+        <button type="button" id="door-send-to-hubspot-button" class="door-btn-save common-btn btn-bordered secondary">Request a Quote</button>
+      </div>
+      <p id="door-save-config-message" style="display:none;"></p>
+      <p id="door-hubspot-message" class="door-inline-msg" style="display:none;"></p>
+    </div>
+  </div>
+</div>
+<style>
+  .landing-product-save-wrap .millwork-add-cart-btn,
+  form.millwork-form .millwork-add-cart-btn {
+    display: none !important;
+  }
+  form.millwork-form {
+    pointer-events: none;
+  }
+  form.millwork-form .qty-wrapper,
+  form.millwork-form .qty-btn,
+  form.millwork-form input[name="quantity"] {
+    pointer-events: auto;
+  }
+  .landing-product-save-config {
+    margin-top: 1.5rem;
+  }
+  .landing-product-save-config label {
+    display: block;
+    margin: 0.75rem 0 0.35rem;
+    font-weight: 600;
+  }
+  .landing-product-save-config select,
+  .landing-product-save-config input[type="text"] {
+    width: 100%;
+    max-width: 100%;
+  }
+  .landing-product-save-config select.door-native-select--enhanced {
+    display: none !important;
+  }
+  .landing-product-save-config .door-div-select {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+  .landing-product-save-config .door-div-select__btn {
+    border: 1px solid var(--secondary400Color);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: var(--font-stack-body);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 150%;
+    letter-spacing: 0;
+    color: var(--sootBlackColor);
+    width: 100%;
+    background: var(--silkWhiteColor);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .landing-product-save-config .door-div-select__btn span.door-div-select__label {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .landing-product-save-config .door-div-select--open .door-div-select__btn {
+    border-radius: 8px 8px 0px 0px;
+    border-color: var(--secondary400Color);
+    border-bottom-color: transparent;
+  }
+  .landing-product-save-config .door-div-select__list {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% - 3px);
+    z-index: 50;
+    border: 1px solid var(--secondary400Color);
+    border-radius: 0px 0px 8px 8px;
+    background: var(--silkWhiteColor);
+    border-top: 0;
+    padding: 0;
+    max-height: 260px;
+    overflow: auto;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.10);
+  }
+  .landing-product-save-config .door-div-select--open .door-div-select__list {
+    display: block;
+  }
+  .landing-product-save-config .door-div-select .door-div-select__icon svg {
+    rotate: 0deg;
+    color: var(--secondary400Color);
+    width: 24px;
+    height: 24px;
+  }
+  .landing-product-save-config .door-div-select--open .door-div-select__icon svg {
+    rotate: 180deg;
+  }
+  .landing-product-save-config .door-div-select__item {
+    padding: 8px 16px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 150%;
+    letter-spacing: 0;
+    color: var(--secondary400Color);
+    transition: 0.3s ease;
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-stack-body);
+  }
+  .landing-product-save-config .door-div-select__item:hover {
+    background: var(--secondary100Color);
+  }
+  .landing-product-save-config .door-div-select__item[aria-selected="true"] {
+    background: var(--greysColor);
+    color: var(--sootBlackColor);
+  }
+  .landing-product-save-config .config-button-div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .landing-product-save-config #door-new-folder-name.door-visible {
+    display: block !important;
+  }
+  .landing-product-save-config .door-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+  }
+  .landing-product-save-config .door-customer-email-logged-in {
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+  .landing-product-save-config .landing-login-to-save-btn,
+  .landing-product-save-config #door-login-to-save {
+    display: inline-block !important;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 0.25rem;
+    cursor: pointer;
+  }
+  .landing-product-save-config .landing-save-guest.door-hidden,
+  .landing-product-save-config .landing-save-logged-in.door-hidden {
+    display: none !important;
+  }
+</style>
+
+<script>
+  (function() {
+    function initLandingFolderSelect() {
+      var folderSelect = document.getElementById('door-save-folder');
+      var newFolderInput = document.getElementById('door-new-folder-name');
+      var emailInputForFolders = document.getElementById('door-customer-email');
+      var apiBase = 'https://vintage.espirevox.com';
+
+      if (!folderSelect) return;
+
+      // Enhance with custom select
+      if (window.DoorConf2Update && typeof window.DoorConf2Update.enhanceDoorSelectWithDivDropdown === 'function') {
+        window.DoorConf2Update.enhanceDoorSelectWithDivDropdown(folderSelect);
+      }
+
+      // Handle custom folder change event to toggle the "new folder name" input
+      folderSelect.addEventListener('change', function () {
+        if (newFolderInput) {
+          const isNew = folderSelect.value === '__new__';
+          newFolderInput.classList.toggle('door-visible', isNew);
+          newFolderInput.classList.toggle('form-field', isNew);
+          newFolderInput.classList.toggle('form-field--input', isNew);
+        }
+      });
+
+      // Load folders into native select and then rebuild/enhance the custom dropdown
+      function loadFoldersIntoSelect(email, done) {
+        if (!folderSelect || !email) { if (done) done(); return; }
+        fetch(apiBase + '/api/folders.php?email=' + encodeURIComponent(email))
+          .then(function (r) { return r.json(); })
+          .then(function (list) {
+            while (folderSelect.firstChild) folderSelect.removeChild(folderSelect.firstChild);
+            folderSelect.appendChild(document.createElement('option')).value = '';
+            folderSelect.lastChild.textContent = 'Select a collection...';
+            (list || []).forEach(function (f) {
+              var opt = document.createElement('option');
+              opt.value = String(f.id);
+              opt.textContent = f.name || ('Folder #' + f.id);
+              folderSelect.appendChild(opt);
+            });
+            var o = document.createElement('option');
+            o.value = '__new__';
+            o.textContent = '+ New collection...';
+            folderSelect.appendChild(o);
+            
+            if (window.DoorConf2Update && typeof window.DoorConf2Update.enhanceDoorSelectWithDivDropdown === 'function') {
+              window.DoorConf2Update.enhanceDoorSelectWithDivDropdown(folderSelect);
+            }
+            
+            if (done) done();
+          })
+          .catch(function () { if (done) done(); });
+      }
+
+      // Bind click of custom button to load folders (since focus won't fire on hidden element)
+      var customBtn = folderSelect.nextElementSibling ? folderSelect.nextElementSibling.querySelector('.door-div-select__btn') : null;
+      if (customBtn) {
+        customBtn.addEventListener('click', function () {
+          var email = emailInputForFolders ? emailInputForFolders.value.trim() : '';
+          if (email) loadFoldersIntoSelect(email);
+        });
+      }
+
+      // Also listen on focus in case of keyboard navigation
+      folderSelect.addEventListener('focus', function () {
+        var email = emailInputForFolders ? emailInputForFolders.value.trim() : '';
+        if (email) loadFoldersIntoSelect(email);
+      });
+
+      // Proactively load folders on page load if email is already present (logged in)
+      if (emailInputForFolders) {
+        var email = emailInputForFolders.value.trim();
+        if (email) {
+          loadFoldersIntoSelect(email);
+        }
+      }
+    }
+
+    // Try to run after DOM is loaded or when scripts are ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLandingFolderSelect);
+    } else {
+      initLandingFolderSelect();
+    }
+  })();
+</script>

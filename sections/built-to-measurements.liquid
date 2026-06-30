@@ -1,0 +1,110 @@
+<style>
+  .built-measurements {background: var(--primaryColor);color: var(--silkWhiteColor);}
+  .bm-grid {display: grid;grid-template-columns: 1fr 1fr;gap: 60px;align-items: center;}
+  .bm-content .bm-content-title {margin-bottom: 8px;color:var(--silkWhiteColor)}
+  .bm-subheading {margin-bottom: 24px;}
+  .bm-text p {font-weight: 400;font-size: 16px;line-height: 150%;letter-spacing: 0;color:var(--silkWhiteColor)}
+  .bm-link {display: inline-block;margin-top: 20px;color: #fff;font-weight: 500;text-decoration: none;}
+  {% comment %} .bm-link:hover {text-decoration: underline;} {% endcomment %}
+  .bm-image{width: 100%;height:100%;display: block;border-radius: 4px;position: relative;}
+  .bm-image img {width: 100%;display: block;border-radius: 4px;position: absolute;top: 0;left: 0;object-fit: cover;height: 100%;}
+
+  /* Mobile */
+  @media (max-width: 991.98px) {
+    .bm-grid {grid-template-columns: 1fr;gap: 64px;}
+    .bm-image img{object-fit: contain;position: static;}
+    .built-measurements .bm-image{order:0}
+    .built-measurements .bm-content{order:1}
+  }
+
+</style>
+<section class="built-measurements py-120">
+  <div class="page-width container">
+    <div class="bm-grid">
+
+      <!-- Left Content -->
+      <div class="bm-content">
+        {% if section.settings.heading != blank %}
+          <h5 class="bm-content-title">{{ section.settings.heading }}</h5>
+        {% endif %}
+
+        {% if section.settings.subheading != blank %}
+          <p class="bm-subheading">{{ section.settings.subheading }}</p>
+        {% endif %}
+
+        {% if section.settings.content != blank %}
+          <div class="bm-text">
+            {{ section.settings.content }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.link_text != blank %}
+          <a href="{{ section.settings.link_url }}" class="bm-link">
+            {{ section.settings.link_text }} →
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Right Image -->
+      <div class="bm-image">
+        {% if section.settings.image %}
+          <img
+            src="{{ section.settings.image | image_url: width: 1000 }}"
+            alt="{{ section.settings.image.alt | escape }}"
+            loading="lazy"
+          >
+        {% else %}
+          {{ 'image' | placeholder_svg_tag }}
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Your Measurements",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Built to Your Measurements"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Get a perfect fit — custom made to your exact specifications"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Vintage Doors are available built to popular sizes or to your specific measurements.</p><p>Our team reviews every measurement with you before production begins.</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link Text",
+      "default": "How to Measure Your Door"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Right Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Built to Your Measurements"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "door-continue-configuration",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

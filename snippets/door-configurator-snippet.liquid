@@ -1,0 +1,282 @@
+{%- comment -%}
+Door configurator snippet for the door product page.
+Usage:
+- Create a snippet in your theme named 'door-configurator-snippet'
+- Paste this code there.
+- Include it in your door product template: {% render 'door-configurator-snippet' %}
+
+This assumes your door product is the current product on the page.
+{%- endcomment -%}
+
+<style>
+  #door-configurator {
+    --door-border: 1px solid #e0e0e0;
+    --door-radius: 8px;
+    --door-spacing: 1.25rem;
+    --door-label: #374151;
+    --door-focus: #2563eb;
+    --door-bg: #f9fafb;
+    --door-accent: #1e40af;
+    max-width: 520px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    color: #111;
+  }
+  #door-configurator .door-section {
+    background: var(--door-bg);
+    border: var(--door-border);
+    border-radius: var(--door-radius);
+    padding: var(--door-spacing);
+    margin-bottom: var(--door-spacing);
+  }
+  #door-configurator .door-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin: 0 0 0.75rem 0;
+  }
+  #door-configurator label {
+    display: block;
+    font-weight: 500;
+    color: var(--door-label);
+    margin-bottom: 0.35rem;
+  }
+  #door-configurator select,
+  #door-configurator input[type="number"],
+  #door-configurator input[type="email"] {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: var(--door-border);
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #fff;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+  }
+  #door-configurator select:focus,
+  #door-configurator input:focus {
+    outline: none;
+    border-color: var(--door-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+  #door-configurator .door-size-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  #door-configurator .door-size-grid .door-field { margin-bottom: 0; }
+  #door-configurator .door-extras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+  }
+  #door-configurator .door-extras label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+ #door-configurator .door-setup-options input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--door-accent);
+  }
+  #door-configurator .door-price-box {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+    color: #fff;
+    border-radius: var(--door-radius);
+    padding: 1.25rem;
+    margin: var(--door-spacing) 0;
+    text-align: center;
+  }
+  #door-configurator .door-price-box .door-price-label {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    margin-bottom: 0.25rem;
+  }
+  #door-configurator #door-estimated-price {
+    font-size: 1.75rem;
+    font-weight: 700;
+  }
+  #door-configurator .door-save-config {
+    background: var(--door-bg);
+    border: var(--door-border);
+    border-radius: var(--door-radius);
+    padding: var(--door-spacing);
+  }
+  #door-configurator #door-save-config-button {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--door-accent);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+  #door-configurator #door-save-config-button:hover {
+    background: #1d4ed8;
+  }
+  #door-configurator #door-save-config-message {
+    margin-top: 0.75rem;
+    padding: 0.6rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+  #door-configurator #door-save-config-message:not(:empty) {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+
+  #door-configurator .door-product-hero {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: var(--door-spacing);
+    padding: var(--door-spacing);
+    background: var(--door-bg);
+    border: var(--door-border);
+    border-radius: var(--door-radius);
+  }
+  #door-configurator .door-product-hero img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  #door-configurator .door-product-hero .door-product-info { flex: 1; }
+  #door-configurator .door-product-hero .door-product-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0 0 0.25rem 0;
+  }
+
+    #door-configurator .door-setup-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+  }
+  #door-configurator .door-setup-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+  #door-configurator #door-setup-wrap.door-hidden {
+    display: none;
+  }
+
+</style>
+
+<div id="door-configurator"
+     data-base-price="{{ product.price | divided_by: 100.0 }}"
+     data-product-id="{{ product.id }}"   data-product-name="{{ product.title }}"
+       data-product-image="{% if product.featured_image %}{{ product.featured_image | image_url: width: 600 }}{% endif %}"
+        data-product-handle="{{ product.handle }}">
+ 
+  <div class="door-section">
+    <p class="door-section-title">Material &amp; size</p>
+    <label for="door-material">Material</label>
+    <select id="door-material" name="attributes[Material]">
+      <option value="">Select material</option>
+      <option value="steel">Steel</option>
+      <option value="wood">Wood</option>
+      <option value="fiberglass">Fiberglass</option>
+    </select>
+    <div class="door-size door-size-grid">
+      <div class="door-field">
+        <label for="door-width">Width (in)</label>
+        <input id="door-width" name="attributes[Width]" type="number" min="24" max="60" step="1" placeholder="36">
+      </div>
+      <div class="door-field">
+        <label for="door-height">Height (in)</label>
+        <input id="door-height" name="attributes[Height]" type="number" min="72" max="96" step="1" placeholder="80">
+      </div>
+    </div>
+  </div>
+
+    <div id="door-setup-wrap" class="door-section">
+    <p class="door-section-title">Door setup</p>
+    <div class="door-setup-options">
+      <label class="door-setup-option">
+        <input type="checkbox" name="attributes[Door Setup][]" value="Left" id="door-setup-left">
+        Left
+      </label>
+      <label class="door-setup-option">
+        <input type="checkbox" name="attributes[Door Setup][]" value="Right" id="door-setup-right">
+        Right
+      </label>
+      <label class="door-setup-option">
+        <input type="checkbox" name="attributes[Door Setup][]" value="Out Left" id="door-setup-out-left">
+        Out Left
+      </label>
+      <label class="door-setup-option">
+        <input type="checkbox" name="attributes[Door Setup][]" value="Out Right" id="door-setup-out-right">
+        Out Right
+      </label>
+    </div>
+  </div>
+
+  <div class="door-section">
+    <p class="door-section-title">Glass &amp; hardware</p>
+    <label for="door-glass-type">Glass type</label>
+    <select id="door-glass-type" name="attributes[Glass Type]">
+      <option value="">No glass</option>
+      <option value="clear">Clear</option>
+      <option value="frosted">Frosted</option>
+      <option value="decorative">Decorative</option>
+    </select>
+    <label for="door-hardware">Hardware package</label>
+    <select id="door-hardware" name="attributes[Hardware Package]">
+      <option value="">Standard</option>
+      <option value="premium-lever">Premium Lever</option>
+      <option value="smart-lock">Smart Lock</option>
+    </select>
+  </div>
+
+  <div class="door-section">
+    <p class="door-section-title">Extras</p>
+    <div class="door-extras">
+      <label>
+        <input type="checkbox" name="attributes[Extras][]" value="sidelites">
+        Sidelites
+      </label>
+      <label>
+        <input type="checkbox" name="attributes[Extras][]" value="transom">
+        Transom window
+      </label>
+      <label>
+        <input type="checkbox" name="attributes[Extras][]" value="custom-color">
+        Custom color
+      </label>
+    </div>
+  </div>
+
+  <div class="door-price-box">
+    <p class="door-price-label">Estimated price</p>
+    <p style="margin:0;"><span id="door-estimated-price"></span></p>
+  </div>
+
+  <div class="door-save-config">
+    <label for="door-customer-email">Your email (we’ll save your configuration and follow up)</label>
+    <input id="door-customer-email" type="email" placeholder="you@example.com">
+    <button type="button" id="door-save-config-button">Save configuration</button>
+    <p id="door-save-config-message" style="display:none;"></p>
+  </div>
+</div>
+
+
+<script src="{{ 'door-config.js' | asset_url }}" defer></script>
+{%- comment -%}
+Include this script tag in your theme (e.g. main product template or theme.liquid)
+after uploading the corresponding asset 'door-config.js'.
+
+<script src="{{ 'door-config.js' | asset_url }}" defer></script>
+{%- endcomment -%}
+

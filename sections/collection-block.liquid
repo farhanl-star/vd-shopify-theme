@@ -1,0 +1,84 @@
+{% schema %}
+{
+  "name": "Collection Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Every Colonial door is handcrafted from solid wood and built to true 18th-century proportions."
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Sub Text"
+        },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Small note",
+      "default": "Not sure if Colonial is your style?"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_image",
+      "label": "Feature Image"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Image Position",
+      "default": "right",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Colonial Door Feature Section"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="colonial-section">
+  <div class="container {% if section.settings.layout == 'left' %}image-left{% endif %}">
+    <div class="m-row m:flex m:g-8">
+      <div class="colonial-content m:column md:m:w-7/12 gap-8">
+        <h2>{{ section.settings.heading }}</h2>
+        <p class="subtext">{{ section.settings.subtext }}</p>
+      
+
+        {% if section.settings.button_label != blank %}
+          <a href="{{ section.settings.button_link }}" class="colonial-button common-btn">
+            {{ section.settings.button_label }}
+          </a>
+        {% endif %}
+        {% if section.settings.note != blank %}
+          <p class="note">
+          {{ section.settings.note }}
+          </p>
+        {% endif %}
+      </div>
+
+      <div class="colonial-image m:column md:m:w-5/12">
+        {% if section.settings.feature_image %}
+          <img src="{{ section.settings.feature_image | img_url: 'master' }}" alt="">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

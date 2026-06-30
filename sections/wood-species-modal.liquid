@@ -1,0 +1,152 @@
+{% render 'wood-species-drawer',
+  drawer_id: section.id,
+  mount_selector: section.settings.mount_selector,
+  button_label: section.settings.button_label,
+  modal_title: section.settings.modal_title,
+  any_location_label: section.settings.any_location_label,
+  partial_location_label: section.settings.partial_location_label,
+  protected_location_label: section.settings.protected_location_label,
+  any_heading: section.settings.any_heading,
+  any_description: section.settings.any_description,
+  partial_heading: section.settings.partial_heading,
+  partial_description: section.settings.partial_description,
+  protected_heading: section.settings.protected_heading,
+  protected_description: section.settings.protected_description,
+  finish_label: section.settings.finish_label,
+  wood_blocks: section.blocks
+%}
+
+{% schema %}
+{
+  "name": "Wood Species Modal",
+  "settings": [
+    {
+      "type": "text",
+      "id": "mount_selector",
+      "label": "Button mount selector",
+      "default": "#door-configurator-options",
+      "info": "CSS selector where the drawer button should be inserted."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Open button label",
+      "default": "Wood Species"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Modal title",
+      "default": "Wood Species"
+    },
+    {
+      "type": "text",
+      "id": "any_location_label",
+      "label": "Tab label: Any location",
+      "default": "Any Location"
+    },
+    {
+      "type": "text",
+      "id": "partial_location_label",
+      "label": "Tab label: Partial exposure",
+      "default": "Partial Exposure or Protected Locations"
+    },
+    {
+      "type": "text",
+      "id": "protected_location_label",
+      "label": "Tab label: Protected locations",
+      "default": "Protected Locations"
+    },
+    {
+      "type": "text",
+      "id": "any_heading",
+      "label": "Any location heading",
+      "default": "Woods For Any Location"
+    },
+    {
+      "type": "textarea",
+      "id": "any_description",
+      "label": "Any location description",
+      "default": "These beautiful woods are excellent choices for doors in any location."
+    },
+    {
+      "type": "text",
+      "id": "partial_heading",
+      "label": "Partial exposure heading",
+      "default": "Woods For Partial Exposure"
+    },
+    {
+      "type": "textarea",
+      "id": "partial_description",
+      "label": "Partial exposure description",
+      "default": "These woods are recommended for partially protected installations."
+    },
+    {
+      "type": "text",
+      "id": "protected_heading",
+      "label": "Protected heading",
+      "default": "Woods For Protected Locations"
+    },
+    {
+      "type": "textarea",
+      "id": "protected_description",
+      "label": "Protected description",
+      "default": "Ideal selections for covered entries and protected areas."
+    },
+    {
+      "type": "text",
+      "id": "finish_label",
+      "label": "Recommended finish label",
+      "default": "Recommended Finish:"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "species",
+      "name": "Wood card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Category",
+          "default": "any",
+          "options": [
+            { "value": "any", "label": "Any location" },
+            { "value": "partial", "label": "Partial exposure / protected" },
+            { "value": "protected", "label": "Protected locations" }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Wood name",
+          "default": "African Mahogany"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Strong and weather-tough wood with beautiful seasonal performance.</p>"
+        },
+        {
+          "type": "text",
+          "id": "recommended_finish",
+          "label": "Recommended finish",
+          "default": "Clear, Stain"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 30,
+  "presets": [
+    {
+      "name": "Wood Species Modal"
+    }
+  ]
+}
+{% endschema %}

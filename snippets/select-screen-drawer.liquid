@@ -1,0 +1,265 @@
+{% assign drawer_uid = drawer_id | default: 'select-screen-drawer' %}
+{% assign drawer_button_label = button_label | default: 'Wood Species' %}
+{% assign drawer_modal_title = modal_title | default: 'Wood Species' %}
+{% assign select_screen_options_label = select_screen_options_label | default: '' %}
+{% comment %} {% assign finish_label_text = finish_label | default: 'Recommended Finish:' %} {% endcomment %}
+{% assign heading_any = select_screen_heading | default: 'Woods For Any Location' %}
+{% assign wood_items = sco_blocks %}
+{% assign drawer_mount_selector = mount_selector | default: '' %}
+
+<div class="wood-species-snippet" data-drawer-id="{{ drawer_uid }}" data-mount-selector="{{ drawer_mount_selector | escape }}">
+  <button
+    type="button"
+    class="wood-species-open-btn common-btn btn-secondary btn-hide"
+    data-wood-drawer-open
+    aria-haspopup="dialog"
+    aria-controls="wood-species-drawer-{{ drawer_uid }}"
+  >
+    {{ drawer_button_label }}
+  </button>
+
+  <div
+    id="wood-species-drawer-{{ drawer_uid }}"
+    class="wood-species-modal common-sidebar-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="wood-species-title-{{ drawer_uid }}"
+  >
+    <div class="wood-species-modal__overlay common-sidebar-modal__overlay" data-wood-drawer-close></div>
+    <div class="wood-species-modal__panel common-sidebar-modal__panel" tabindex="-1">
+      <div class="common-sidebar-header mb-50 header-bottom-border">
+        <h5 id="wood-species-title-{{ drawer_uid }}" class="wood-species-modal__title">
+          {{ drawer_modal_title }}
+        </h5>
+        <button type="button" class="wood-species-modal__close common-sidebar-modal__close" data-wood-drawer-close aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect width="2.11202" height="31.6804" rx="1.05601" transform="matrix(0.703968 0.710232 -0.703968 0.710232 22.5156 0)" fill="#002031"/>
+            <rect width="2.11202" height="31.6804" rx="1.05601" transform="matrix(-0.703968 0.710232 0.703968 0.710232 1.49219 0)" fill="#002031"/>
+          </svg>
+        </button>
+      </div>
+
+     
+      <p>
+          {{heading_any }}
+      </p>
+      
+      <div class="wood-species-headline common-640-div mb-24" data-tab-panel="any">
+        {% if select_screen_options_label != blank %}
+          <h3 class="p-xl primaryFont fw-600 mb-8">{{ select_screen_options_label }}</h3>
+        {% endif %}
+        <p>{{ desc_any }}</p>
+      </div>
+      
+
+      <div class="wood-species-grid-wrap" data-tab-panel="sco">
+        <div class="wood-species-grid wood-species-grid3">
+          {% if wood_items != blank and wood_items.size > 0 %}
+            {% for block in wood_items %}
+              {% if block.type == 'species' and block.settings.category == 'sco' %}
+                <article class="wood-card" {{ block.shopify_attributes }}>
+                  {% if block.settings.image != blank %}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 700 }}"
+                      alt="{{ block.settings.sco_name | escape }}"
+                      loading="lazy"
+                      class="wood-card__image"
+                    >
+                  {% else %}
+                    <div class="wood-card__image wood-card__image--ph"></div>
+                  {% endif %}
+                  <h4 class="wood-card__title sco_title">{{ block.settings.sco_name }}</h4>
+                  <h5 class="wood-card__title_subhead">{{ block.settings.sco_subheading }}</h5>
+                  <div class="wood-card__text_quote">{{ block.settings.sco_quote }}</div>
+                  <div class="wood-card__text">{{ block.settings.description }}</div>
+                  {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+                </article>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <article class="wood-card">
+              <div class="wood-card__image wood-card__image--ph"></div>
+              <h4 class="wood-card__title">African Mahogany</h4>
+              <p class="wood-card__text">Our top pick for screen doors exposed to wind, rain, or cold. Dense, stable, and naturally rot-resistant.</p>
+              {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+              <p class="wood-card__finish">Clear, Stain, Paint</p>
+            </article>
+
+            <article class="wood-card">
+              <div class="wood-card__image wood-card__image--ph"></div>
+              <h4 class="wood-card__title">Vertical Grain Douglas Fir</h4>
+              <div class="wood-card__text">A porch classic. Straight-grained and stable in damp or shifting climates.</div>
+              {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+              <p class="wood-card__finish">Stain</p>
+            </article>
+
+            <article class="wood-card">
+              <div class="wood-card__image wood-card__image--ph"></div>
+              <h4 class="wood-card__title">Honduran Mahogany</h4>
+              <div class="wood-card__text">Strong, refined, and weather-tough, with beautiful seasonal performance.</div>
+              {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+              <p class="wood-card__finish">Clear, Stain</p>
+            </article>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="wood-species-grid-wrap" data-tab-panel="partial" hidden>
+        <div class="wood-species-grid">
+          {% if wood_items != blank and wood_items.size > 0 %}
+            {% for block in wood_items %}
+              {% if block.type == 'species' and block.settings.category == 'partial' %}
+                <article class="wood-card" {{ block.shopify_attributes }}>
+                  {% if block.settings.image != blank %}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 700 }}"
+                      alt="{{ block.settings.sco_name | escape }}"
+                      loading="lazy"
+                      class="wood-card__image"
+                    >
+                  {% else %}
+                    <div class="wood-card__image wood-card__image--ph"></div>
+                  {% endif %}
+                  <h4 class="wood-card__title sco_title">{{ block.settings.sco_name }}</h4>
+                  <h5 class="sco-subhead">{{ block.settings.sco_subheading }}</h5>
+                  <div class="wood-card__text sco_quote">{{ block.settings.sco_quote }}</div>
+                  <div class="wood-card__text sco_description">{{ block.settings.description }}</div>
+                  {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+                </article>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <article class="wood-card">
+              <div class="wood-card__image wood-card__image--ph"></div>
+              <h4 class="wood-card__title">Spanish Cedar</h4>
+              <div class="wood-card__text">Lightweight with fine grain and soft color. Great for coastal areas and wooded settings.</div>
+              {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+              <p class="wood-card__finish">Clear, Stain, Paint</p>
+            </article>
+
+            <article class="wood-card">
+              <div class="wood-card__image wood-card__image--ph"></div>
+              <h4 class="wood-card__title">Western Red Cedar</h4>
+              <div class="wood-card__text">Naturally beautiful with a soft, relaxed look. Resists rot even when unfinished.</div>
+              {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+              <p class="wood-card__finish">Clear, Stain</p>
+            </article>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="wood-species-grid-wrap" data-tab-panel="protected" hidden>
+        <div class="wood-species-grid">
+          {% if wood_items != blank and wood_items.size > 0 %}
+            {% for block in wood_items %}
+              {% if block.type == 'species' and block.settings.category == 'protected' %}
+                <article class="wood-card" {{ block.shopify_attributes }}>
+                  {% if block.settings.image != blank %}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 700 }}"
+                      alt="{{ block.settings.sco_name | escape }}"
+                      loading="lazy"
+                      class="wood-card__image"
+                    >
+                  {% else %}
+                    <div class="wood-card__image wood-card__image--ph"></div>
+                  {% endif %}
+                  <h4 class="wood-card__title sco_title">{{ block.settings.sco_name }}</h4>
+                  <h5 class="sco-subhead">{{ block.settings.sco_subheading }}</h5>
+                  <div class="wood-card__text sco_quote">{{ block.settings.sco_quote }}</div>
+                  <div class="wood-card__text sco_description">{{ block.settings.description }}</div>
+                  {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+                  
+                </article>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <article class="wood-card">
+              <div class="wood-card__image wood-card__image--ph"></div>
+              <h4 class="wood-card__title">Cherry</h4>
+              <div class="wood-card__text">Best used in protected spaces where rich color and smooth grain can shine.</div>
+              {% comment %} <p class="wood-card__finish-title">{{ finish_label_text }}</p> {% endcomment %}
+              <p class="wood-card__finish">Clear</p>
+            </article>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  (function () {
+    var roots = document.querySelectorAll('.wood-species-snippet[data-drawer-id]');
+    if (!roots.length) return;
+
+    roots.forEach(function (root) {
+      if (root.getAttribute('data-drawer-init') === 'true') return;
+      root.setAttribute('data-drawer-init', 'true');
+
+      var modal = root.querySelector('.wood-species-modal');
+      var panel = root.querySelector('.wood-species-modal__panel');
+      var openBtn = root.querySelector('[data-wood-drawer-open]');
+      var closeEls = root.querySelectorAll('[data-wood-drawer-close]');
+      var tabs = root.querySelectorAll('.wood-species-tab');
+      var tabPanels = root.querySelectorAll('[data-tab-panel]');
+      var mountSelector = root.getAttribute('data-mount-selector');
+
+      if (mountSelector && openBtn) {
+        var mountTarget = document.querySelector(mountSelector);
+        if (mountTarget && !mountTarget.contains(openBtn)) {
+          mountTarget.appendChild(openBtn);
+        }
+      }
+
+      function setTab(tabKey) {
+        tabs.forEach(function (tab) {
+          var active = tab.getAttribute('data-tab') === tabKey;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        tabPanels.forEach(function (p) {
+          p.hidden = p.getAttribute('data-tab-panel') !== tabKey;
+        });
+      }
+
+      function openDrawer() {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        panel.focus();
+      }
+
+      function closeDrawer() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+      }
+
+      if (openBtn) openBtn.addEventListener('click', openDrawer);
+      closeEls.forEach(function (el) { el.addEventListener('click', closeDrawer); });
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          setTab(tab.getAttribute('data-tab'));
+        });
+      });
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape') return;
+      roots.forEach(function (root) {
+        var modal = root.querySelector('.wood-species-modal');
+        if (modal && modal.classList.contains('is-open')) {
+          modal.classList.remove('is-open');
+          modal.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
+        }
+      });
+    });
+  })();
+</script>

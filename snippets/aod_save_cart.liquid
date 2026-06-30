@@ -1,0 +1,99 @@
+{% if shop.metafields.AOD_Cart_Saver.EnableApp != 'Disabled' %}
+<div style='margin: 0px 10px;'>
+    {% if cart.item_count > 0 %}
+      <button type='button' class='btn aodSaveCart'>{{shop.metafields.AOD_Cart_Saver.btn_save_cart | default:'save this cart'}}</button>
+    {% endif %}
+    <button type='button' class='btn aodViewCart'>{{shop.metafields.AOD_Cart_Saver.btn_view_cart | default:'View saved cart'}}</button>
+</div>
+<script>
+      var aod_domain = "/apps/savedcart/cart_saver.php?fn=";
+    (function (window, document) {
+        "use strict";
+        function aod_jq(onload) {
+            if (typeof jQuery === 'undefined' || (parseInt(jQuery.fn.jquery) === 1 && parseFloat(jQuery.fn.jquery.replace(/^1\./, '')) < 10)) {
+                var head = document.getElementsByTagName('head')[0];
+                var script = document.createElement('script');
+                script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js';;
+                script.type = 'text/javascript';
+                script.onload = script.onreadystatechange = function () {
+                    if (script.readyState) {
+                        if (script.readyState === 'complete' || script.readyState === 'loaded') {
+                            script.onreadystatechange = null;
+                            onload(jQuery.noConflict(true));
+                        }
+                    }
+                    else {
+                        onload(jQuery.noConflict(true));
+                    }
+                };
+                head.appendChild(script);
+            } else {
+                onload(jQuery);
+            }
+        }
+        aod_jq(function (aodjq) {
+          function aod_save_cart(){
+          aodjq('.aodSaveCart').attr('disabled','true');
+              aodjq.ajax({
+                    contentType: "application/json; charset=utf-8",
+                    url: '/cart.js',
+                    cache: false,
+                    dataType: 'json',
+                    type: 'GET',
+                    success: function (cart, success) {
+                      let SendData={};
+                      
+                      SendData.cartItems=cart;
+                      SendData.domain="{{shop.permanent_domain}}";
+                      SendData.customer_id="{{customer.id}}";
+                      
+                      if(cart.items.length==0){
+                      	window.location.href='/apps/savedcart';                                               
+                      }else{
+                       aodjq.ajax({
+                            contentType: "application/json; charset=utf-8",
+                            url: aod_domain + "savecart",
+                            cache: false,
+                            dataType: 'json',
+                            data: JSON.stringify(SendData),
+                            type: 'POST',
+                            success: function (response, success) {                             
+                              if(typeof(window.aod_save_cart_callback_hook) == "function"){
+                       				  window.aod_save_cart_call_back(response.url_ref,SendData);
+                        	    }
+                              aodjq('.aodSaveCart').removeAttr('disabled');
+                              window.location.href='/apps/savedcart';
+                              //console.log(response);
+                            }
+                        });
+                      }                                          
+                     
+                     
+                    }
+                });
+          }
+          
+          if(window.location.href.indexOf("aod_save_cart=true") != -1){
+            {% if customer %}
+           			aod_save_cart();
+            {% else %}
+            {% unless template =="customers/login" %}
+            window.location.href="/account/login?return_url=/cart?aod_save_cart=true";
+            {% endunless %}
+            {% endif %}       
+          }
+            aodjq('body').on('click', ".aodSaveCart", function (eaod) {
+              {% if customer %}
+                 aod_save_cart();
+              {% else %}
+                window.location.href="/account/login?return_url=/cart?aod_save_cart=true";
+              {% endif %}
+            });
+          aodjq('body').on('click', ".aodViewCart", function (eaod) {
+          		window.location.href='/apps/savedcart';
+          });
+
+        });
+    }(window, document));
+</script>
+{% endif %}

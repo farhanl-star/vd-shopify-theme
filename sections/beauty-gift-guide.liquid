@@ -1,0 +1,124 @@
+{% schema %}
+{
+  "name": "Beauty Gift Guide",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Beauty Gift Guide"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Not sure what to gift? We’ve got you! From self-care treats to glam favorites, discover gifts that will make anyone smile."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select Collection"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Custom Title (optional)"
+        },
+        {
+  "type": "image_picker",
+  "id": "custom_image",
+  "label": "Custom Image (optional)"
+},
+        {
+          "type": "text",
+          "id": "products_count",
+          "label": "Products Count Text",
+          "default": "45+ products"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Discover feminine favorites from skincare to makeup"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Beauty Gift Guide",
+      "category": "Collections"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="beauty-gift-guide">
+  <div class="container">
+    <div class="beauty-gift-title-div">
+      <h2 class="text-center text-2xl font-bold mb-2">{{ section.settings.heading }}</h2>
+      <p class="text-center mb-8 max-w-xl mx-auto">{{ section.settings.subheading }}</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {% for block in section.blocks %}
+        {% assign collection = collections[block.settings.collection] %}
+        <div class="gift-card text-center border rounded-2xl p-4 hover:shadow-md transition grid__item">
+          <div class="relative mb-4 bg-gray-100 flex items-center justify-center rounded-xl gift-card-img-div">
+            {% if block.settings.custom_image != blank %}
+              <img 
+                src="{{ block.settings.custom_image | img_url: '300x' }}" 
+                alt="{{ block.settings.custom_title | default: collection.title }}" 
+                class="object-cover w-full h-full"
+              >
+            {% elsif collection.featured_image %}
+              <img 
+                src="{{ collection.featured_image | img_url: '300x' }}" 
+                alt="{{ block.settings.custom_title | default: collection.title }}" 
+                class="object-cover w-full h-full"
+              >
+            {% else %}
+              
+            {% endif %}
+            <div class="absolute top-2 left-2 w-8 h-8 rounded-full bg-white flex items-center justify-center border gift-card-like-div">
+              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16.3189 4.58338C16.3189 2.46111 14.5263 0.740234 12.3152 0.740234C10.6626 0.740234 9.24321 1.70187 8.63258 3.0743C8.02195 1.70187 6.60255 0.740234 4.94914 0.740234C2.73976 0.740234 0.946289 2.46111 0.946289 4.58338C0.946289 10.7495 8.63258 14.8318 8.63258 14.8318C8.63258 14.8318 16.3189 10.7495 16.3189 4.58338Z" stroke="black" stroke-width="1.28105" stroke-linecap="round" stroke-linejoin="round"/> </svg>
+            </div>
+          </div>
+          <div class="gift-card-content-div">
+            <div class="gift-card-title-div">
+              <h3 class="font-semibold">
+                {{ block.settings.custom_title | default: collection.title }}
+              </h3>
+              <span class="text-sm text-gray-500">{{ block.settings.products_count }}</span>
+            </div>
+            <p class="text-sm text-gray-600 mt-2 gift-card-desc">{{ block.settings.description }}</p>
+
+            <a href="{{ collection.url }}" class="inline-flex items-center justify-center border rounded-md px-4 py-2 mt-4 hover:bg-black hover:text-white transition  gift-card-btn button button--full-width button--secondary">
+              {% if request.locale.iso_code == 'ar' %}
+                عرض المنتجات <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7.32846 1.34588L11.9545 6.04306M11.9545 6.04306L7.32846 10.7402M11.9545 6.04306L0.852051 6.04306" stroke="currentcolor" stroke-width="1.28105" stroke-linecap="round" stroke-linejoin="round"/> </svg>
+              {% else %}
+                View Products <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7.32846 1.34588L11.9545 6.04306M11.9545 6.04306L7.32846 10.7402M11.9545 6.04306L0.852051 6.04306" stroke="currentcolor" stroke-width="1.28105" stroke-linecap="round" stroke-linejoin="round"/> </svg>
+              {% endif %}
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+{% comment %} .beauty-gift-guide .container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem 1rem;
+} {% endcomment %}
+.aspect-\[4\/3\] {
+  aspect-ratio: 4/3;
+}
+</style>

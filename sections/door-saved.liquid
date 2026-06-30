@@ -1,0 +1,85 @@
+{%- comment -%}
+  My Saved Configurations – customer enters email and sees list of saved door configs with Edit links.
+  Include in a page that uses template "saved_configurations" or in any page: {% render 'door-saved-configs' %}
+{%- endcomment -%}
+<style>
+  .door-saved-wrap { max-width: 560px; margin: 0 auto; font-family: system-ui, sans-serif; padding: 1.5rem 0; }
+  .door-saved-wrap h1 { font-size: 1.5rem; margin: 0 0 1rem 0; }
+  .door-saved-email-box { margin-bottom: 1.5rem; }
+  .door-saved-email-box label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+  .door-saved-email-box input { width: 100%; max-width: 320px; padding: 0.6rem 0.75rem; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 1rem; }
+  .door-saved-email-box button { margin-top: 0.5rem; padding: 0.6rem 1rem; font-weight: 600; color: #fff; background: #1e40af; border: none; border-radius: 6px; cursor: pointer; }
+  .door-saved-list { margin-top: 1rem; }
+  .door-saved-card {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem; margin-bottom: 0.75rem;
+    background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
+  }
+  .door-saved-card img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; }
+  .door-saved-card-info { flex: 1; min-width: 0; }
+  .door-saved-card-title { font-weight: 600; margin: 0 0 0.25rem 0; }
+  .door-saved-card-meta { font-size: 0.85rem; color: #6b7280; margin: 0; }
+  .door-saved-card-edit { padding: 0.5rem 0.75rem; font-size: 0.9rem; color: #1e40af; background: #fff; border: 1px solid #1e40af; border-radius: 6px; text-decoration: none; white-space: nowrap; }
+  .door-saved-card-edit:hover { background: #1e40af; color: #fff; }
+  .door-saved-msg { margin-top: 1rem; padding: 0.75rem; border-radius: 6px; }
+  .door-saved-msg.empty { background: #fef3c7; color: #92400e; }
+  .door-saved-msg.error { background: #fee2e2; color: #991b1b; }
+</style>
+
+<div class="door-saved-wrap">
+  <h1>My saved Projects</h1>
+  <p style="margin:0 0 1rem 0; color:#6b7280;">Enter the email you used when saving to see and edit your door configurations.</p>
+  <div class="door-saved-email-box">
+    <label for="door-saved-email">Your email</label>
+    <input type="email" id="door-saved-email" placeholder="you@example.com">
+    <button type="button" id="door-saved-load">Load my projects</button>
+  </div>
+  <div id="door-saved-msg" class="door-saved-msg" style="display:none;"></div>
+  <div id="door-saved-list" class="door-saved-list"></div>
+</div>
+
+<script>
+(function() {
+  var API = 'https://vintage.espirevox.com/api/configurations.php';
+  var listEl = document.getElementById('door-saved-list');
+  var msgEl = document.getElementById('door-saved-msg');
+
+  function showMsg(text, type) {
+    msgEl.style.display = 'block';
+    msgEl.textContent = text;
+    msgEl.className = 'door-saved-msg ' + (type || '');
+  }
+
+  document.getElementById('door-saved-load').addEventListener('click', function() {
+    var email = document.getElementById('door-saved-email').value.trim();
+    if (!email) { showMsg('Please enter your email.', 'error'); return; }
+    listEl.innerHTML = '';
+    showMsg('Loading...', '');
+
+    fetch(API + '?email=' + encodeURIComponent(email))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!Array.isArray(data)) { showMsg('No project found or something went wrong.', 'error'); return; }
+        if (data.length === 0) { showMsg('No saved project for this email.', 'empty'); return; }
+        msgEl.style.display = 'none';
+        data.forEach(function(c) {
+          var root = (typeof window !== 'undefined' && window.Shopify && window.Shopify.routes && window.Shopify.routes.root) ? window.Shopify.routes.root : '/';
+          var handle = (c.product_handle && c.product_handle.length) ? c.product_handle : 'door';
+          var productUrl = root + 'products/' + handle;
+          var editUrl = productUrl + '?config_id=' + c.id + '&email=' + encodeURIComponent(email);
+          var card = document.createElement('div');
+          card.className = 'door-saved-card';
+          card.innerHTML =
+            (c.product_image_url ? '<img src="' + c.product_image_url + '" alt="">' : '') +
+            '<div class="door-saved-card-info">' +
+              '<p class="door-saved-card-title">' + (c.product_title || 'Project #' + c.id) + '</p>' +
+              '<p class="door-saved-card-meta">#' + c.id + ' &middot; $' + parseFloat(c.computed_price).toFixed(2) + ' &middot; ' + (c.created_at || '') + '</p>' +
+            '</div>' +
+            '<a href="' + editUrl + '" class="door-saved-card-edit">Edit</a>';
+          listEl.appendChild(card);
+        });
+      })
+      .catch(function() { showMsg('Could not load projects. Please try again.', 'error'); });
+  });
+})();
+</script>

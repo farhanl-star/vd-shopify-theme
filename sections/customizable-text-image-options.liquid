@@ -1,0 +1,459 @@
+{% comment %}
+  Glass Options
+  - Lets merchants edit: hero image, headings, rich text, option items (text + image), and two bottom images.
+  - Compatible with Online Store 2.0 theme editor.
+{% endcomment %}
+
+{% assign section_bg = section.settings.background_color | default: '#ffffff' %}
+{% assign section_text = section.settings.text_color | default: '#111111' %}
+{% assign card_bg = section.settings.card_background_color | default: '#f4f4f4' %}
+{% assign card_radius = section.settings.card_border_radius | default: 12 %}
+{% assign accent = section.settings.accent_color | default: '#111111' %}
+
+{% if product != blank %}
+<section
+  class="cit-options-section {{ section.settings.section_class }}"
+  style="
+    --cit-bg: {{ section_bg }};
+    --cit-text: {{ section_text }};
+    --cit-card-bg: {{ card_bg }};
+    --cit-accent: {{ accent }};
+    --cit-radius: {{ card_radius }}px;
+  "
+>
+  <div class="cit-container container">
+    <div class="cit-top">
+      <div class="cit-hero">
+        {% if section.settings.hero_image != blank %}
+          <img
+            class="cit-hero-img"
+            src="{{ section.settings.hero_image | image_url: width: 800 }}"
+            width="{{ section.settings.hero_image.width }}"
+            height="{{ section.settings.hero_image.height }}"
+            loading="lazy"
+            alt="{{ section.settings.hero_image.alt | default: section.settings.title }}"
+          >
+        {% else %}
+          <div class="cit-hero-placeholder" aria-hidden="true"></div>
+        {% endif %}
+      </div>
+
+      <div class="cit-content">
+        {% if section.settings.title != blank %}
+          <h5 class="cit-title">{{ section.settings.title }}</h5>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="cit-subtitle common-header-desc headingFont mb-24">{{ section.settings.subtitle }}</p>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="cit-description rte">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.include_heading != blank %}
+          <div class="cit-include-heading">{{ section.settings.include_heading }}</div>
+        {% endif %}
+
+        {% if section.blocks.size > 0 %}
+          <ul class="cit-options" role="list">
+            {% for block in section.blocks %}
+              {% if block.type == 'option' %}
+                {% assign label = block.settings.label %}
+                <li class="cit-option">
+                  <div class="cit-option-inner" style="background: var(--cit-card-bg);">
+                    {% if block.settings.option_image != blank %}
+                      <img
+                        class="cit-option-img"
+                        src="{{ block.settings.option_image | image_url: width: 240 }}"
+                        width="{{ block.settings.option_image.width }}"
+                        height="{{ block.settings.option_image.height }}"
+                        loading="lazy"
+                        alt="{{ block.settings.option_image.alt | default: label }}"
+                      >
+                    {% endif %}
+
+                    {% if block.settings.option_url != blank and label != blank %}
+                      <a class="cit-option-link" href="{{ block.settings.option_url }}">
+                        <span class="cit-option-label">{{ label }}</span>
+                      </a>
+                    {% elsif label != blank %}
+                      <span class="cit-option-label">{{ label }}</span>
+                    {% endif %}
+                  </div>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+           {% if section.settings.include_richtext != blank %}
+          <div class="cit-include-richtext rte">
+            {{ section.settings.include_richtext }}
+          </div>
+        {% endif %}
+        
+        
+        {% if section.settings.thickness_heading != blank or section.settings.thickness_text != blank %}
+          <div class="cit-detail">
+            {% if section.settings.thickness_heading != blank %}
+              <div class="cit-detail-heading">{{ section.settings.thickness_heading }}</div>
+            {% endif %}
+            {% if section.settings.thickness_text != blank %}
+              <div class="cit-detail-body rte">
+                {{ section.settings.thickness_text }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        
+        {% if section.settings.construction_heading != blank or section.settings.construction_text != blank %}
+          <div class="cit-detail cit-detail--construction">
+            {% if section.settings.construction_heading != blank %}
+              <div class="cit-detail-heading">{{ section.settings.construction_heading }}</div>
+            {% endif %}
+            {% if section.settings.construction_text != blank %}
+              <div class="cit-detail-body rte">
+                {{ section.settings.construction_text }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+       
+          {% if section.settings.bottom_left_image != blank or section.settings.bottom_right_image != blank %}
+      <div class="cit-bottom-images">
+        <div class="cit-bottom-card">
+          {% if section.settings.bottom_left_image != blank %}
+            <img
+              class="cit-bottom-img"
+              src="{{ section.settings.bottom_left_image | image_url: width: 600 }}"
+              width="{{ section.settings.bottom_left_image.width }}"
+              height="{{ section.settings.bottom_left_image.height }}"
+              loading="lazy"
+              alt="{{ section.settings.bottom_left_image.alt | default: section.settings.bottom_left_caption }}"
+            >
+          {% else %}
+            <div class="cit-bottom-placeholder" aria-hidden="true"></div>
+          {% endif %}
+          {% if section.settings.bottom_left_caption != blank %}
+            <div class="cit-bottom-caption">{{ section.settings.bottom_left_caption }}</div>
+          {% endif %}
+        </div>
+
+        <div class="cit-bottom-card">
+          {% if section.settings.bottom_right_image != blank %}
+            <img
+              class="cit-bottom-img"
+              src="{{ section.settings.bottom_right_image | image_url: width: 600 }}"
+              width="{{ section.settings.bottom_right_image.width }}"
+              height="{{ section.settings.bottom_right_image.height }}"
+              loading="lazy"
+              alt="{{ section.settings.bottom_right_image.alt | default: section.settings.bottom_right_caption }}"
+            >
+          {% else %}
+            <div class="cit-bottom-placeholder" aria-hidden="true"></div>
+          {% endif %}
+          {% if section.settings.bottom_right_caption != blank %}
+            <div class="cit-bottom-caption">{{ section.settings.bottom_right_caption }}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+      </div>
+
+    </div>
+
+    {% comment %}
+      Moved the bottom images section to directly below the "cit-content" div.
+      Place this after the closing </div> of "cit-content" in your main code structure.
+    {% endcomment %}
+
+
+  </div>
+</section>
+
+<style>
+
+  .cit-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .cit-hero-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .cit-hero-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #e6e6e6;
+    border-radius: var(--cit-radius);
+  }
+
+  .cit-content {
+    padding-top: 4px;
+  }
+
+  .cit-description {
+    margin-bottom: 18px;
+  }
+
+  .cit-include-heading {
+    font-weight: 700;
+    margin: 6px 0 12px;
+  }
+
+  .cit-options {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px 12px;
+  }
+
+  .cit-option-inner {
+    border-radius: var(--cit-radius);
+    padding: 14px 12px;
+    min-height: 84px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,.06);
+  }
+
+  .cit-option-img {
+    width: 100%;
+    max-width: 64px;
+    height: auto;
+    display: block;
+    margin: 0 auto 10px;
+  }
+
+  .cit-option {
+    display: flex;
+  }
+
+  .cit-option-label {
+    display: inline-block;
+    font-weight: 600;
+    color: var(--cit-text);
+  }
+
+  .cit-option-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .cit-detail {
+    margin-top: 18px;
+  }
+
+  .cit-detail-heading {
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .cit-bottom-images {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+  }
+
+  .cit-bottom-card {
+    padding: 0px;
+  }
+
+  .cit-bottom-img {
+    width: 100%;
+    height: auto;
+    object-fit:contain;
+    display: block;
+  }
+  .cit-bottom-caption {margin-top: 10px;font-weight: 600;font-size: 16px;line-height: 150%;letter-spacing: 0;}
+
+  .cit-include-richtext.rte ul{margin-block:24px;display: grid;grid-template-columns: 1fr 1fr;}
+
+  @media (max-width:991.98px){
+    .cit-top{
+      grid-template-columns:1fr;
+      gap:40px;
+    }
+  }
+
+</style>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Glass Options",
+  "class": "cit-options-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "text",
+      "id": "section_class",
+      "label": "Section class",
+      "default": "py-120"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Main title",
+      "default": "Glass Options"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Add clarity, efficiency, and architectural harmony"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Choose from a range of clear, decorative, and energy-efficient glass options to balance light, privacy, and performance.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "include_richtext",
+      "label": "Glass options include (richtext)",
+      "default": "<ul><li>Clear</li><li>Tempered</li><li>Low-E</li><li>Acid Etched</li></ul>"
+    },
+    {
+      "type": "richtext",
+      "id": "thickness_text",
+      "label": "Thickness text"
+    },
+    {
+      "type": "text",
+      "id": "thickness_heading",
+      "label": "Thickness heading",
+      "default": "Thickness:"
+    },
+    {
+      "type": "richtext",
+      "id": "construction_text",
+      "label": "Construction text"
+    },
+    {
+      "type": "text",
+      "id": "construction_heading",
+      "label": "Construction heading",
+      "default": "Construction:"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_left_image",
+      "label": "Bottom left image"
+    },
+    {
+      "type": "text",
+      "id": "bottom_left_caption",
+      "label": "Bottom left caption",
+      "default": "True Divided Lites"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_right_image",
+      "label": "Bottom right image"
+    },
+    {
+      "type": "text",
+      "id": "bottom_right_caption",
+      "label": "Bottom right caption",
+      "default": "Simulated Divided Lites"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "card_background_color",
+      "label": "Option card background",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (link/var use)",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "default": 12
+    }
+  ],
+  "blocks": [
+    {
+      "type": "option",
+      "name": "Option",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "option_image",
+          "label": "Option image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Option label",
+          "default": "Low-E"
+        },
+        {
+          "type": "url",
+          "id": "option_url",
+          "label": "Option link (optional)"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Glass Options",
+      "category": "Custom",
+      "blocks": [
+        { "type": "option", "settings": { "label": "Clear Tempered" } },
+        { "type": "option", "settings": { "label": "Low-E" } },
+        { "type": "option", "settings": { "label": "Acid Etched" } },
+        { "type": "option", "settings": { "label": "Glue Chip" } },
+        { "type": "option", "settings": { "label": "Aquatex" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

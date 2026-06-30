@@ -1,0 +1,150 @@
+<!-- /snippets/breadcrumb.liquid -->
+{% comment %}
+  Documentation - http://docs.shopify.com/support/your-website/navigation/creating-a-breadcrumb-navigation
+{% endcomment %}
+{% comment %}
+  Accepts:
+  - container: {String} Container class (optional)
+  - justify: {String} Defines how the browser distributes space between and around content items along the main-axis of a flex container (optional)
+  - class: {String} Extra classes (optional)
+  - hide_current: {Boolean} Hide current item (optional)
+
+  Usage:
+  {% render 'breadcrumb' %}
+{% endcomment %}
+{%- liquid
+  if container != nil and container == 'w-full'
+    assign container = 'container-full'
+  endif
+  if container == nil
+    assign container = 'container-fluid'
+  endif
+
+  if animated == nil
+    assign animated = false
+  endif
+  if animation_effect == nil
+    assign animation_effect = settings.animations
+  endif
+
+  if animation_effect != 'none'
+    assign animated = true
+  endif
+-%}
+
+{%- capture separator -%}
+    <span aria-hidden="true" class="m-breadcrumb--separator">
+      <svg class="m-svg-icon--small m-rlt-reverse-x" fill="currentColor" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M17.525 36.465l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L205.947 256 10.454 451.494c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l211.051-211.05c4.686-4.686 4.686-12.284 0-16.971L34.495 36.465c-4.686-4.687-12.284-4.687-16.97 0z"/></svg>
+    </span>
+{%- endcapture -%}
+
+{%- capture home -%}
+    <a href="{{ routes.root_url }}" class="m-breadcrumb--item" title="{{ 'general.breadcrumbs.home_link_title' | t }}">
+       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+<path d="M11.8314 5.57573L10.6299 4.37572L6.42472 0.175674C6.31207 0.0631898 6.15929 0 6 0C5.84071 0 5.68793 0.0631898 5.57528 0.175674L1.37011 4.37572L0.168634 5.57573C0.059205 5.68889 -0.00134602 5.84046 2.27095e-05 5.99778C0.00139144 6.1551 0.0645704 6.30559 0.175952 6.41683C0.287334 6.52808 0.438006 6.59118 0.595518 6.59255C0.75303 6.59391 0.904778 6.53344 1.01808 6.42414L1.19409 6.24834V10.8C1.19409 11.1182 1.32068 11.4235 1.546 11.6485C1.77132 11.8736 2.07692 12 2.39557 12H4.79852C4.95785 12 5.11065 11.9368 5.22331 11.8243C5.33597 11.7117 5.39926 11.5591 5.39926 11.4V8.39996H6.60074V11.4C6.60074 11.5591 6.66403 11.7117 6.77669 11.8243C6.88935 11.9368 7.04215 12 7.20148 12H9.60443C9.92308 12 10.2287 11.8736 10.454 11.6485C10.6793 11.4235 10.8059 11.1182 10.8059 10.8V6.24834L10.9819 6.42414C11.0952 6.53344 11.247 6.59391 11.4045 6.59255C11.562 6.59118 11.7127 6.52808 11.824 6.41683C11.9354 6.30559 11.9986 6.1551 12 5.99778C12.0013 5.84046 11.9408 5.68889 11.8314 5.57573ZM9.60443 10.8H7.80221V8.39996C7.80221 8.0817 7.67563 7.77647 7.45031 7.55142C7.22499 7.32638 6.91939 7.19995 6.60074 7.19995H5.39926C5.08061 7.19995 4.77501 7.32638 4.54969 7.55142C4.32437 7.77647 4.19779 8.0817 4.19779 8.39996V10.8H2.39557V5.04833L6 1.44829L9.60443 5.04833V10.8Z" fill="#002031"/>
+</svg>
+    </a>
+{%- endcapture -%}
+
+{% unless template == 'index' %}
+  <nav
+    class="m-breadcrumb m:w-full {{ class }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
+    role="navigation"
+    aria-label="breadcrumbs"
+  >
+    <div class="{{ container }}">
+      <div class="m-breadcrumb--wrapper m:flex m:items-center m:justify-{{ justify | default: 'start' }}">
+        {% unless template.name == 'product' %}
+          {{ home }}
+        {% endunless %}
+
+        {% if template.name == 'product' %}
+          {{ home }}
+          {% liquid
+            assign current_collection = null
+            if collection
+              assign current_collection = collection
+            elsif product and product.collections.size > 0
+              assign current_collection = product.collections.first
+            endif
+          %}
+          {% if current_collection %}
+            {{ separator }}
+            {% if current_collection.handle %}
+              {% capture url %}/collections/{{ current_collection.handle }}{% endcapture %}
+              <a href="{{ url }}" class="m-breadcrumb--item">{{ current_collection.title }}</a>
+            {% endif %}
+          {% endif %}
+          {% unless hide_current == true %}
+            {{ separator }}
+            <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ product.title }}</span>
+          {% endunless %}
+        {% elsif template.name == 'collection' and collection.handle %}
+
+          
+      {%- assign parent_collection = collection.metafields.custom.parent_collection.value -%}
+
+  {%- if parent_collection -%}
+  {{ separator }}
+    <span class="m-breadcrumb--item">
+      {{ parent_collection.title | link_to: parent_collection.url }}
+    </span>
+     {%- endif -%}
+
+          {{ separator }}
+          {% if current_tags %}
+            {% capture url %}{{ routes.collections_url }}/{{ collection.handle }}{% endcapture %}
+            <a href="{{ url }}" class="m-breadcrumb--item">{{ collection.title }}</a>
+            {{ separator }}
+            <span class="m-breadcrumb--item m-breadcrumb--item-current">{{ current_tags | join: ' + ' }}</span>
+          {% else %}
+            <span class="m-breadcrumb--item m-breadcrumb--item-current">{{ collection.title }}</span>
+          {% endif %}
+
+        {% elsif template.name == 'blog' %}
+          {{ separator }}
+          {% if current_tags %}
+            <a href="{{ blog.url }}" class="m-breadcrumb--item">{{ blog.title }}</a>
+            {{ separator }}
+            <span class="m-breadcrumb--item m-breadcrumb--item-current">{{ current_tags | join: ' + ' }}</span>
+          {% else %}
+            <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ blog.title }}</span>
+          {% endif %}
+
+        {% elsif template == 'article' %}
+          {{ separator }}
+          <a href="{{ blog.url }}" class="m-breadcrumb--item">{{ blog.title }}</a>
+
+        {% elsif template == 'customers/addresses' %}
+          {{ separator }}
+          <a href="{{ routes.account_url }}" class="m-breadcrumb--item">{{ 'customer.account.page_title' | t }}</a>
+          {{ separator }}
+          <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ page_title }}</span>
+
+        {% elsif template contains 'page' %}
+          {{ separator }}
+          <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ page.title }}</span>
+
+        {% elsif template contains 'search' %}
+          {{ separator }}
+          <span class="m-breadcrumb--item-current m-breadcrumb--item">
+            {{- 'general.search.heading' | t: count: search.results_count, terms: search.terms -}}
+          </span>
+
+        {% else %}
+          {{ separator }}
+          <span class="m-breadcrumb--item-current m-breadcrumb--item">
+          
+
+             {%  if page_title == 'Collections' %}
+              Shop by style
+            {% else %}
+              {{ page_title }}
+              {% endif %}
+              
+          </span>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+{% endunless %}

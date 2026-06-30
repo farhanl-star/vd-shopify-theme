@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "door-complete-profile",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

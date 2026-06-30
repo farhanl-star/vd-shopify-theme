@@ -1,0 +1,197 @@
+{% assign drawer_uid = drawer_id | default: 'inserts-info-drawer' %}
+{% assign drawer_mount_selector = mount_selector | default: '' %}
+{% assign drawer_button_label = button_label | default: 'Inserts Info' %}
+{% assign drawer_title = modal_title | default: 'About Screen & Storm Inserts' %}
+{% assign tab_one_label = tab_one_title | default: 'Screen Inserts' %}
+{% assign tab_two_label = tab_two_title | default: 'Storm Glass Inserts' %}
+{% assign tab_one_heading_text = tab_one_heading | default: 'Screen Inserts' %}
+{% assign tab_two_heading_text = tab_two_heading | default: 'Storm Glass Inserts' %}
+{% assign tab_one_sub = tab_one_sub_description | default: '' %}
+{% assign tab_two_sub = tab_two_sub_description | default: '' %}
+{% assign tab_one_body = tab_one_description | default: '<p>Let in fresh air while keeping bugs and weather out.</p>' %}
+{% assign tab_two_body = tab_two_description | default: '<p>Storm inserts can be removable or permanent depending on your climate and season.</p>' %}
+{% assign items = info_blocks %}
+
+<div class="inserts-info-snippet" data-drawer-id="{{ drawer_uid }}" data-mount-selector="{{ drawer_mount_selector | escape }}">
+  <button
+    type="button"
+    class="inserts-info-open-btn common-btn btn-secondary btn-hide"
+    data-inserts-drawer-open
+    aria-haspopup="dialog"
+    aria-controls="inserts-info-drawer-{{ drawer_uid }}"
+  >
+    {{ drawer_button_label }}
+  </button>
+
+  <div
+    id="inserts-info-drawer-{{ drawer_uid }}"
+    class="inserts-info-modal common-sidebar-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="inserts-info-title-{{ drawer_uid }}"
+  >
+    <div class="inserts-info-modal__overlay common-sidebar-modal__overlay" data-inserts-drawer-close></div>
+
+    <div class="inserts-info-modal__panel common-sidebar-modal__panel" tabindex="-1">
+      <div class="common-sidebar-header">
+        <h5 id="inserts-info-title-{{ drawer_uid }}" class="inserts-info-modal__title">{{ drawer_title }}</h5>
+        <button type="button" class="inserts-info-modal__close common-sidebar-modal__close" data-inserts-drawer-close aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect width="2.11202" height="31.6804" rx="1.05601" transform="matrix(0.703968 0.710232 -0.703968 0.710232 22.5156 0)" fill="#002031"/>
+            <rect width="2.11202" height="31.6804" rx="1.05601" transform="matrix(-0.703968 0.710232 0.703968 0.710232 1.49219 0)" fill="#002031"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="inserts-info-tabs common-sidebar-tabs" role="tablist" aria-label="Inserts tabs">
+        <button class="inserts-info-tab common-sidebar-tab is-active" type="button" role="tab" data-tab="screen" aria-selected="true">{{ tab_one_label }}</button>
+        <button class="inserts-info-tab common-sidebar-tab" type="button" role="tab" data-tab="storm" aria-selected="false">{{ tab_two_label }}</button>
+      </div>
+
+      <div class="inserts-info-panel is-active" data-tab-panel="screen">
+        <div class="inserts-info-grid">
+          <div class="inserts-info-copy">
+            <h6 class="mb-8">{{ tab_one_heading_text }}</h6>
+            {% if tab_one_sub != blank %}
+              <p class="inserts-info-sub p-large mb-24">{{ tab_one_sub }}</p>
+            {% endif %}
+            <div class="inserts-info-rte mb-24">{{ tab_one_body }}</div>
+            {% if items != blank and items.size > 0 %}
+              {% for block in items %}
+                {% if block.type == 'detail' and block.settings.category == 'screen' %}
+                  <div class="inserts-info-detail" {{ block.shopify_attributes }}>
+                    <h4 class="p-medium primaryFont fw-600 mb-24">{{ block.settings.title }}</h4>
+                    <div class="inserts-info-detail__text">{{ block.settings.text }}</div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div class="inserts-info-image">
+            {% if tab_one_image != blank %}
+              <img src="{{ tab_one_image | image_url: width: 900 }}" alt="{{ tab_one_heading_text | escape }}" loading="lazy">
+            {% else %}
+              <div class="inserts-info-image--ph"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="inserts-info-panel" data-tab-panel="storm" hidden>
+        <div class="inserts-info-grid">
+          <div class="inserts-info-copy">
+            <h6 class="mb-8">{{ tab_two_heading_text }}</h6>
+            {% if tab_two_sub != blank %}
+              <p class="inserts-info-sub p-large mb-24">{{ tab_two_sub }}</p>
+            {% endif %}
+            <div class="inserts-info-rte mb-24">{{ tab_two_body }}</div>
+            {% if items != blank and items.size > 0 %}
+              {% for block in items %}
+                {% if block.type == 'detail' and block.settings.category == 'storm' %}
+                  <div class="inserts-info-detail" {{ block.shopify_attributes }}>
+                    <h4 class="p-medium primaryFont fw-600 mb-24">{{ block.settings.title }}</h4>
+                    <div class="inserts-info-detail__text">{{ block.settings.text }}</div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div class="inserts-info-image">
+            {% if tab_two_image != blank %}
+              <img src="{{ tab_two_image | image_url: width: 900 }}" alt="{{ tab_two_heading_text | escape }}" loading="lazy">
+            {% else %}
+              <div class="inserts-info-image--ph"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  {% comment %} .inserts-info-open-btn { cursor: pointer; }
+  .inserts-info-modal { position: fixed; inset: 0; z-index: 9999; visibility: hidden; pointer-events: none; }
+  .inserts-info-modal.is-open { visibility: visible; pointer-events: auto; }
+  .inserts-info-modal__overlay { position: absolute; inset: 0; background: rgba(15, 15, 15, 0.45); opacity: 0; transition: opacity 0.3s ease; }
+  .inserts-info-modal__panel { position: absolute; top: 0; right: 0; width: min(980px, calc(100vw - 40px)); height: 100vh; overflow-y: auto; background: #f7f7f6; border-left: 1px solid #d8d8d3; box-shadow: -22px 0 45px rgba(0, 0, 0, 0.28); transform: translateX(100%); transition: transform 0.35s ease; padding: 30px; }
+  .inserts-info-modal.is-open .inserts-info-modal__overlay { opacity: 1; }
+  .inserts-info-modal.is-open .inserts-info-modal__panel { transform: translateX(0); }
+  .inserts-info-modal__close { position: absolute; top: 14px; right: 18px; border: 0; background: transparent; font-size: 34px; line-height: 1; cursor: pointer; }
+  .inserts-info-modal__title { margin: 0 0 16px; font-size: 36px; line-height: 1.2; color: #232323; } {% endcomment %}
+
+  {% comment %} .inserts-info-tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #c9bc85; margin-bottom: 18px; }
+  .inserts-info-tab { border: 0; background: transparent; border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px; font-weight: 700; padding: 0 0 10px; } 
+  .inserts-info-tab.is-active { border-bottom-color: #9a8440; } {% endcomment %}
+
+
+</style>
+
+<script>
+  (function () {
+    var roots = document.querySelectorAll('.inserts-info-snippet[data-drawer-id]');
+    if (!roots.length) return;
+
+    roots.forEach(function (root) {
+      if (root.getAttribute('data-drawer-init') === 'true') return;
+      root.setAttribute('data-drawer-init', 'true');
+
+      var modal = root.querySelector('.inserts-info-modal');
+      var panel = root.querySelector('.inserts-info-modal__panel');
+      var openBtn = root.querySelector('[data-inserts-drawer-open]');
+      var closeEls = root.querySelectorAll('[data-inserts-drawer-close]');
+      var tabs = root.querySelectorAll('.inserts-info-tab');
+      var tabPanels = root.querySelectorAll('[data-tab-panel]');
+      var mountSelector = root.getAttribute('data-mount-selector');
+
+      if (mountSelector && openBtn) {
+        var target = document.querySelector(mountSelector);
+        if (target && !target.contains(openBtn)) {
+          target.appendChild(openBtn);
+        }
+      }
+
+      function setTab(key) {
+        tabs.forEach(function (tab) {
+          var active = tab.getAttribute('data-tab') === key;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        tabPanels.forEach(function (panelItem) {
+          var active = panelItem.getAttribute('data-tab-panel') === key;
+          panelItem.hidden = !active;
+          panelItem.classList.toggle('is-active', active);
+        });
+      }
+
+      function openDrawer() {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        panel.focus();
+      }
+
+      function closeDrawer() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+      }
+
+      if (openBtn) openBtn.addEventListener('click', openDrawer);
+      closeEls.forEach(function (el) { el.addEventListener('click', closeDrawer); });
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          setTab(tab.getAttribute('data-tab'));
+        });
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        if (modal.classList.contains('is-open')) closeDrawer();
+      });
+    });
+  })();
+</script>

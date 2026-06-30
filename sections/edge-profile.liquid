@@ -1,0 +1,101 @@
+{% render 'edge-profile-drawer',
+  drawer_id: section.id,
+  mount_selector: section.settings.mount_selector,
+  button_label: section.settings.button_label,
+  modal_title: section.settings.modal_title,
+  edge_profile_options_label: section.settings.edge_profile_options_label,
+  edge_profile_heading: section.settings.edge_profile_heading,
+  edge_profile_description: section.settings.edge_profile_description,
+  
+  finish_label: section.settings.finish_label,
+  wood_blocks: section.blocks
+%}
+
+{% schema %}
+{
+  "name": "Edge Profile",
+  "settings": [
+    {
+      "type": "text",
+      "id": "mount_selector",
+      "label": "Button mount selector",
+      "default": "#door-configurator-options",
+      "info": "CSS selector where the drawer button should be inserted."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Open button label",
+      "default": "Edge Profile"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Modal title",
+      "default": "Edge Profile"
+    },
+    {
+      "type": "text",
+      "id": "edge_profile_options_label",
+      "label": "Tab label: Edge Profile Options",
+    },
+    {
+      "type": "text",
+      "id": "edge_profile_heading",
+      "label": "edge profile heading",
+      "default": "d"
+    },
+    {
+      "type": "richtext",
+      "id": "edge_profile_description",
+      "label": "Edge Profile description"
+    },
+    {
+      "type": "text",
+      "id": "drawer_custom_class",
+      "label": "Custom CSS class",
+      "info": "Add extra CSS class(es) to the drawer wrapper. Separate multiple classes with a space."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "species",
+      "name": "Edge Profile",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Category",
+          "default": "edgep",
+          "options": [
+            { "value": "edgep", "label": "Edge Profile" }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Edge Profile name",
+          "default": "Lamb's Tongue Round "
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>It resists dents and creases, cleans easily, and allows steady airflow without glare or shine. A reliable, all-purpose option that suits most homes and climates.</p>"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 30,
+  "presets": [
+    {
+      "name": "Edge Profile"
+    }
+  ]
+}
+{% endschema %}

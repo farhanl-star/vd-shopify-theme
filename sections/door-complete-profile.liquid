@@ -1,0 +1,544 @@
+{% comment %}
+
+  Page: /pages/complete-profile — assign template page.complete-profile
+
+{% endcomment %}
+
+{% assign cp_address = customer.default_address.address1 | default: '' %}
+{% assign cp_city = customer.default_address.city | default: '' %}
+{% assign cp_zip = customer.default_address.zip | default: '' %}
+
+{% assign you_are_val = customer.metafields.omni_signups['you-are'].value | default: customer.metafields.omni_signups['you-are'] | default: '' %}
+
+{% assign hear_val = customer.metafields.omni_signups['how-did-you-hear-about-us'].value | default: customer.metafields.omni_signups['how-did-you-hear-about-us'] | default: '' %}
+
+{% assign profile_complete = false %}
+
+{% if customer and customer.first_name != blank and customer.phone != blank and cp_zip != blank %}
+
+  {% assign profile_complete = true %}
+
+{% endif %}
+
+
+
+<div class="page-width" style="padding:2.5rem 1rem;max-width:32rem;margin:0 auto;">
+
+  {% unless customer %}
+
+    <h1 style="font-size:1.35rem;margin:0 0 1rem;">Log in to continue</h1>
+
+    <p style="margin:0 0 1rem;">Please log in to complete your profile and return to your door configuration.</p>
+
+    <a href="{{ routes.storefront_login_url }}?return_to={{ request.path | url_encode }}" class="button">Log in</a>
+
+  {% elsif profile_complete %}
+
+    <p style="text-align:center;font-size:1.1rem;">Returning to your configuration…</p>
+
+  {% else %}
+
+    <h1 style="font-size:1.35rem;margin:0 0 0.5rem;">Complete your profile</h1>
+
+    <p style="margin:0 0 1.5rem;color:#555;line-height:1.5;">A few details before we restore your door options.</p>
+
+
+
+    <form id="door-complete-profile-form" novalidate>
+
+      <input type="hidden" name="email" id="door-cp-email" value="{{ customer.email | escape }}">
+
+
+
+      <p style="margin:0 0 1rem;">
+
+        <label for="door-cp-first" style="display:block;margin-bottom:0.35rem;font-weight:600;">First name <span style="color:#dc2626;">*</span></label>
+
+        <input type="text" id="door-cp-first" name="first_name" required autocomplete="given-name"
+
+          value="{{ customer.first_name | escape }}"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">
+
+      </p>
+
+      <p style="margin:0 0 1rem;">
+
+        <label for="door-cp-last" style="display:block;margin-bottom:0.35rem;font-weight:600;">Last name</label>
+
+        <input type="text" id="door-cp-last" name="last_name" autocomplete="family-name"
+
+          value="{{ customer.last_name | escape }}"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">
+
+      </p>
+
+      <p style="margin:0 0 1rem;">
+
+        <label for="door-cp-company" style="display:block;margin-bottom:0.35rem;font-weight:600;">Company</label>
+
+        <input type="text" id="door-cp-company" name="company" autocomplete="organization"
+
+          value="{{ customer.default_address.company | default: customer.company | default: '' | escape }}"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">
+
+      </p>
+
+      <p style="margin:0 0 1rem;">
+
+        <label for="door-cp-address" style="display:block;margin-bottom:0.35rem;font-weight:600;">Address</label>
+
+        <textarea id="door-cp-address" name="address" rows="2" autocomplete="street-address"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">{{ cp_address | escape }}</textarea>
+
+      </p>
+
+      <p style="margin:0 0 1rem;">
+
+        <label for="door-cp-city" style="display:block;margin-bottom:0.35rem;font-weight:600;">City</label>
+
+        <input type="text" id="door-cp-city" name="city" autocomplete="address-level2"
+
+          value="{{ cp_city | escape }}"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">
+
+      </p>
+
+      <p style="margin:0 0 1rem;">
+
+        <label for="door-cp-zip" style="display:block;margin-bottom:0.35rem;font-weight:600;">Zip / postal code <span style="color:#dc2626;">*</span></label>
+
+        <input type="text" id="door-cp-zip" name="zip" required autocomplete="postal-code"
+
+          value="{{ cp_zip | escape }}"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">
+
+      </p>
+
+      <p style="margin:0 0 1rem;">
+
+        <label for="door-cp-phone" style="display:block;margin-bottom:0.35rem;font-weight:600;">Telephone <span style="color:#dc2626;">*</span></label>
+
+        <input type="tel" id="door-cp-phone" name="phone" required autocomplete="tel"
+
+          value="{{ customer.phone | escape }}"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">
+
+      </p>
+
+      <p style="margin:0 0 1rem;">
+
+        <label for="door-cp-you-are" style="display:block;margin-bottom:0.35rem;font-weight:600;">You are a</label>
+
+        <select id="door-cp-you-are" name="you_are"
+
+          data-current-value="{{ you_are_val | escape }}"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">
+
+          <option value="">Select…</option>
+
+        </select>
+
+      </p>
+
+      <p style="margin:0 0 1.25rem;">
+
+        <label for="door-cp-hear" style="display:block;margin-bottom:0.35rem;font-weight:600;">How did you hear about us?</label>
+
+        <select id="door-cp-hear" name="how_did_you_hear"
+
+          data-current-value="{{ hear_val | escape }}"
+
+          style="width:100%;padding:0.5rem 0.65rem;border:1px solid #ccc;border-radius:4px;">
+
+          <option value="">Select…</option>
+
+        </select>
+
+      </p>
+
+      <p id="door-cp-error" style="display:none;color:#b91c1c;margin:0 0 1rem;"></p>
+
+      <button type="submit" id="door-cp-submit" class="button" style="cursor:pointer;">Save &amp; continue</button>
+
+    </form>
+
+  {% endunless %}
+
+</div>
+
+
+
+<script>
+
+(function () {
+
+  var apiBase = {{ section.settings.api_base | default: 'https://vintage.espirevox.com' | json }};
+
+  var profileComplete = {% if profile_complete %}true{% else %}false{% endif %};
+
+  var isLoggedIn = {% if customer %}true{% else %}false{% endif %};
+
+  var fallbackYouAre = {{ section.settings.you_are_choices | default: '' | split: newline | json }};
+
+  var fallbackHear = {{ section.settings.how_did_you_hear_choices | default: '' | split: newline | json }};
+
+
+
+  function configReturnUrl() {
+
+    try {
+
+      var raw = localStorage.getItem('door_config_return_url') || localStorage.getItem('door_config_return_path') || '';
+
+      if (!raw) return '';
+
+      if (raw.indexOf('http') === 0) return raw;
+
+      return window.location.origin + (raw.charAt(0) === '/' ? raw : '/' + raw);
+
+    } catch (e) {
+
+      return '';
+
+    }
+
+  }
+
+
+
+  function goToConfig() {
+
+    var url = configReturnUrl();
+
+    if (!url) {
+
+      window.location.replace('/');
+
+      return;
+
+    }
+
+    try {
+
+      sessionStorage.removeItem('door_pending_profile');
+
+      sessionStorage.setItem('door_profile_form_done', '1');
+
+    } catch (e) {}
+
+    window.location.replace(url);
+
+  }
+
+
+
+  function cleanChoiceList(list) {
+
+    if (!Array.isArray(list)) return [];
+
+    var out = [];
+
+    var seen = {};
+
+    list.forEach(function (item) {
+
+      var v = String(item || '').trim();
+
+      if (!v || seen[v]) return;
+
+      seen[v] = true;
+
+      out.push(v);
+
+    });
+
+    return out;
+
+  }
+
+
+
+  function populateSelect(selectEl, choices, current) {
+
+    if (!selectEl) return;
+
+    var currentVal = String(current || selectEl.getAttribute('data-current-value') || '').trim();
+
+    while (selectEl.options.length > 1) {
+
+      selectEl.remove(1);
+
+    }
+
+    choices.forEach(function (choice) {
+
+      var opt = document.createElement('option');
+
+      opt.value = choice;
+
+      opt.textContent = choice;
+
+      if (currentVal && currentVal === choice) opt.selected = true;
+
+      selectEl.appendChild(opt);
+
+    });
+
+    if (currentVal && !choices.length) {
+
+      var custom = document.createElement('option');
+
+      custom.value = currentVal;
+
+      custom.textContent = currentVal;
+
+      custom.selected = true;
+
+      selectEl.appendChild(custom);
+
+    }
+
+  }
+
+
+
+  function loadDropdownChoices(done) {
+
+    var youAreEl = document.getElementById('door-cp-you-are');
+
+    var hearEl = document.getElementById('door-cp-hear');
+
+    if (!youAreEl && !hearEl) {
+
+      if (done) done();
+
+      return;
+
+    }
+
+    fetch(apiBase.replace(/\/$/, '') + '/api/customer_profile.php?choices=1')
+
+      .then(function (r) { return r.json(); })
+
+      .then(function (data) {
+
+        var youAre = cleanChoiceList((data && data.you_are) || fallbackYouAre);
+
+        var hear = cleanChoiceList((data && data.how_did_you_hear) || fallbackHear);
+
+        populateSelect(youAreEl, youAre);
+
+        populateSelect(hearEl, hear);
+
+        if (done) done();
+
+      })
+
+      .catch(function () {
+
+        populateSelect(youAreEl, cleanChoiceList(fallbackYouAre));
+
+        populateSelect(hearEl, cleanChoiceList(fallbackHear));
+
+        if (done) done();
+
+      });
+
+  }
+
+
+
+  if (isLoggedIn && profileComplete) {
+
+    goToConfig();
+
+    return;
+
+  }
+
+
+
+  var form = document.getElementById('door-complete-profile-form');
+
+  if (!form) return;
+
+
+
+  loadDropdownChoices();
+
+
+
+  form.addEventListener('submit', function (ev) {
+
+    ev.preventDefault();
+
+    var errEl = document.getElementById('door-cp-error');
+
+    var btn = document.getElementById('door-cp-submit');
+
+    if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+
+
+
+    var payload = {
+
+      email: (document.getElementById('door-cp-email') || {}).value || '',
+
+      first_name: (document.getElementById('door-cp-first') || {}).value || '',
+
+      last_name: (document.getElementById('door-cp-last') || {}).value || '',
+
+      company: (document.getElementById('door-cp-company') || {}).value || '',
+
+      address: (document.getElementById('door-cp-address') || {}).value || '',
+
+      city: (document.getElementById('door-cp-city') || {}).value || '',
+
+      zip: (document.getElementById('door-cp-zip') || {}).value || '',
+
+      phone: (document.getElementById('door-cp-phone') || {}).value || '',
+
+      you_are: (document.getElementById('door-cp-you-are') || {}).value || '',
+
+      how_did_you_hear: (document.getElementById('door-cp-hear') || {}).value || ''
+
+    };
+
+
+
+    if (!String(payload.first_name).trim()) {
+
+      if (errEl) { errEl.textContent = 'First name is required.'; errEl.style.display = ''; }
+
+      return;
+
+    }
+
+    if (!String(payload.zip).trim()) {
+
+      if (errEl) { errEl.textContent = 'Zip / postal code is required.'; errEl.style.display = ''; }
+
+      return;
+
+    }
+
+    if (!String(payload.phone).trim()) {
+
+      if (errEl) { errEl.textContent = 'Telephone is required.'; errEl.style.display = ''; }
+
+      return;
+
+    }
+
+
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+
+
+    fetch(apiBase.replace(/\/$/, '') + '/api/customer_profile.php', {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+
+      body: JSON.stringify(payload)
+
+    })
+
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+
+      .then(function (res) {
+
+        if (!res.ok || !res.data || !res.data.success) {
+
+          throw new Error((res.data && res.data.error) || 'Could not save profile');
+
+        }
+
+        goToConfig();
+
+      })
+
+      .catch(function (err) {
+
+        if (errEl) {
+
+          errEl.textContent = err.message || 'Save failed. Please try again.';
+
+          errEl.style.display = '';
+
+        }
+
+        if (btn) { btn.disabled = false; btn.textContent = 'Save & continue'; }
+
+      });
+
+  });
+
+})();
+
+</script>
+
+
+
+{% schema %}
+
+{
+
+  "name": "Door complete profile",
+
+  "settings": [
+
+    {
+
+      "type": "text",
+
+      "id": "api_base",
+
+      "label": "API base URL",
+
+      "default": "https://vintage.espirevox.com"
+
+    },
+
+    {
+
+      "type": "textarea",
+
+      "id": "you_are_choices",
+
+      "label": "You are a — fallback options (one per line)",
+
+      "info": "Used if API cannot load choices from Shopify metafield definitions."
+
+    },
+
+    {
+
+      "type": "textarea",
+
+      "id": "how_did_you_hear_choices",
+
+      "label": "How did you hear — fallback options (one per line)",
+
+      "info": "Used if API cannot load choices from Shopify metafield definitions."
+
+    }
+
+  ],
+
+  "presets": [{ "name": "Door complete profile" }]
+
+}
+
+{% endschema %}
+

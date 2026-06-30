@@ -1,0 +1,66 @@
+<section class="measurement-guide py-120"
+  style="
+    background-image: url({{ section.settings.bg_image | image_url: width: 2000 }});
+  "
+>
+  <div class="measurement-guide__overlay">
+    <div class="container">
+      <div class="measurement-guide__card">
+        <h2 class="measurement-guide__title h6">
+          {{ section.settings.heading }}
+        </h2>
+
+        <div class="measurement-guide__content">
+          {{ section.settings.content }}
+        </div>
+
+        {% if section.settings.button_label %}
+          <a href="{{ section.settings.button_link }}" class="measurement-guide__button common-btn btn-bordered" >
+            {{ section.settings.button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Measurement Guide",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background blueprint image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Getting the Measurements Right"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Every porch and entry is a little different. Some openings are simple—others take more care. Either way, we'll help you get it right.</p><p>Not sure which applies? Our Complete Measuring Guide breaks it down with diagrams and details. And if something looks tricky—older porches, uneven trim, or out-of-square frames—just send us a photo or give us a call. We’ll review your measurements before anything goes into production.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Measurement Guide"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Measurement Guide Section"
+    }
+  ]
+}
+{% endschema %}

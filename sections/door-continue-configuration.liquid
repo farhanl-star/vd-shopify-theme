@@ -1,0 +1,103 @@
+{% comment %}
+  Page: /pages/continue-door-configuration
+  Create in Shopify Admin → Pages → handle: continue-door-configuration
+  Template: page.continue-door-configuration
+
+  Works without Customer Accounts Pro redirect: profile opens in a new tab;
+  customer saves there, returns to this tab, clicks Continue (auto-redirect when name is set).
+{% endcomment %}
+{% assign profile_complete = false %}
+{% if customer and customer.first_name != blank and customer.last_name != blank %}
+  {% assign profile_complete = true %}
+{% endif %}
+
+<div class="page-width" style="padding:3rem 1rem;max-width:36rem;margin:0 auto;">
+  {% unless customer %}
+    <p style="text-align:center;">Please log in to continue.</p>
+    <p style="text-align:center;margin-top:1rem;">
+      <a href="{{ routes.storefront_login_url }}" class="button">Log in</a>
+    </p>
+  {% elsif profile_complete %}
+    <p style="text-align:center;font-size:1.1rem;">Returning to your door configuration…</p>
+  {% else %}
+    <h1 style="font-size:1.35rem;margin:0 0 0.75rem;">Complete your profile</h1>
+    <p style="margin:0 0 1.25rem;line-height:1.5;color:#444;">
+      Open your account profile in a new tab, fill in your details (including custom fields), and save.
+      Then return to <strong>this tab</strong> and click continue below.
+    </p>
+    <p style="margin:0 0 1rem;">
+      <a href="{{ routes.account_profile_url }}" target="_blank" rel="noopener" class="button" style="display:inline-block;">
+        Open profile (new tab)
+      </a>
+    </p>
+    <p style="margin:0;">
+      <button type="button" id="door-profile-done-btn" class="button button--secondary" style="cursor:pointer;">
+        I saved my profile — continue
+      </button>
+    </p>
+    <p id="door-profile-hint" style="display:none;margin:0.75rem 0 0;color:#b45309;font-size:0.95rem;">
+      Please add your <strong>first name</strong> and <strong>last name</strong> on your profile, save, then click continue again.
+    </p>
+  {% endunless %}
+  <p id="door-continue-fallback" style="display:none;text-align:center;margin-top:1.5rem;">
+    <a href="/">Go to homepage</a>
+  </p>
+</div>
+
+<script>
+(function () {
+  var profileComplete = {{ profile_complete | json }};
+  var isLoggedIn = {% if customer %}true{% else %}false{% endif %};
+
+  function configReturnUrl() {
+    try {
+      var raw = localStorage.getItem('door_config_return_url') || localStorage.getItem('door_config_return_path') || '';
+      if (!raw) return '';
+      if (raw.indexOf('http') === 0) return raw;
+      return window.location.origin + (raw.charAt(0) === '/' ? raw : '/' + raw);
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function goToConfig() {
+    var url = configReturnUrl();
+    if (!url) {
+      var fb = document.getElementById('door-continue-fallback');
+      if (fb) fb.style.display = '';
+      return;
+    }
+    try { sessionStorage.removeItem('door_pending_profile'); } catch (e) {}
+    window.location.replace(url);
+  }
+
+  if (isLoggedIn && profileComplete) {
+    goToConfig();
+    return;
+  }
+
+  if (!isLoggedIn) return;
+
+  var doneBtn = document.getElementById('door-profile-done-btn');
+  var hint = document.getElementById('door-profile-hint');
+  try {
+    if (sessionStorage.getItem('door_profile_continue_clicked') === '1' && hint) {
+      hint.style.display = '';
+    }
+  } catch (e) {}
+
+  if (doneBtn) {
+    doneBtn.addEventListener('click', function () {
+      try { sessionStorage.setItem('door_profile_continue_clicked', '1'); } catch (e) {}
+      window.location.reload();
+    });
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible') return;
+    try {
+      if (sessionStorage.getItem('door_pending_profile') === '1') window.location.reload();
+    } catch (e) {}
+  });
+})();
+</script>

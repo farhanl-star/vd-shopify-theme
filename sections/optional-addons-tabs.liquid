@@ -1,0 +1,269 @@
+<section class="addons-tabs-section pt-80" data-section-id="{{ section.id }}">
+  <div class="page-width container">
+
+    <!-- HEADER -->
+    <header class="addons-header common-center-div">
+      <h5>{{ section.settings.heading }}</h5>
+      <p class="common-header-desc">{{ section.settings.subheading }}</p>
+    </header>
+
+    <!-- TABS (mobile: carousel wrapper for swipe) -->
+    <div class="addons-tabs addons-tabs-buttons-wrap">
+      <div class="addons-tabs-scroll">
+        {% assign first_tab_button = true %}
+        {% for block in section.blocks %}
+          {% if block.type == 'tab' %}
+            <button
+              class="addons-tab-btn {% if first_tab_button %}active{% endif %}"
+              data-tab-target="tab-{{ block.id }}"
+            >
+              {{ block.settings.tab_title }}
+            </button>
+            {% assign first_tab_button = false %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- TAB CONTENT (mobile: track for swipe + peek) -->
+    <div class="addons-tabs-content">
+      <div class="addons-tabs-track">
+      {% assign first_tab_content = true %}
+      {% for block in section.blocks %}
+        {% if block.type == 'tab' %}
+          <div
+            class="addons-tab-content {% if first_tab_content %}active{% endif %}"
+            id="tab-{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >
+            <div class="addons-grid">
+
+              <div class="addons-image">
+                {% if block.settings.image %}
+                  <img
+                    src="{{ block.settings.image | image_url: width: 800 }}"
+                    alt=""
+                    loading="lazy"
+                  >
+                {% endif %}
+              </div>
+
+              <div class="addons-text common-content-style">
+                <h6>{{ block.settings.title }}</h6>
+                <p class="common-header-desc addons-desc">{{ block.settings.text }}</p>
+                {{ block.settings.richtext }}
+              </div>
+
+            </div>
+          </div>
+          {% assign first_tab_content = false %}
+        {% endif %}
+      {% endfor %}
+      </div>
+      <div class="addons-arrows">
+        <button class="addons-arrow prev" aria-label="Previous">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="26" viewBox="0 0 14 26" fill="none">
+            <path d="M12.6914 0.5L0.691406 13L12.6914 25.5" stroke="#806730" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="addons-arrow next" aria-label="Next">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="26" viewBox="0 0 14 26" fill="none">
+            <path d="M0.5 0.5L12.5 13L0.5 25.5" stroke="#806730" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="shop-cta-wrapper pt-120 pb-80">
+      <h3 class="shop-cta-heading">{{ section.settings.cta_heading }}</h3>
+      <p class="shop-cta-subheading p-medium">{{ section.settings.cta_sub_heading }}</p>
+      <div class="common-btn-div">
+        <a href="{{  product.url | within: collection }}" class="shop-cta-button common-btn">
+        {{ section.settings.cta_label }}
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <path d="M17.0039 23.1873L21.3059 21.5327C21.5811 21.4268 21.7187 21.3739 21.8474 21.3048C21.9617 21.2435 22.0707 21.1726 22.1732 21.0931C22.2887 21.0035 22.3929 20.8993 22.6014 20.6908L31.3459 11.9463C32.2022 11.09 32.2022 9.70166 31.3459 8.84535C30.4896 7.98905 29.1012 7.98905 28.2449 8.84535L19.5004 17.5898C19.2919 17.7983 19.1877 17.9025 19.0981 18.018C19.0186 18.1205 18.9477 18.2295 18.8864 18.3438C18.8173 18.4725 18.7644 18.6101 18.6585 18.8853L17.0039 23.1873ZM17.0039 23.1873L18.5994 19.0389C18.7136 18.7421 18.7707 18.5937 18.8686 18.5257C18.9542 18.4663 19.0601 18.4438 19.1624 18.4633C19.2795 18.4857 19.3919 18.5981 19.6168 18.823L21.3682 20.5744C21.5931 20.7993 21.7055 20.9117 21.7279 21.0288C21.7474 21.1311 21.7249 21.237 21.6655 21.3226C21.5975 21.4205 21.4491 21.4776 21.1523 21.5918L17.0039 23.1873Z" stroke="#FDFEFF" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.3441 32.0038L8.61548 32.0039C8.3984 32.0039 8.28985 32.0039 8.20694 31.9617C8.134 31.9245 8.0747 31.8652 8.03754 31.7923C7.99529 31.7094 7.99529 31.6008 7.99529 31.3837L7.99529 16.1788C7.99529 15.9617 7.99529 15.8532 8.03754 15.7702C8.0747 15.6973 8.134 15.638 8.20694 15.6008C8.28985 15.5586 8.3984 15.5586 8.61549 15.5586L12.8569 15.5586C13.074 15.5586 13.1825 15.5586 13.2654 15.6008C13.3384 15.638 13.3977 15.6973 13.4348 15.7702C13.4771 15.8532 13.4771 15.9617 13.4771 16.1788L13.4771 26.3527M12.9289 25.4258L11.2844 25.4258M12.9289 22.1368L11.2844 22.1368M12.9289 18.8477L11.2844 18.8477" stroke="#FDFEFF" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.4755 26.5206L19.5776 26.5207L23.819 26.5207C24.036 26.5207 24.1446 26.5207 24.2275 26.5629C24.3004 26.6001 24.3597 26.6594 24.3969 26.7323C24.4391 26.8152 24.4391 26.9238 24.4391 27.1409L24.4391 31.3823C24.4391 31.5993 24.4391 31.7079 24.3969 31.7908C24.3597 31.8637 24.3004 31.923 24.2275 31.9602C24.1446 32.0025 24.036 32.0025 23.819 32.0025L13.7029 32.0025M21.1501 27.0689V28.7134M17.8611 27.0689L17.8611 28.7134" stroke="#FDFEFF" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.5703 26.75L14.5703 28.3945" stroke="#FDFEFF" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* --- Mobile-only: tab buttons carousel + content strip with peek (no loop) --- */
+  @media screen and (max-width: 768px) {
+    .addons-tabs-section .addons-tabs-buttons-wrap {
+      overflow: hidden;
+    }
+    .addons-tabs-section .addons-tabs-scroll {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 24px;
+    }
+    .addons-tabs-section .addons-tabs-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .addons-tabs-section .addons-tab-btn {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+    }
+
+    .addons-tabs-section .addons-tabs-content {
+      overflow: hidden;
+      position: relative;
+      touch-action: pan-y pinch-zoom;
+    }
+    .addons-tabs-section .addons-tabs-track {
+      display: flex;
+      transition: transform 0.35s ease-out;
+      will-change: transform;
+      gap:20px;
+    }
+    .addons-tabs-section .addons-tabs-content .addons-tab-content {
+      display: block;
+      flex: 0 0 90%;
+      min-width: 90%;
+      width: 90%;
+      box-sizing: border-box;
+    }
+    .addons-tabs-section .addons-tabs-content .addons-tab-content .addons-grid {
+      min-height: 50vh;
+    }
+    .addons-tabs-section .addons-image{height:234px;}
+  }
+</style>
+
+<script>
+  (function () {
+    const section = document.querySelector(
+      '.addons-tabs-section[data-section-id="{{ section.id }}"]'
+    );
+    if (!section) return;
+
+    const tabButtons = Array.from(section.querySelectorAll('.addons-tab-btn'));
+    const tabContents = Array.from(section.querySelectorAll('.addons-tab-content'));
+    const prevBtn = section.querySelector('.addons-arrow.prev');
+    const nextBtn = section.querySelector('.addons-arrow.next');
+    const tabsScroll = section.querySelector('.addons-tabs-scroll');
+    const tabsTrack = section.querySelector('.addons-tabs-track');
+    const tabsContent = section.querySelector('.addons-tabs-content');
+
+    let currentIndex = 0;
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+
+    function isMobile() {
+      return mobileQuery.matches;
+    }
+
+    /* ---------- ACTIVATE TAB ---------- */
+    function activateTab(index) {
+      if (index < 0 || index >= tabContents.length) return; // no loop
+
+      currentIndex = index;
+
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(tab => tab.classList.remove('active'));
+
+      tabButtons[index].classList.add('active');
+      tabContents[index].classList.add('active');
+
+      if (isMobile() && tabsTrack) {
+        tabsTrack.style.transform = 'translateX(-' + (index * 90) + '%)';
+      }
+      if (isMobile() && tabsScroll && tabButtons[index]) {
+        tabButtons[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+
+      updateArrows();
+    }
+
+    /* ---------- ARROW STATE ---------- */
+    function updateArrows() {
+      if (prevBtn) prevBtn.disabled = currentIndex === 0;
+      if (nextBtn) nextBtn.disabled = currentIndex === tabContents.length - 1;
+    }
+
+    /* ---------- TAB CLICK ---------- */
+    tabButtons.forEach((btn, index) => {
+      btn.addEventListener('click', () => activateTab(index));
+    });
+
+    /* ---------- ARROW CLICK ---------- */
+    prevBtn?.addEventListener('click', () => {
+      activateTab(currentIndex - 1);
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      activateTab(currentIndex + 1);
+    });
+
+    /* ---------- SWIPE SUPPORT (desktop: per-panel; mobile: whole content area) ---------- */
+    let startX = 0;
+    let isDragging = false;
+
+    if (tabsContent) {
+      tabsContent.addEventListener('pointerdown', (e) => {
+        startX = e.clientX;
+        isDragging = true;
+      });
+      tabsContent.addEventListener('pointerup', (e) => {
+        if (!isDragging) return;
+        const diff = e.clientX - startX;
+        if (diff > 60) activateTab(currentIndex - 1);
+        if (diff < -60) activateTab(currentIndex + 1);
+        isDragging = false;
+      });
+      tabsContent.addEventListener('pointerleave', () => {
+        isDragging = false;
+      });
+    }
+
+    /* ---------- INIT ---------- */
+    updateArrows();
+    if (isMobile() && tabsTrack) {
+      tabsTrack.style.transform = 'translateX(-' + (currentIndex * 90) + '%)';
+    }
+  })();
+</script>
+
+
+
+{% schema %}
+{
+  "name": "Optional Add-ons (Tabs)",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Optional Add-ons" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Complement and enhance your door with added features" },
+    { "type": "text", "id": "cta_heading", "label": "CTA Heading", "default": "Ready to get started?" },
+     { "type": "text", "id": "cta_sub_heading", "label": "CTA Sub Heading" },
+    { "type": "text", "id": "cta_label", "label": "CTA Label", "default": "Customize Your Door" },
+    { "type": "url", "id": "cta_link", "label": "CTA Link" }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        { "type": "text", "id": "tab_title", "label": "Tab Title" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Content Title" },
+        { "type": "textarea", "id": "text", "label": "Content Text" },
+        { "type": "richtext", "id": "richtext", "label": "Bullet Points" }
+      ]
+    }
+  ],
+  "max_blocks": 7,
+  "presets": [
+    { "name": "Optional Add-ons Tabs" }
+  ]
+}
+{% endschema %}

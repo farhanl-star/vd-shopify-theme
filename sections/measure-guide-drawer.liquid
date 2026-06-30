@@ -1,0 +1,96 @@
+{% render 'measure-guide-drawer',
+  drawer_id: section.id,
+  mount_selector: section.settings.mount_selector,
+  button_label: section.settings.button_label,
+  modal_title: section.settings.modal_title,
+  tab_1_label: section.settings.tab_1_label,
+  tab_1_heading: section.settings.tab_1_heading,
+  tab_1_subheading: section.settings.tab_1_subheading,
+  tab_1_description: section.settings.tab_1_description,
+  tab_1_image: section.settings.tab_1_image,
+  tab_2_label: section.settings.tab_2_label,
+  tab_2_heading: section.settings.tab_2_heading,
+  tab_2_subheading: section.settings.tab_2_subheading,
+  tab_2_description: section.settings.tab_2_description,
+  tab_2_image: section.settings.tab_2_image,
+  tab_3_label: section.settings.tab_3_label,
+  tab_3_heading: section.settings.tab_3_heading,
+  tab_3_subheading: section.settings.tab_3_subheading,
+  tab_3_description: section.settings.tab_3_description,
+  tab_3_image: section.settings.tab_3_image,
+  tab_4_label: section.settings.tab_4_label,
+  tab_4_heading: section.settings.tab_4_heading,
+  tab_4_subheading: section.settings.tab_4_subheading,
+  tab_4_description: section.settings.tab_4_description,
+  tab_4_image: section.settings.tab_4_image,
+  tab_5_label: section.settings.tab_5_label,
+  tab_5_heading: section.settings.tab_5_heading,
+  tab_5_subheading: section.settings.tab_5_subheading,
+  tab_5_description: section.settings.tab_5_description,
+  tab_5_image: section.settings.tab_5_image
+%}
+
+{% schema %}
+{
+  "name": "Measure Guide Drawer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "mount_selector",
+      "label": "Button mount selector",
+      "default": "#door-configurator-options",
+      "info": "CSS selector where the drawer button should be inserted."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Open button label",
+      "default": "How To Measure"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Modal title",
+      "default": "How To Measure for Your Door"
+    },
+
+    { "type": "header", "content": "Tab 1 - Exact Door Size" },
+    { "type": "text", "id": "tab_1_label", "label": "Tab label", "default": "Exact Door Size" },
+    { "type": "text", "id": "tab_1_heading", "label": "Heading", "default": "An Existing Door" },
+    { "type": "text", "id": "tab_1_subheading", "label": "Subheading", "default": "Use this only if your current door fits well and swings smoothly." },
+    { "type": "richtext", "id": "tab_1_description", "label": "Description", "default": "<p>Measure width, height, and thickness from the existing door.</p>" },
+    { "type": "image_picker", "id": "tab_1_image", "label": "Image" },
+
+    { "type": "header", "content": "Tab 2 - Finished Opening" },
+    { "type": "text", "id": "tab_2_label", "label": "Tab label", "default": "Finished Opening" },
+    { "type": "text", "id": "tab_2_heading", "label": "Heading", "default": "Finished Opening" },
+    { "type": "text", "id": "tab_2_subheading", "label": "Subheading" },
+    { "type": "richtext", "id": "tab_2_description", "label": "Description", "default": "<p>Measure the completed opening dimensions.</p>" },
+    { "type": "image_picker", "id": "tab_2_image", "label": "Image" },
+
+    { "type": "header", "content": "Tab 3 - Rough Opening" },
+    { "type": "text", "id": "tab_3_label", "label": "Tab label", "default": "Rough Opening" },
+    { "type": "text", "id": "tab_3_heading", "label": "Heading", "default": "Rough Opening" },
+    { "type": "text", "id": "tab_3_subheading", "label": "Subheading" },
+    { "type": "richtext", "id": "tab_3_description", "label": "Description", "default": "<p>Use framing dimensions before trim and finish.</p>" },
+    { "type": "image_picker", "id": "tab_3_image", "label": "Image" },
+
+    { "type": "header", "content": "Tab 4 - Pre-Hung on a Jamb" },
+    { "type": "text", "id": "tab_4_label", "label": "Tab label", "default": "Pre-Hung on a Jamb" },
+    { "type": "text", "id": "tab_4_heading", "label": "Heading", "default": "Pre-Hung on a Jamb" },
+    { "type": "text", "id": "tab_4_subheading", "label": "Subheading" },
+    { "type": "richtext", "id": "tab_4_description", "label": "Description", "default": "<p>Include jamb sizes and handing details.</p>" },
+    { "type": "image_picker", "id": "tab_4_image", "label": "Image" },
+
+    { "type": "header", "content": "Tab 5 - Pre-Hung on Brick Molding" },
+    { "type": "text", "id": "tab_5_label", "label": "Tab label", "default": "Pre-Hung on Brick Molding" },
+    { "type": "text", "id": "tab_5_heading", "label": "Heading", "default": "Pre-Hung on Brick Molding" },
+    { "type": "text", "id": "tab_5_subheading", "label": "Subheading" },
+    { "type": "richtext", "id": "tab_5_description", "label": "Description", "default": "<p>Measure full dimensions including brick mold trim.</p>" },
+    { "type": "image_picker", "id": "tab_5_image", "label": "Image" }
+  ],
+  "presets": [
+    { "name": "Measure Guide Drawer", "category": "Custom" }
+  ]
+}
+{% endschema %}

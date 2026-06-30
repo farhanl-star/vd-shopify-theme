@@ -1,0 +1,445 @@
+{%- comment -%}
+  My Saved Configurations – collections grid + configuration cards.
+  Include: {% render 'door-saved-configs' %}
+{%- endcomment -%}
+
+<style>
+  /* Layout only — typography/color via common.css utility classes */
+  {% comment %} .door-saved-wrap { max-width: 1080px; } {% endcomment %}
+  .door-saved-list { margin-top: 32px; }
+  .door-saved-msg { margin-top: 24px; padding: 12px 16px; border-radius: 8px; }
+  .door-saved-msg--empty {
+    background: var(--secondary100Color);
+    border: 1px solid var(--secondary200Color);
+    color: var(--secondary500Color);
+  }
+  .door-saved-msg--error {
+    background: var(--primary100Color);
+    border: 1px solid var(--alertRedColor);
+    color: var(--alertRedColor);
+  }
+  .door-saved-grid { display: grid; gap: 20px; }
+  .door-saved-grid--collections { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .door-saved-grid--configs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .door-saved-collection-card {
+    display: flex; flex-direction: column; align-items: stretch; width: 100%; min-height: 100%;
+    text-align: left; padding: 0; cursor: pointer; font-family: inherit; color: inherit; overflow: hidden;
+    background: var(--silkWhiteColor); border: 1px solid var(--greysColor); border-radius: 12px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--primaryColor) 4%, transparent);
+  }
+  .door-saved-collection-card:hover {
+    border-color: var(--secondary200Color);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--primaryColor) 8%, transparent);
+    transform: translateY(-2px);
+  }
+  .door-saved-collection-card__top {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 20px 0;
+  }
+  .door-saved-collection-card__icon {
+    width: 52px; height: 52px; border-radius: 10px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary100Color);
+  }
+  .door-saved-collection-card__icon svg { width: 26px; height: 26px; display: block; }
+  .door-saved-collection-card__body { padding: 16px 20px 20px; flex: 1 1 auto; }
+  .door-saved-collection-card__footer {
+    margin-top: auto; padding: 12px 20px;
+    border-top: 1px solid var(--greysColor); background: var(--greys100Color);
+  }
+  .door-saved-card {
+    display: flex; flex-direction: column; min-height: 100%; overflow: hidden; border-radius: 12px;
+    background: var(--silkWhiteColor); border: 1px solid var(--greysColor);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--primaryColor) 4%, transparent);
+  }
+  .door-saved-card:hover {
+    border-color: var(--secondary200Color);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--primaryColor) 8%, transparent);
+  }
+  .door-saved-card__media {
+    position: relative; width: 100%; height: 200px; overflow: hidden;
+    background: var(--woodDust100Color); border-bottom: 1px solid var(--greysColor);
+  }
+  .door-saved-card__image {
+    width: 100%; height: 100%; object-fit: contain; display: block; background: var(--silkWhiteColor);
+  }
+  .door-saved-card__media--placeholder {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    background: var(--woodDust100Color);
+  }
+  .door-saved-card__media--placeholder svg { width: 56px; height: 56px; opacity: 0.55; }
+  .door-saved-card__badge {
+    position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px;
+    background: color-mix(in srgb, var(--primaryColor) 82%, transparent);
+  }
+  .door-saved-card__body { padding: 20px 20px 0; flex: 1 1 auto; }
+  .door-saved-card-collection-row .common-select { max-width: 100%; }
+  .door-saved-card-new-collection { margin-top: 10px; display: none; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .door-saved-card-new-collection.is-visible { display: flex; }
+  .door-saved-card-new-collection .form-field.form-field--input { flex: 1 1 140px; min-width: 120px; }
+  .door-saved-card__footer { padding: 16px 20px 20px; margin-top: auto; }
+  .door-saved-card__footer .common-btn { width: 100% !important; justify-content: center !important; }
+  .door-saved-empty-folder {
+    padding: 32px 24px; border-radius: 12px;
+    background: var(--greys100Color); border: 1px dashed var(--greys300Color);
+  }
+  @media (max-width: 991.98px) {
+    .door-saved-grid--collections { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 767.98px) {
+    .door-saved-grid--collections,
+    .door-saved-grid--configs { grid-template-columns: 1fr; }
+    .door-saved-card__media { height: 180px; }
+  }
+</style>
+
+<div class="door-saved-wrap mx-auto pt-80 pb-0" {% if customer %}data-customer-email="{{ customer.email }}"{% endif %}>
+  <div class="container">
+    <div class="door-saved-header">
+      <h1 class="h6 color-primary mb-16">My saved configurations</h1>
+
+      {%- if customer -%}
+        <p class="p-small color-greys400 mb-0">
+          Showing saved configurations for <strong class="color-black">{{ customer.email }}</strong>.
+        </p>
+      {%- else -%}
+        <p class="p-small color-greys400 mb-16">Please log in to view your saved configurations.</p>
+        <a class="common-btn" href="{{ routes.account_login_url }}">Log in</a>
+      {%- endif -%}
+    </div>
+
+    <div id="door-saved-msg" class="door-saved-msg d-none" role="status" aria-live="polite"></div>
+    <div id="door-saved-list" class="door-saved-list"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var API_BASE = 'https://vintage.espirevox.com/api';
+  var configApi = API_BASE + '/configurations.php';
+  var foldersApi = API_BASE + '/folders.php';
+  var listEl = document.getElementById('door-saved-list');
+  var msgEl = document.getElementById('door-saved-msg');
+  var currentEmail = '';
+  var cachedFolders = [];
+  var cachedData = [];
+
+  var FOLDER_ICON = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>';
+  var DOOR_PLACEHOLDER = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3h10a2 2 0 0 1 2 2v14H5V5a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5"/><path d="M9 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+
+  function setMsgVisible(visible) {
+    if (visible) msgEl.classList.remove('d-none');
+    else msgEl.classList.add('d-none');
+  }
+
+  function showMsg(text, type) {
+    msgEl.className = 'door-saved-msg p-small m-0';
+    if (type === 'empty') msgEl.classList.add('door-saved-msg--empty');
+    if (type === 'error') msgEl.classList.add('door-saved-msg--error');
+    msgEl.textContent = text;
+    setMsgVisible(true);
+  }
+
+  function hideMsg() {
+    setMsgVisible(false);
+    msgEl.textContent = '';
+    msgEl.className = 'door-saved-msg d-none';
+  }
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function formatDate(raw) {
+    if (!raw) return '';
+    var d = new Date(raw);
+    if (isNaN(d.getTime())) return String(raw);
+    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function shopifyRoot() {
+    return (typeof window !== 'undefined' && window.Shopify && window.Shopify.routes && window.Shopify.routes.root)
+      ? window.Shopify.routes.root
+      : '/';
+  }
+
+  function buildSavedConfigEditUrl(c, root) {
+    var handle = (c.product_handle && c.product_handle.length) ? c.product_handle : 'door';
+    var productType = String(c.product_type || '').trim();
+    var id = c.id;
+    if (productType === 'Hardware') {
+      return root + 'collections/hardware/products/' + encodeURIComponent(handle) + '?view=hardware&config_id=' + encodeURIComponent(id);
+    }
+    if (productType === 'Millwork') {
+      return root + 'collections/millwork/products/' + encodeURIComponent(handle) + '?view=millwork&config_id=' + encodeURIComponent(id);
+    }
+    return root + 'products/' + encodeURIComponent(handle) + '?config_id=' + encodeURIComponent(id);
+  }
+
+  function buildCollectionCard(name, count, folderId, onClick) {
+    var card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'door-saved-collection-card';
+    card.setAttribute('data-folder-id', folderId);
+    card.innerHTML =
+      '<div class="door-saved-collection-card__top">' +
+        '<span class="door-saved-collection-card__icon color-primary">' + FOLDER_ICON + '</span>' +
+        '<span class="font-24 color-secondary" aria-hidden="true">&#8594;</span>' +
+      '</div>' +
+      '<div class="door-saved-collection-card__body">' +
+        '<p class="p-large fw-600 color-primary m-0">' + escapeHtml(name) + '</p>' +
+        '<p class="p-small color-greys400 mt-18 mb-0">' + count + ' configuration' + (count !== 1 ? 's' : '') + '</p>' +
+      '</div>' +
+      '<div class="door-saved-collection-card__footer p-small fw-600 color-secondary">View configurations</div>';
+    card.addEventListener('click', onClick);
+    return card;
+  }
+
+  function putFolder(configId, email, folderId, folderName, done) {
+    var payload = { id: configId, email: email };
+    if (folderName) payload.folder_name = folderName;
+    else payload.folder_id = folderId != null && folderId !== '' ? folderId : null;
+    fetch(configApi, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(r) { return r.json(); }).then(function(res) {
+      if (done) done(res);
+    }).catch(function() { if (done) done({ error: true }); });
+  }
+
+  function buildCollectionSelect(folders, currentFolderId, currentFolderName, configId, email) {
+    var opts = '<option value="">No collection</option>';
+    var hasCurrentInList = false;
+    (folders || []).forEach(function(f) {
+      var fid = f.id != null ? String(f.id) : '';
+      if (currentFolderId != null && String(currentFolderId) === fid) hasCurrentInList = true;
+      opts += '<option value="' + fid + '"' + (currentFolderId != null && String(currentFolderId) === fid ? ' selected' : '') + '>' + escapeHtml(f.name || 'Folder #' + f.id) + '</option>';
+    });
+    if (currentFolderId != null && currentFolderName && !hasCurrentInList) {
+      opts += '<option value="' + currentFolderId + '" selected>' + escapeHtml(currentFolderName) + '</option>';
+    }
+    opts += '<option value="__new__">+ New collection...</option>';
+    return '<div class="door-saved-card-collection-row border-top mt-18 pt-24">' +
+      '<label class="form-field--label">Move to collection</label>' +
+      '<div class="select-mdiv">' +
+        '<select class="common-select" data-config-id="' + configId + '" data-email="' + escapeHtml(email) + '">' + opts + '</select>' +
+      '</div>' +
+      '<div class="door-saved-card-new-collection" data-config-id="' + configId + '">' +
+        '<input type="text" class="form-field form-field--input" placeholder="Collection name" maxlength="255">' +
+        '<button type="button" class="common-btn btn-secondary btn-small">Add &amp; move here</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function configsInFolder(folderId) {
+    if (folderId === null || folderId === '' || folderId === '_none') {
+      return cachedData.filter(function(c) { return c.folder_id == null || c.folder_id === ''; });
+    }
+    var id = typeof folderId === 'number' ? folderId : parseInt(folderId, 10);
+    return cachedData.filter(function(c) { return c.folder_id != null && (c.folder_id === id || c.folder_id === folderId); });
+  }
+
+  function showCollectionsView() {
+    listEl.innerHTML = '';
+    listEl.className = 'door-saved-list door-saved-grid door-saved-grid--collections';
+    var folders = cachedFolders;
+    var uncategorized = configsInFolder(null);
+    if (uncategorized.length > 0) {
+      listEl.appendChild(buildCollectionCard('No collection', uncategorized.length, '_none', function() {
+        showFolderView(null, 'No collection');
+      }));
+    }
+    folders.forEach(function(f) {
+      var count = configsInFolder(f.id).length;
+      listEl.appendChild(buildCollectionCard(f.name || 'Collection #' + f.id, count, f.id, function() {
+        showFolderView(f.id, f.name || 'Collection #' + f.id);
+      }));
+    });
+  }
+
+  var currentFolderViewId = null;
+
+  function showFolderView(folderId, folderName) {
+    currentFolderViewId = folderId;
+    var configs = configsInFolder(folderId);
+    listEl.innerHTML = '';
+    listEl.className = 'door-saved-list door-saved-folder-view';
+
+    var back = document.createElement('a');
+    back.href = '#';
+    back.className = 'door-saved-back common-btn common-link secondary';
+    back.textContent = '← Back to your collections';
+    back.addEventListener('click', function(e) { e.preventDefault(); showCollectionsView(); });
+    listEl.appendChild(back);
+
+    var title = document.createElement('h2');
+    title.className = 'h6 color-primary mb-24 m-0 mt-18';
+    title.textContent = folderName + ' (' + configs.length + ')';
+    listEl.appendChild(title);
+
+    if (configs.length === 0) {
+      var p = document.createElement('p');
+      p.className = 'door-saved-empty-folder p-small color-greys400 m-0 text-center';
+      p.textContent = 'No configurations in this collection.';
+      listEl.appendChild(p);
+      return;
+    }
+
+    var grid = document.createElement('div');
+    grid.className = 'door-saved-grid door-saved-grid--configs';
+    listEl.appendChild(grid);
+    renderCards(configs, cachedFolders, currentEmail, grid, folderId, title);
+  }
+
+  function renderCards(data, folders, email, container, viewingFolderId, titleEl) {
+    if (!container) container = listEl;
+    var root = shopifyRoot();
+    function updateCount() {
+      if (titleEl && viewingFolderId !== undefined) {
+        var n = configsInFolder(viewingFolderId).length;
+        titleEl.textContent = titleEl.textContent.replace(/\s*\(\d+\)\s*$/, '') + ' (' + n + ')';
+      }
+    }
+    data.forEach(function(c) {
+      var editUrl = buildSavedConfigEditUrl(c, root);
+      var price = parseFloat(c.computed_price);
+      var priceText = isNaN(price) ? '' : '$' + price.toFixed(2);
+      var collectionRow = buildCollectionSelect(folders, c.folder_id || null, c.folder_name || null, c.id, email);
+
+      var mediaInner = c.product_image_url
+        ? '<img class="door-saved-card__image" src="' + escapeHtml(c.product_image_url) + '" alt="">'
+        : '<div class="door-saved-card__media--placeholder color-greys400">' + DOOR_PLACEHOLDER + '</div>';
+
+      var card = document.createElement('article');
+      card.className = 'door-saved-card';
+      card.setAttribute('data-config-id', c.id);
+      card.innerHTML =
+        '<div class="door-saved-card__media">' +
+          mediaInner +
+          '<span class="door-saved-card__badge p-small fw-600 text-white">#' + c.id + '</span>' +
+        '</div>' +
+        '<div class="door-saved-card__body">' +
+          '<h3 class="p-large fw-600 color-primary mb-8 m-0">' + escapeHtml(c.product_title || 'Configuration #' + c.id) + '</h3>' +
+          (priceText ? '<p class="p-medium fw-600 color-secondary mb-8 m-0">' + priceText + '</p>' : '') +
+          '<p class="p-small color-greys400 m-0">Saved ' + escapeHtml(formatDate(c.created_at)) + '</p>' +
+          collectionRow +
+        '</div>' +
+        '<div class="door-saved-card__footer">' +
+          '<a href="' + escapeHtml(editUrl) + '" class="common-btn btn-bordered inline-flex">Edit configuration</a>' +
+        '</div>';
+
+      container.appendChild(card);
+
+      var sel = card.querySelector('select[data-config-id]');
+      var newRow = card.querySelector('.door-saved-card-new-collection');
+      var newInput = newRow ? newRow.querySelector('input') : null;
+      var newBtn = newRow ? newRow.querySelector('button') : null;
+
+      function updateConfigFolder(folderId, folderName, newFolderNameForOption) {
+        putFolder(c.id, email, folderId, folderName, function(res) {
+          if (res && res.error) return;
+          var newId = (res && res.folder_id) != null ? res.folder_id : folderId;
+          c.folder_id = newId;
+          if (newFolderNameForOption) c.folder_name = newFolderNameForOption;
+          if (newInput) newInput.value = '';
+          if (newRow) newRow.classList.remove('is-visible');
+          if (sel) {
+            if (newFolderNameForOption && (res && res.folder_id || folderId)) {
+              var id = (res && res.folder_id) ? res.folder_id : folderId;
+              var lastNew = sel.querySelector('option[value="__new__"]');
+              if (lastNew) lastNew.remove();
+              var opt = document.createElement('option');
+              opt.value = String(id);
+              opt.textContent = newFolderNameForOption;
+              opt.selected = true;
+              sel.appendChild(opt);
+              var o = document.createElement('option');
+              o.value = '__new__';
+              o.textContent = '+ New collection...';
+              sel.appendChild(o);
+            } else {
+              sel.value = folderId != null && folderId !== '' ? String(folderId) : '';
+            }
+          }
+          if (viewingFolderId !== undefined) {
+            var sameFolder = (viewingFolderId == null || viewingFolderId === '_none')
+              ? (newId == null || newId === '')
+              : (newId != null && (viewingFolderId === newId || viewingFolderId === Number(newId)));
+            if (!sameFolder && card.parentNode) {
+              card.remove();
+              updateCount();
+            }
+          }
+        });
+      }
+
+      if (sel) {
+        sel.addEventListener('change', function() {
+          var val = this.value;
+          if (val === '__new__') {
+            if (newRow) newRow.classList.add('is-visible');
+            return;
+          }
+          if (newRow) newRow.classList.remove('is-visible');
+          updateConfigFolder(val === '' ? null : parseInt(val, 10), null);
+        });
+      }
+      if (newBtn && newInput) {
+        newBtn.addEventListener('click', function() {
+          var name = newInput.value.trim();
+          if (!name) return;
+          newBtn.disabled = true;
+          fetch(foldersApi, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, customer_email: email })
+          }).then(function(r) { return r.json(); }).then(function(res) {
+            newBtn.disabled = false;
+            if (res && res.id) updateConfigFolder(res.id, null, name);
+            else updateConfigFolder(null, name, name);
+          }).catch(function() { newBtn.disabled = false; });
+        });
+      }
+    });
+  }
+
+  function loadMine() {
+    var wrap = document.querySelector('.door-saved-wrap');
+    var email = wrap && wrap.getAttribute('data-customer-email') ? wrap.getAttribute('data-customer-email').trim() : '';
+    if (!email) {
+      showMsg('Please log in to view your saved configurations.', 'empty');
+      return;
+    }
+    listEl.innerHTML = '';
+    showMsg('Loading...', '');
+
+    Promise.all([
+      fetch(configApi + '?email=' + encodeURIComponent(email)).then(function(r) { return r.json(); }),
+      fetch(foldersApi + '?email=' + encodeURIComponent(email)).then(function(r) { return r.json(); })
+    ]).then(function(results) {
+      var data = results[0];
+      var folders = Array.isArray(results[1]) ? results[1] : [];
+      if (!Array.isArray(data)) {
+        showMsg('No configurations found or something went wrong.', 'error');
+        return;
+      }
+      if (data.length === 0) {
+        showMsg('No saved configurations yet.', 'empty');
+        return;
+      }
+      currentEmail = email;
+      cachedFolders = folders;
+      cachedData = data;
+      hideMsg();
+      showCollectionsView();
+    }).catch(function() {
+      showMsg('Could not load. Please try again.', 'error');
+    });
+  }
+
+  loadMine();
+})();
+</script>

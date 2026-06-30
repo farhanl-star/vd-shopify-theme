@@ -1,0 +1,139 @@
+{% schema %}
+{
+  "name": "Wood Options",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Wood Options"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Choose the wood that fits your porch, coverage, and climate"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Every exterior door begins with 100% solid, kiln-dried hardwood — never veneer, MDF, or composite. Every species is chosen for long-term performance and timeless beauty."
+    },
+    {
+      "type": "textarea",
+      "id": "bottom_text",
+      "label": "Bottom Text",
+      "default": "Select a wood species along with other customization options when you design your door."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Customize Your Door"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#e8e3dc"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "wood",
+      "name": "Wood Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "wood_image",
+          "label": "Wood Image"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 20,
+  "presets": [
+    {
+      "name": "Wood Options Section"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="wood-options py-120" style="background: {{ section.settings.bg_color }};">
+  <div class="page-width container">
+    
+    <div class="wood-header common-center-div common-left-div mb-40">
+      <h5 class="common-heading">{{ section.settings.heading }}</h5>
+      <p class=" p-large headingFont mb-24">{{ section.settings.subheading }}</p>
+      <p class="description">{{ section.settings.description }}</p>
+    </div>
+
+    <div class="wood-grid">
+      {% for block in section.blocks %}
+        <div class="wood-item" {{ block.shopify_attributes }}>
+          {% if block.settings.wood_image != blank %}
+            <img 
+              src="{{ block.settings.wood_image | image_url: width: 400 }}" 
+              alt="Wood option"
+              loading="lazy"
+            >
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="wood-footer">
+      <p>{{ section.settings.bottom_text }}</p>
+      {% if section.settings.button_label != blank %}
+        <a href="{{  product.url | within: collection }}" class="wood-btn common-btn mt-0">
+          {{ section.settings.button_label }}
+
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <path d="M17 23.1892L21.302 21.5346C21.5772 21.4288 21.7148 21.3759 21.8435 21.3068C21.9578 21.2454 22.0668 21.1746 22.1693 21.095C22.2847 21.0055 22.389 20.9012 22.5974 20.6928L31.3419 11.9483C32.1983 11.092 32.1983 9.70361 31.342 8.84731C30.4856 7.991 29.0973 7.991 28.241 8.84731L19.4965 17.5918C19.288 17.8003 19.1838 17.9045 19.0942 18.0199C19.0147 18.1224 18.9438 18.2314 18.8825 18.3458C18.8134 18.4745 18.7605 18.6121 18.6546 18.8872L17 23.1892ZM17 23.1892L18.5955 19.0409C18.7097 18.744 18.7668 18.5956 18.8647 18.5276C18.9503 18.4682 19.0562 18.4457 19.1585 18.4653C19.2756 18.4876 19.388 18.6001 19.6129 18.825L21.3643 20.5763C21.5892 20.8012 21.7016 20.9137 21.724 21.0308C21.7435 21.1331 21.721 21.239 21.6616 21.3245C21.5936 21.4225 21.4452 21.4796 21.1484 21.5937L17 23.1892Z" stroke="#FDFEFF" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.3402 32.0057L8.61158 32.0059C8.39449 32.0059 8.28595 32.0059 8.20303 31.9636C8.1301 31.9265 8.0708 31.8672 8.03364 31.7942C7.99139 31.7113 7.99139 31.6028 7.99139 31.3857L7.99139 16.1807C7.99139 15.9637 7.99139 15.8551 8.03364 15.7722C8.0708 15.6993 8.1301 15.64 8.20303 15.6028C8.28595 15.5605 8.39449 15.5605 8.61158 15.5605L12.853 15.5605C13.0701 15.5605 13.1786 15.5605 13.2615 15.6028C13.3344 15.64 13.3937 15.6993 13.4309 15.7722C13.4732 15.8551 13.4732 15.9637 13.4732 16.1807L13.4732 26.3547M12.925 25.4278L11.2804 25.4278M12.925 22.1387L11.2804 22.1387M12.925 18.8497L11.2804 18.8497" stroke="#FDFEFF" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.4755 26.5225L19.5776 26.5226L23.819 26.5226C24.036 26.5226 24.1446 26.5226 24.2275 26.5649C24.3004 26.602 24.3597 26.6613 24.3969 26.7343C24.4391 26.8172 24.4391 26.9257 24.4391 27.1428L24.4391 31.3842C24.4391 31.6013 24.4391 31.7098 24.3969 31.7928C24.3597 31.8657 24.3004 31.925 24.2275 31.9622C24.1446 32.0044 24.036 32.0044 23.819 32.0044L13.7029 32.0044M21.1501 27.0708V28.7153M17.8611 27.0708L17.8611 28.7153" stroke="#FDFEFF" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.5703 26.752L14.5703 28.3965" stroke="#FDFEFF" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+<style>
+
+
+.wood-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(139px, 1fr));
+  gap: 8px;
+  margin-bottom: 48px;
+}
+
+.wood-item img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.wood-footer p {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .wood-grid {grid-template-columns: repeat(4, 1fr);}
+  .wood-item img {height: 100px;}
+}
+@media (max-width: 576px) {
+  .wood-item img {height: 80px;}
+}
+</style>

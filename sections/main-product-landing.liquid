@@ -1,0 +1,3487 @@
+<section class="landing-product pt-24 pb-48">
+  <div class="landing-product__inner page-width container">
+    <div class="m:flex m:flex-wrap">
+      <!-- LEFT: IMAGE -->
+      <div class="landing-product__media m:column m:w-full lg:m:w-6/12">
+        {% if product.featured_image %}
+          <img
+            src="{{ product.featured_image | image_url: width: 1200 }}"
+            alt="{{ product.title | escape }}"
+            loading="lazy"
+          >
+        {% endif %}
+      </div>
+      <div class="landing-product__content m:column m:w-full lg:m:w-6/12">
+        {%- if product.type == 'Hardware' or product.type == 'Millwork' -%}
+          {%- assign cp_zip = customer.default_address.zip | default: '' -%}
+          <div
+            id="landing-product-configurator"
+            class="landing-product-configurator"
+            data-api-base="https://vintage.espirevox.com"
+            data-product-id="{{ product.id }}"
+            data-product-name="{{ product.title | escape }}"
+            data-product-handle="{{ product.handle }}"
+            data-product-sku="{{ product.selected_or_first_available_variant.sku | escape }}"
+            data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+            data-base-price="{{ product.price | divided_by: 100.0 }}"
+            data-product-type="{{ product.type | escape }}"
+            data-product-image="{% if product.featured_image %}{{ product.featured_image | image_url: width: 600 }}{% endif %}"
+            data-complete-profile-page-url="{{ pages['complete-profile'].url | default: '/pages/complete-profile' }}"
+            {% if customer %}
+            data-customer-email="{{ customer.email }}"
+            data-customer-first-name="{{ customer.first_name | escape }}"
+            data-customer-last-name="{{ customer.last_name | escape }}"
+            data-customer-phone="{{ customer.phone | escape }}"
+            data-customer-zip="{{ cp_zip | escape }}"
+            data-profile-complete="{% if customer.first_name != blank and customer.phone != blank and cp_zip != blank %}1{% else %}0{% endif %}"
+            {% endif %}
+          >
+        {%- endif -%}
+        <div class="landing-product__header">
+          <h5 class="landing-product__title">
+            {{ product.title }}
+          </h5>
+        </div>
+        {% if product.type == 'Millwork' %}
+          <div class="landing-product__price" style="padding:0;border-bottom:0;"></div>
+        {% endif %}
+
+        {% if product.type != 'Millwork' %}
+          <div class="landing-product__price">
+            <div class="start_price">
+              Starting at
+              <strong id="landing-starting-price">{{ product.price | money_without_trailing_zeros }}</strong>
+            </div>
+
+            {% if product.selected_or_first_available_variant.sku != blank %}
+              <div class="product-sku">
+                <strong>Model </strong>
+                <div class="model-no">
+                  <span id="variant-sku">
+                    {{ product.selected_or_first_available_variant.sku }}
+                  </span>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if product.type == 'Hardware' %}
+          {%- liquid
+            assign hw_finish_allow = product.metafields.custom.hardware_finish.value | default: product.metafields.custom.hardware_finish | default: ''
+            assign hw_function_allow = product.metafields.custom.hardware_function.value | default: product.metafields.custom.hardware_function | default: ''
+            assign hw_backset_val = product.metafields.custom.Door_Backset.value | default: product.metafields.custom.Door_Backset | default: product.metafields.custom.door_backset.value | default: product.metafields.custom.door_backset
+            assign hw_backset_string = hw_backset_val | join: ','
+            if hw_backset_string == blank
+              assign hw_backset_string = hw_backset_val | default: ''
+            endif
+            assign hw_backset_items = hw_backset_string | split: ','
+
+            assign hw_thickness_val = product.metafields.custom.hardware_thickness_option.value | default: product.metafields.custom.hardware_thickness_option
+            assign hw_thickness_string = hw_thickness_val | join: ','
+            if hw_thickness_string == blank
+              assign hw_thickness_string = hw_thickness_val | default: ''
+            endif
+            assign hw_thickness_items = hw_thickness_string | split: ','
+
+            assign hw_track_length_val = product.metafields.custom.door_hanger_tracker_length.value | default: product.metafields.custom.door_hanger_tracker_length | default: product.metafields.custom.track_length.value | default: product.metafields.custom.track_length
+            assign hw_track_length_string = hw_track_length_val | join: ','
+            if hw_track_length_string == blank
+              assign hw_track_length_string = hw_track_length_val | default: ''
+            endif
+            assign hw_track_length_items = hw_track_length_string | split: ','
+            assign hw_track_length_allow = hw_track_length_string
+
+            assign hw_connected_doors_val = product.metafields.custom.number_of_connected_doors.value | default: product.metafields.custom.number_of_connected_doors | default: product.metafields.custom.connected_doors.value | default: product.metafields.custom.connected_doors
+            assign hw_connected_doors_string = hw_connected_doors_val | join: ','
+            if hw_connected_doors_string == blank
+              assign hw_connected_doors_string = hw_connected_doors_val | default: ''
+            endif
+            assign hw_connected_doors_items = hw_connected_doors_string | split: ','
+            assign hw_connected_doors_allow = hw_connected_doors_string
+
+            assign hw_upper_track_length_val = product.metafields.custom.upper_track_length.value | default: product.metafields.custom.upper_track_length
+            assign hw_upper_track_length_string = hw_upper_track_length_val | join: ','
+            if hw_upper_track_length_string == blank
+              assign hw_upper_track_length_string = hw_upper_track_length_val | default: ''
+            endif
+            assign hw_upper_track_length_items = hw_upper_track_length_string | split: ','
+            assign hw_upper_track_length_allow = hw_upper_track_length_string
+
+            assign hw_max_door_size_val = product.metafields.custom.max_door_size.value | default: product.metafields.custom.max_door_size
+            assign hw_max_door_size_string = hw_max_door_size_val | join: ','
+            if hw_max_door_size_string == blank
+              assign hw_max_door_size_string = hw_max_door_size_val | default: ''
+            endif
+            assign hw_max_door_size_items = hw_max_door_size_string | split: ','
+            assign hw_max_door_size_allow = hw_max_door_size_string
+
+            assign hw_carriage_pack_type_val = product.metafields.custom.carriage_pack_type.value | default: product.metafields.custom.carriage_pack_type
+            assign hw_carriage_pack_type_string = hw_carriage_pack_type_val | join: ','
+            if hw_carriage_pack_type_string == blank
+              assign hw_carriage_pack_type_string = hw_carriage_pack_type_val | default: ''
+            endif
+            assign hw_carriage_pack_type_items = hw_carriage_pack_type_string | split: ','
+            assign hw_carriage_pack_type_allow = hw_carriage_pack_type_string
+
+            assign hw_strap_hinge_length_val = product.metafields.custom.strap_hinge_length.value | default: product.metafields.custom.strap_hinge_length
+            assign hw_strap_hinge_length_string = hw_strap_hinge_length_val | join: ','
+            if hw_strap_hinge_length_string == blank
+              assign hw_strap_hinge_length_string = hw_strap_hinge_length_val | default: ''
+            endif
+            assign hw_strap_hinge_length_items = hw_strap_hinge_length_string | split: ','
+            assign hw_strap_hinge_length_allow = hw_strap_hinge_length_string
+
+            assign hw_closer_color_val = product.metafields.custom.closer_color.value | default: product.metafields.custom.closer_color
+            assign hw_closer_color_string = hw_closer_color_val | join: ','
+            if hw_closer_color_string == blank
+              assign hw_closer_color_string = hw_closer_color_val | default: ''
+            endif
+            assign hw_closer_color_items = hw_closer_color_string | split: ','
+            assign hw_closer_color_allow = hw_closer_color_string
+
+            assign hw_swing_direction_val = product.metafields.custom.swing_direction.value | default: product.metafields.custom.swing_direction
+            assign hw_swing_direction_string = hw_swing_direction_val | join: ','
+            if hw_swing_direction_string == blank
+              assign hw_swing_direction_string = hw_swing_direction_val | default: ''
+            endif
+            assign hw_swing_direction_items = hw_swing_direction_string | split: ','
+            assign hw_swing_direction_allow = hw_swing_direction_string
+
+            assign hw_opts = product.metafields.custom.door_config_options.value
+            assign hw_finish_opt = null
+            assign hw_function_opt = null
+            assign hw_closer_color_opt = null
+            assign hw_swing_direction_opt = null
+            assign hw_backset_opt = null
+            assign hw_track_length_opt = null
+            assign hw_connected_doors_opt = null
+            assign hw_upper_track_length_opt = null
+            assign hw_max_door_size_opt = null
+            assign hw_carriage_pack_type_opt = null
+            assign hw_strap_hinge_length_opt = null
+          -%}
+          {%- if hw_opts != blank -%}
+            {%- for opt in hw_opts -%}
+              {%- assign opt_key = opt.key | default: opt.key | downcase | strip -%}
+              {%- if opt_key == 'finish' and hw_finish_opt == null -%}
+                {%- assign hw_finish_opt = opt -%}
+              {%- elsif opt_key == 'function' and hw_function_opt == null -%}
+                {%- assign hw_function_opt = opt -%}
+              {%- elsif opt_key == 'closer_color' or opt_key == 'closer-color' or opt_key == 'closer color' -%}
+                {%- if hw_closer_color_opt == null -%}
+                  {%- assign hw_closer_color_opt = opt -%}
+                {%- endif -%}
+              {%- elsif opt_key == 'swing_direction' or opt_key == 'swing-direction' or opt_key == 'swing direction' -%}
+                {%- if hw_swing_direction_opt == null -%}
+                  {%- assign hw_swing_direction_opt = opt -%}
+                {%- endif -%}
+              {%- elsif opt_key == 'door_backset' or opt_key == 'door-backset' or opt_key == 'door backset' or opt_key == 'backset' -%}
+                {%- if hw_backset_opt == null -%}
+                  {%- assign hw_backset_opt = opt -%}
+                {%- endif -%}
+              {%- elsif opt_key == 'door_hanger_tracker_length'
+                or opt_key == 'door-hanger-tracker-length'
+                or opt_key == 'door hanger tracker length'
+                or opt_key == 'track_length'
+                or opt_key == 'track-length'
+                or opt_key == 'track length'
+              -%}
+                {%- if hw_track_length_opt == null -%}
+                  {%- assign hw_track_length_opt = opt -%}
+                {%- endif -%}
+              {%- elsif opt_key == 'number_of_connected_doors'
+                or opt_key == 'number-of-connected-doors'
+                or opt_key == 'number of connected doors'
+                or opt_key == 'connected_doors'
+                or opt_key == 'connected doors'
+              -%}
+                {%- if hw_connected_doors_opt == null -%}
+                  {%- assign hw_connected_doors_opt = opt -%}
+                {%- endif -%}
+              {%- elsif opt_key == 'upper_track_length'
+                or opt_key == 'upper-track-length'
+                or opt_key == 'upper track length'
+              -%}
+                {%- if hw_upper_track_length_opt == null -%}
+                  {%- assign hw_upper_track_length_opt = opt -%}
+                {%- endif -%}
+              {%- elsif opt_key == 'max_door_size'
+                or opt_key == 'max-door-size'
+                or opt_key == 'max door size'
+              -%}
+                {%- if hw_max_door_size_opt == null -%}
+                  {%- assign hw_max_door_size_opt = opt -%}
+                {%- endif -%}
+              {%- elsif opt_key == 'carriage_pack_type'
+                or opt_key == 'carriage-pack-type'
+                or opt_key == 'carriage pack type'
+              -%}
+                {%- if hw_carriage_pack_type_opt == null -%}
+                  {%- assign hw_carriage_pack_type_opt = opt -%}
+                {%- endif -%}
+              {%- elsif opt_key == 'strap_hinge_length'
+                or opt_key == 'strap-hinge-length'
+                or opt_key == 'strap hinge length'
+              -%}
+                {%- if hw_strap_hinge_length_opt == null -%}
+                  {%- assign hw_strap_hinge_length_opt = opt -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+
+          {%- assign show_hw_finish = false -%}
+          {%- if hw_finish_allow != blank and hw_finish_opt != blank -%}
+            {%- assign show_hw_finish = true -%}
+          {%- endif -%}
+          {%- assign show_hw_function = false -%}
+          {%- if hw_function_allow != blank and hw_function_opt != blank -%}
+            {%- assign show_hw_function = true -%}
+          {%- endif -%}
+          {%- assign show_hw_closer_color = false -%}
+          {%- if hw_closer_color_opt != blank or hw_closer_color_string != blank -%}
+            {%- assign show_hw_closer_color = true -%}
+          {%- endif -%}
+          {%- assign show_hw_thickness = false -%}
+          {%- if hw_thickness_string != blank -%}
+            {%- assign show_hw_thickness = true -%}
+          {%- endif -%}
+          {%- assign show_hw_swing_direction = false -%}
+          {%- if hw_swing_direction_opt != blank or hw_swing_direction_string != blank -%}
+            {%- assign show_hw_swing_direction = true -%}
+          {%- endif -%}
+          {%- assign show_hw_backset = false -%}
+          {%- if hw_backset_opt != blank or hw_backset_string != blank -%}
+            {%- assign show_hw_backset = true -%}
+          {%- endif -%}
+          {%- assign show_hw_track_length = false -%}
+          {%- if hw_track_length_opt != blank or hw_track_length_string != blank -%}
+            {%- assign show_hw_track_length = true -%}
+          {%- endif -%}
+          {%- assign show_hw_connected_doors = false -%}
+          {%- if hw_connected_doors_opt != blank or hw_connected_doors_string != blank -%}
+            {%- assign show_hw_connected_doors = true -%}
+          {%- endif -%}
+          {%- assign show_hw_upper_track_length = false -%}
+          {%- if hw_upper_track_length_opt != blank or hw_upper_track_length_string != blank -%}
+            {%- assign show_hw_upper_track_length = true -%}
+          {%- endif -%}
+          {%- assign show_hw_max_door_size = false -%}
+          {%- if hw_max_door_size_opt != blank or hw_max_door_size_string != blank -%}
+            {%- assign show_hw_max_door_size = true -%}
+          {%- endif -%}
+          {%- assign show_hw_carriage_pack_type = false -%}
+          {%- if hw_carriage_pack_type_opt != blank or hw_carriage_pack_type_string != blank -%}
+            {%- assign show_hw_carriage_pack_type = true -%}
+          {%- endif -%}
+          {%- assign show_hw_strap_hinge_length = false -%}
+          {%- if hw_strap_hinge_length_opt != blank or hw_strap_hinge_length_string != blank -%}
+            {%- assign show_hw_strap_hinge_length = true -%}
+          {%- endif -%}
+
+          {%- if show_hw_finish
+            or show_hw_function
+            or show_hw_closer_color
+            or show_hw_thickness
+            or show_hw_swing_direction
+            or show_hw_backset
+            or show_hw_track_length
+            or show_hw_connected_doors
+            or show_hw_upper_track_length
+            or show_hw_max_door_size
+            or show_hw_carriage_pack_type
+            or show_hw_strap_hinge_length
+          -%}
+            {%- capture hw_finish_allow_pipe -%}
+               {%- assign hw_finish_allow_items = hw_finish_allow | split: ',' -%}
+               {%- for allow_item in hw_finish_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_function_allow_pipe -%}
+               {%- assign hw_function_allow_items = hw_function_allow | split: ',' -%}
+               {%- for allow_item in hw_function_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_closer_color_allow_pipe -%}
+               {%- assign hw_closer_color_allow_items = hw_closer_color_allow | split: ',' -%}
+               {%- for allow_item in hw_closer_color_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_swing_direction_allow_pipe -%}
+               {%- assign hw_swing_direction_allow_items = hw_swing_direction_allow | split: ',' -%}
+               {%- for allow_item in hw_swing_direction_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_track_length_allow_pipe -%}
+               {%- assign hw_track_length_allow_items = hw_track_length_allow | split: ',' -%}
+               {%- for allow_item in hw_track_length_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_connected_doors_allow_pipe -%}
+               {%- assign hw_connected_doors_allow_items = hw_connected_doors_allow | split: ',' -%}
+               {%- for allow_item in hw_connected_doors_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_upper_track_length_allow_pipe -%}
+               {%- assign hw_upper_track_length_allow_items = hw_upper_track_length_allow | split: ',' -%}
+               {%- for allow_item in hw_upper_track_length_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_max_door_size_allow_pipe -%}
+               {%- assign hw_max_door_size_allow_items = hw_max_door_size_allow | split: ',' -%}
+               {%- for allow_item in hw_max_door_size_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_carriage_pack_type_allow_pipe -%}
+               {%- assign hw_carriage_pack_type_allow_items = hw_carriage_pack_type_allow | split: ',' -%}
+               {%- for allow_item in hw_carriage_pack_type_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+            {%- capture hw_strap_hinge_length_allow_pipe -%}
+               {%- assign hw_strap_hinge_length_allow_items = hw_strap_hinge_length_allow | split: ',' -%}
+               {%- for allow_item in hw_strap_hinge_length_allow_items -%}
+                 |{{ allow_item | downcase | replace: '-', '_' | replace: ' ', '_' | strip }}|
+               {%- endfor -%}
+             {%- endcapture -%}
+
+            {%- assign hw_product_id = product.id -%}
+            {%- assign hw_fn_select_id = 'door-hw-fn-' | append: hw_product_id -%}
+            {%- assign hw_cc_select_id = 'door-hw-cc-' | append: hw_product_id -%}
+            {%- assign hw_thick_select_id = 'door-hw-thick-' | append: hw_product_id -%}
+            {%- assign hw_sd_select_id = 'door-hw-sd-' | append: hw_product_id -%}
+            {%- assign hw_bs_select_id = 'door-hw-bs-' | append: hw_product_id -%}
+            {%- assign hw_tl_select_id = 'door-hw-tl-' | append: hw_product_id -%}
+            {%- assign hw_cd_select_id = 'door-hw-cd-' | append: hw_product_id -%}
+            {%- assign hw_utl_select_id = 'door-hw-utl-' | append: hw_product_id -%}
+            {%- assign hw_mds_select_id = 'door-hw-mds-' | append: hw_product_id -%}
+            {%- assign hw_cpt_select_id = 'door-hw-cpt-' | append: hw_product_id -%}
+            {%- assign hw_shl_select_id = 'door-hw-shl-' | append: hw_product_id -%}
+            {%- assign hw_first_finish_value = '' -%}
+            {%- assign hw_first_finish_display = '' -%}
+            {%- assign hw_first_function_value = '' -%}
+            {%- assign hw_first_function_label = '' -%}
+            {%- assign hw_first_closer_color_value = '' -%}
+            {%- assign hw_first_closer_color_label = '' -%}
+            {%- assign hw_first_thickness_value = '' -%}
+            {%- assign hw_first_thickness_label = '' -%}
+            {%- assign hw_first_swing_direction_value = '' -%}
+            {%- assign hw_first_swing_direction_label = '' -%}
+            {%- assign hw_first_backset_value = '' -%}
+            {%- assign hw_first_backset_label = '' -%}
+            {%- assign hw_first_track_length_value = '' -%}
+            {%- assign hw_first_track_length_label = '' -%}
+            {%- assign hw_first_connected_doors_value = '' -%}
+            {%- assign hw_first_connected_doors_label = '' -%}
+            {%- assign hw_first_upper_track_length_value = '' -%}
+            {%- assign hw_first_upper_track_length_label = '' -%}
+            {%- assign hw_first_max_door_size_value = '' -%}
+            {%- assign hw_first_max_door_size_label = '' -%}
+            {%- assign hw_first_carriage_pack_type_value = '' -%}
+            {%- assign hw_first_carriage_pack_type_label = '' -%}
+            {%- assign hw_first_strap_hinge_length_value = '' -%}
+            {%- assign hw_first_strap_hinge_length_label = '' -%}
+
+            {%- if show_hw_finish -%}
+              {%- assign hw_finish_choice_refs = hw_finish_opt.choices1.value | default: hw_finish_opt.choices.value -%}
+              {%- if hw_finish_choice_refs != blank -%}
+                {%- for c in hw_finish_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_finish_allow_pipe contains c_value_check and hw_first_finish_value == blank -%}
+                      {%- assign hw_first_finish_value = c_value -%}
+                      {%- assign hw_first_finish_display = c.label
+                        | default: c.label
+                        | default: c.title
+                        | default: c.title
+                        | default: c_value
+                      -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_function -%}
+              {%- assign hw_function_choice_refs = hw_function_opt.choices1.value
+                | default: hw_function_opt.choices.value
+              -%}
+              {%- if hw_function_choice_refs != blank -%}
+                {%- for c in hw_function_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_function_allow_pipe contains c_value_check and hw_first_function_value == blank -%}
+                      {%- assign hw_first_function_value = c_value -%}
+                      {%- assign hw_first_function_label = c.label
+                        | default: c.label
+                        | default: c.title
+                        | default: c.title
+                        | default: c_value
+                      -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_closer_color -%}
+              {%- assign hw_closer_color_choice_refs = hw_closer_color_opt.choices1.value
+                | default: hw_closer_color_opt.choices.value
+              -%}
+              {%- if hw_closer_color_choice_refs != blank -%}
+                {%- for c in hw_closer_color_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_closer_color_allow == blank or hw_closer_color_allow_pipe contains c_value_check -%}
+                      {%- if hw_first_closer_color_value == blank -%}
+                        {%- assign hw_first_closer_color_value = c_value -%}
+                        {%- assign hw_first_closer_color_label = c.label
+                          | default: c.label
+                          | default: c.title
+                          | default: c.title
+                          | default: c_value
+                        -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for item in hw_closer_color_items -%}
+                  {%- assign item_stripped = item | strip -%}
+                  {%- if item_stripped != blank and hw_first_closer_color_value == blank -%}
+                    {%- assign hw_first_closer_color_value = item_stripped -%}
+                    {%- assign hw_first_closer_color_label = item_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_thickness -%}
+              {%- for t in hw_thickness_items -%}
+                {%- assign t_stripped = t | strip -%}
+                {%- if t_stripped != blank and hw_first_thickness_value == blank -%}
+                  {%- assign hw_first_thickness_value = t_stripped -%}
+                  {%- assign hw_first_thickness_label = t_stripped -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+
+            {%- if show_hw_swing_direction -%}
+              {%- assign hw_swing_direction_choice_refs = hw_swing_direction_opt.choices1.value
+                | default: hw_swing_direction_opt.choices.value
+              -%}
+              {%- if hw_swing_direction_choice_refs != blank -%}
+                {%- for c in hw_swing_direction_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_swing_direction_allow == blank or hw_swing_direction_allow_pipe contains c_value_check -%}
+                      {%- if hw_first_swing_direction_value == blank -%}
+                        {%- assign hw_first_swing_direction_value = c_value -%}
+                        {%- assign hw_first_swing_direction_label = c.label
+                          | default: c.label
+                          | default: c.title
+                          | default: c.title
+                          | default: c_value
+                        -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for item in hw_swing_direction_items -%}
+                  {%- assign item_stripped = item | strip -%}
+                  {%- if item_stripped != blank and hw_first_swing_direction_value == blank -%}
+                    {%- assign hw_first_swing_direction_value = item_stripped -%}
+                    {%- assign hw_first_swing_direction_label = item_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_backset -%}
+              {%- assign hw_backset_choice_refs = hw_backset_opt.choices1.value
+                | default: hw_backset_opt.choices.value
+              -%}
+              {%- if hw_backset_choice_refs != blank -%}
+                {%- for c in hw_backset_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank and hw_first_backset_value == blank -%}
+                    {%- assign hw_first_backset_value = c_value -%}
+                    {%- assign hw_first_backset_label = c.label
+                      | default: c.label
+                      | default: c.title
+                      | default: c.title
+                      | default: c_value
+                    -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for b in hw_backset_items -%}
+                  {%- assign b_stripped = b | strip -%}
+                  {%- if b_stripped != blank and hw_first_backset_value == blank -%}
+                    {%- assign hw_first_backset_value = b_stripped -%}
+                    {%- assign hw_first_backset_label = b_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_track_length -%}
+              {%- assign hw_track_length_choice_refs = hw_track_length_opt.choices1.value
+                | default: hw_track_length_opt.choices.value
+              -%}
+              {%- if hw_track_length_choice_refs != blank -%}
+                {%- for c in hw_track_length_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_track_length_allow == blank or hw_track_length_allow_pipe contains c_value_check -%}
+                      {%- if hw_first_track_length_value == blank -%}
+                        {%- assign hw_first_track_length_value = c_value -%}
+                        {%- assign hw_first_track_length_label = c.label
+                          | default: c.label
+                          | default: c.title
+                          | default: c.title
+                          | default: c_value
+                        -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for item in hw_track_length_items -%}
+                  {%- assign item_stripped = item | strip -%}
+                  {%- if item_stripped != blank and hw_first_track_length_value == blank -%}
+                    {%- assign hw_first_track_length_value = item_stripped -%}
+                    {%- assign hw_first_track_length_label = item_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_connected_doors -%}
+              {%- assign hw_connected_doors_choice_refs = hw_connected_doors_opt.choices1.value
+                | default: hw_connected_doors_opt.choices.value
+              -%}
+              {%- if hw_connected_doors_choice_refs != blank -%}
+                {%- for c in hw_connected_doors_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_connected_doors_allow == blank or hw_connected_doors_allow_pipe contains c_value_check -%}
+                      {%- if hw_first_connected_doors_value == blank -%}
+                        {%- assign hw_first_connected_doors_value = c_value -%}
+                        {%- assign hw_first_connected_doors_label = c.label
+                          | default: c.label
+                          | default: c.title
+                          | default: c.title
+                          | default: c_value
+                        -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for item in hw_connected_doors_items -%}
+                  {%- assign item_stripped = item | strip -%}
+                  {%- if item_stripped != blank and hw_first_connected_doors_value == blank -%}
+                    {%- assign hw_first_connected_doors_value = item_stripped -%}
+                    {%- assign hw_first_connected_doors_label = item_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_upper_track_length -%}
+              {%- assign hw_upper_track_length_choice_refs = hw_upper_track_length_opt.choices1.value
+                | default: hw_upper_track_length_opt.choices.value
+              -%}
+              {%- if hw_upper_track_length_choice_refs != blank -%}
+                {%- for c in hw_upper_track_length_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_upper_track_length_allow == blank or hw_upper_track_length_allow_pipe contains c_value_check -%}
+                      {%- if hw_first_upper_track_length_value == blank -%}
+                        {%- assign hw_first_upper_track_length_value = c_value -%}
+                        {%- assign hw_first_upper_track_length_label = c.label
+                          | default: c.label
+                          | default: c.title
+                          | default: c.title
+                          | default: c_value
+                        -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for item in hw_upper_track_length_items -%}
+                  {%- assign item_stripped = item | strip -%}
+                  {%- if item_stripped != blank and hw_first_upper_track_length_value == blank -%}
+                    {%- assign hw_first_upper_track_length_value = item_stripped -%}
+                    {%- assign hw_first_upper_track_length_label = item_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_max_door_size -%}
+              {%- assign hw_max_door_size_choice_refs = hw_max_door_size_opt.choices1.value
+                | default: hw_max_door_size_opt.choices.value
+              -%}
+              {%- if hw_max_door_size_choice_refs != blank -%}
+                {%- for c in hw_max_door_size_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_max_door_size_allow == blank or hw_max_door_size_allow_pipe contains c_value_check -%}
+                      {%- if hw_first_max_door_size_value == blank -%}
+                        {%- assign hw_first_max_door_size_value = c_value -%}
+                        {%- assign hw_first_max_door_size_label = c.label
+                          | default: c.label
+                          | default: c.title
+                          | default: c.title
+                          | default: c_value
+                        -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for item in hw_max_door_size_items -%}
+                  {%- assign item_stripped = item | strip -%}
+                  {%- if item_stripped != blank and hw_first_max_door_size_value == blank -%}
+                    {%- assign hw_first_max_door_size_value = item_stripped -%}
+                    {%- assign hw_first_max_door_size_label = item_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_carriage_pack_type -%}
+              {%- assign hw_carriage_pack_type_choice_refs = hw_carriage_pack_type_opt.choices1.value
+                | default: hw_carriage_pack_type_opt.choices.value
+              -%}
+              {%- if hw_carriage_pack_type_choice_refs != blank -%}
+                {%- for c in hw_carriage_pack_type_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_carriage_pack_type_allow == blank or hw_carriage_pack_type_allow_pipe contains c_value_check -%}
+                      {%- if hw_first_carriage_pack_type_value == blank -%}
+                        {%- assign hw_first_carriage_pack_type_value = c_value -%}
+                        {%- assign hw_first_carriage_pack_type_label = c.label
+                          | default: c.label
+                          | default: c.title
+                          | default: c.title
+                          | default: c_value
+                        -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for item in hw_carriage_pack_type_items -%}
+                  {%- assign item_stripped = item | strip -%}
+                  {%- if item_stripped != blank and hw_first_carriage_pack_type_value == blank -%}
+                    {%- assign hw_first_carriage_pack_type_value = item_stripped -%}
+                    {%- assign hw_first_carriage_pack_type_label = item_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if show_hw_strap_hinge_length -%}
+              {%- assign hw_strap_hinge_length_choice_refs = hw_strap_hinge_length_opt.choices1.value
+                | default: hw_strap_hinge_length_opt.choices.value
+              -%}
+              {%- if hw_strap_hinge_length_choice_refs != blank -%}
+                {%- for c in hw_strap_hinge_length_choice_refs -%}
+                  {%- assign c_value = c.value | default: c.value -%}
+                  {%- if c_value != blank -%}
+                    {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                    {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                    {%- if hw_strap_hinge_length_allow == blank or hw_strap_hinge_length_allow_pipe contains c_value_check -%}
+                      {%- if hw_first_strap_hinge_length_value == blank -%}
+                        {%- assign hw_first_strap_hinge_length_value = c_value -%}
+                        {%- assign hw_first_strap_hinge_length_label = c.label
+                          | default: c.label
+                          | default: c.title
+                          | default: c.title
+                          | default: c_value
+                        -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for item in hw_strap_hinge_length_items -%}
+                  {%- assign item_stripped = item | strip -%}
+                  {%- if item_stripped != blank and hw_first_strap_hinge_length_value == blank -%}
+                    {%- assign hw_first_strap_hinge_length_value = item_stripped -%}
+                    {%- assign hw_first_strap_hinge_length_label = item_stripped -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            <div class="landing-product__hardware-config" data-landing-hardware-config="1">
+              <article
+                class="door-suggested-hardware-card"
+                data-product-id="{{ hw_product_id }}"
+                data-choice-value="{{ hw_product_id }}"
+                data-hw-finish-value="{{ hw_first_finish_value | escape }}"
+                data-hw-finish-label="{{ hw_first_finish_display | escape }}"
+                data-hw-function-value="{{ hw_first_function_value | escape }}"
+                data-hw-function-label="{{ hw_first_function_label | escape }}"
+                data-hw-closer-color-value="{{ hw_first_closer_color_value | escape }}"
+                data-hw-closer-color-label="{{ hw_first_closer_color_label | escape }}"
+                data-hw-thickness-value="{{ hw_first_thickness_value | escape }}"
+                data-hw-thickness-label="{{ hw_first_thickness_label | escape }}"
+                data-hw-swing-direction-value="{{ hw_first_swing_direction_value | escape }}"
+                data-hw-swing-direction-label="{{ hw_first_swing_direction_label | escape }}"
+                data-hw-backset-value="{{ hw_first_backset_value | escape }}"
+                data-hw-backset-label="{{ hw_first_backset_label | escape }}"
+                data-hw-track-length-value="{{ hw_first_track_length_value | escape }}"
+                data-hw-track-length-label="{{ hw_first_track_length_label | escape }}"
+                data-hw-connected-doors-value="{{ hw_first_connected_doors_value | escape }}"
+                data-hw-connected-doors-label="{{ hw_first_connected_doors_label | escape }}"
+                data-hw-upper-track-length-value="{{ hw_first_upper_track_length_value | escape }}"
+                data-hw-upper-track-length-label="{{ hw_first_upper_track_length_label | escape }}"
+                data-hw-max-door-size-value="{{ hw_first_max_door_size_value | escape }}"
+                data-hw-max-door-size-label="{{ hw_first_max_door_size_label | escape }}"
+                data-hw-carriage-pack-type-value="{{ hw_first_carriage_pack_type_value | escape }}"
+                data-hw-carriage-pack-type-label="{{ hw_first_carriage_pack_type_label | escape }}"
+                data-hw-strap-hinge-length-value="{{ hw_first_strap_hinge_length_value | escape }}"
+                data-hw-strap-hinge-length-label="{{ hw_first_strap_hinge_length_label | escape }}"
+              >
+                {%- if show_hw_finish -%}
+                  {%- assign hw_finish_first_match = true -%}
+                  <div class="door-suggested-hardware-card__finish">
+                    <span class="door-suggested-hardware-card__finish-label">
+                      Finish:<span class="door-suggested-hardware-card__finish-name" data-finish-label>
+                        {{- hw_first_finish_display -}}
+                      </span>
+                    </span>
+                    <div class="door-suggested-hardware-card__swatches" role="list">
+                      {%- if hw_finish_choice_refs != blank -%}
+                        {%- for c in hw_finish_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value
+                              | downcase
+                              | replace: '-', '_'
+                              | replace: ' ', '_'
+                              | strip
+                            -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_finish_allow_pipe contains c_value_check -%}
+                              {%- assign c_label = c.label
+                                | default: c.label
+                                | default: c.title
+                                | default: c.title
+                                | default: c_value
+                              -%}
+                              {%- assign c_img = null -%}
+                              {%- if c.image != blank -%}
+                                {%- if c.image.url != blank -%}
+                                  {%- assign c_img = c.image.url -%}
+                                {%- elsif c.image.value != blank and c.image.value.url != blank -%}
+                                  {%- assign c_img = c.image.value.url -%}
+                                {%- elsif c.image.preview_image != blank -%}
+                                  {%- assign c_img = c.image.preview_image | image_url: width: 200 -%}
+                                {%- elsif c.image contains 'http' or c.image contains '//' -%}
+                                  {%- assign c_img = c.image -%}
+                                {%- endif -%}
+                              {%- elsif c.image_url != blank -%}
+                                {%- if c.image_url.url != blank -%}
+                                  {%- assign c_img = c.image_url.url -%}
+                                {%- elsif c.image_url.value != blank and c.image_url.value.url != blank -%}
+                                  {%- assign c_img = c.image_url.value.url -%}
+                                {%- elsif c.image_url.preview_image != blank -%}
+                                  {%- assign c_img = c.image_url.preview_image | image_url: width: 200 -%}
+                                {%- else -%}
+                                  {%- assign c_img = c.image_url -%}
+                                {%- endif -%}
+                              {%- endif -%}
+                              <button type="button" class="door-suggested-hardware-swatch{% if hw_finish_first_match %} door-suggested-hardware-swatch--selected{% endif %}" role="listitem" data-finish-value="{{ c_value | escape }}" data-finish-label="{{ c_label | escape }}" title="{{ c_label | escape }}" aria-label="{{ c_label | escape }}" >
+                                <span class="door-suggested-hardware-swatch__chip">
+                                  {% if c_img != blank %}
+                                    <img
+                                      src="{{ c_img | escape }}"
+                                      alt="{{ c_label | escape }}"
+                                      class="door-suggested-hardware-swatch__image"
+                                    >
+                                  {% endif %}
+                                </span>
+                              </button>
+                              {%- assign hw_finish_first_match = false -%}
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_function -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__function">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__function-label"
+                      for="{{ hw_fn_select_id }}"
+                      id="{{ hw_fn_select_id }}-label"
+                    >
+                      Hardware Function
+                    </label>
+                    <select
+                      id="{{ hw_fn_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__function-select door-suggested-hardware-function"
+                      data-hw-function-select="1"
+                      aria-labelledby="{{ hw_fn_select_id }}-label"
+                    >
+                      {%- if hw_function_choice_refs != blank -%}
+                        {%- for c in hw_function_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value
+                              | downcase
+                              | replace: '-', '_'
+                              | replace: ' ', '_'
+                              | strip
+                            -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_function_allow_pipe contains c_value_check -%}
+                              {%- assign c_label = c.label
+                                | default: c.label
+                                | default: c.title
+                                | default: c.title
+                                | default: c_value
+                              -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_closer_color -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__closer-color">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__closer-color-label"
+                      for="{{ hw_cc_select_id }}"
+                      id="{{ hw_cc_select_id }}-label"
+                    >
+                      Closer Color
+                    </label>
+                    <select
+                      id="{{ hw_cc_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__closer-color-select door-suggested-hardware-closer-color"
+                      data-hw-closer-color-select="1"
+                      aria-labelledby="{{ hw_cc_select_id }}-label"
+                    >
+                      {%- if hw_closer_color_choice_refs != blank -%}
+                        {%- for c in hw_closer_color_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value
+                              | downcase
+                              | replace: '-', '_'
+                              | replace: ' ', '_'
+                              | strip
+                            -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_closer_color_allow == blank
+                              or hw_closer_color_allow_pipe contains c_value_check
+                            -%}
+                              {%- assign c_label = c.label
+                                | default: c.label
+                                | default: c.title
+                                | default: c.title
+                                | default: c_value
+                              -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for item in hw_closer_color_items -%}
+                          {%- assign item_stripped = item | strip -%}
+                          {%- if item_stripped != blank -%}
+                            <option value="{{ item_stripped | escape }}">{{ item_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_thickness -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__thickness">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__thickness-label"
+                      for="{{ hw_thick_select_id }}"
+                      id="{{ hw_thick_select_id }}-label"
+                    >
+                      Door Thickness
+                    </label>
+                    <select
+                      id="{{ hw_thick_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__thickness-select door-suggested-hardware-thickness"
+                      data-hw-thickness-select="1"
+                      aria-labelledby="{{ hw_thick_select_id }}-label"
+                    >
+                      {%- for t in hw_thickness_items -%}
+                        {%- assign t_stripped = t | strip -%}
+                        {%- if t_stripped != blank -%}
+                          <option value="{{ t_stripped | escape }}">{{ t_stripped | escape }}</option>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_swing_direction -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__swing-direction">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__swing-direction-label"
+                      for="{{ hw_sd_select_id }}"
+                      id="{{ hw_sd_select_id }}-label"
+                    >
+                      Swing Direction
+                    </label>
+                    <select
+                      id="{{ hw_sd_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__swing-direction-select door-suggested-hardware-swing-direction"
+                      data-hw-swing-direction-select="1"
+                      aria-labelledby="{{ hw_sd_select_id }}-label"
+                    >
+                      {%- if hw_swing_direction_choice_refs != blank -%}
+                        {%- for c in hw_swing_direction_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value
+                              | downcase
+                              | replace: '-', '_'
+                              | replace: ' ', '_'
+                              | strip
+                            -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_swing_direction_allow == blank
+                              or hw_swing_direction_allow_pipe contains c_value_check
+                            -%}
+                              {%- assign c_label = c.label
+                                | default: c.label
+                                | default: c.title
+                                | default: c.title
+                                | default: c_value
+                              -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for item in hw_swing_direction_items -%}
+                          {%- assign item_stripped = item | strip -%}
+                          {%- if item_stripped != blank -%}
+                            <option value="{{ item_stripped | escape }}">{{ item_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_backset -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__backset">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__backset-label"
+                      for="{{ hw_bs_select_id }}"
+                      id="{{ hw_bs_select_id }}-label"
+                    >
+                      Door Backset
+                    </label>
+                    <select
+                      id="{{ hw_bs_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__backset-select door-suggested-hardware-backset"
+                      data-hw-backset-select="1"
+                      aria-labelledby="{{ hw_bs_select_id }}-label"
+                    >
+                      {%- if hw_backset_choice_refs != blank -%}
+                        {%- for c in hw_backset_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_label = c.label
+                              | default: c.label
+                              | default: c.title
+                              | default: c.title
+                              | default: c_value
+                            -%}
+                            <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for b in hw_backset_items -%}
+                          {%- assign b_stripped = b | strip -%}
+                          {%- if b_stripped != blank -%}
+                            <option value="{{ b_stripped | escape }}">{{ b_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_track_length -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__track-length">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__track-length-label"
+                      for="{{ hw_tl_select_id }}"
+                      id="{{ hw_tl_select_id }}-label"
+                    >
+                      Track Length
+                    </label>
+                    <select
+                      id="{{ hw_tl_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__track-length-select door-suggested-hardware-track-length"
+                      data-hw-track-length-select="1"
+                      aria-labelledby="{{ hw_tl_select_id }}-label"
+                    >
+                      {%- if hw_track_length_choice_refs != blank -%}
+                        {%- for c in hw_track_length_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value
+                              | downcase
+                              | replace: '-', '_'
+                              | replace: ' ', '_'
+                              | strip
+                            -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_track_length_allow == blank
+                              or hw_track_length_allow_pipe contains c_value_check
+                            -%}
+                              {%- assign c_label = c.label
+                                | default: c.label
+                                | default: c.title
+                                | default: c.title
+                                | default: c_value
+                              -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for item in hw_track_length_items -%}
+                          {%- assign item_stripped = item | strip -%}
+                          {%- if item_stripped != blank -%}
+                            <option value="{{ item_stripped | escape }}">{{ item_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_connected_doors -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__connected-doors">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__connected-doors-label"
+                      for="{{ hw_cd_select_id }}"
+                      id="{{ hw_cd_select_id }}-label"
+                    >
+                      Number of Connected Doors
+                    </label>
+                    <select
+                      id="{{ hw_cd_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__connected-doors-select door-suggested-hardware-connected-doors"
+                      data-hw-connected-doors-select="1"
+                      aria-labelledby="{{ hw_cd_select_id }}-label"
+                    >
+                      {%- if hw_connected_doors_choice_refs != blank -%}
+                        {%- for c in hw_connected_doors_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value
+                              | downcase
+                              | replace: '-', '_'
+                              | replace: ' ', '_'
+                              | strip
+                            -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_connected_doors_allow == blank
+                              or hw_connected_doors_allow_pipe contains c_value_check
+                            -%}
+                              {%- assign c_label = c.label
+                                | default: c.label
+                                | default: c.title
+                                | default: c.title
+                                | default: c_value
+                              -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for item in hw_connected_doors_items -%}
+                          {%- assign item_stripped = item | strip -%}
+                          {%- if item_stripped != blank -%}
+                            <option value="{{ item_stripped | escape }}">{{ item_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_upper_track_length -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__upper-track-length">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__upper-track-length-label"
+                      for="{{ hw_utl_select_id }}"
+                      id="{{ hw_utl_select_id }}-label"
+                    >
+                      Upper Track Length
+                    </label>
+                    <select
+                      id="{{ hw_utl_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__upper-track-length-select door-suggested-hardware-upper-track-length"
+                      data-hw-upper-track-length-select="1"
+                      aria-labelledby="{{ hw_utl_select_id }}-label"
+                    >
+                      {%- if hw_upper_track_length_choice_refs != blank -%}
+                        {%- for c in hw_upper_track_length_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_upper_track_length_allow == blank or hw_upper_track_length_allow_pipe contains c_value_check -%}
+                              {%- assign c_label = c.label | default: c.label | default: c.title | default: c.title | default: c_value -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for item in hw_upper_track_length_items -%}
+                          {%- assign item_stripped = item | strip -%}
+                          {%- if item_stripped != blank -%}
+                            <option value="{{ item_stripped | escape }}">{{ item_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_max_door_size -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__max-door-size">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__max-door-size-label"
+                      for="{{ hw_mds_select_id }}"
+                      id="{{ hw_mds_select_id }}-label"
+                    >
+                      Max Door Size
+                    </label>
+                    <select
+                      id="{{ hw_mds_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__max-door-size-select door-suggested-hardware-max-door-size"
+                      data-hw-max-door-size-select="1"
+                      aria-labelledby="{{ hw_mds_select_id }}-label"
+                    >
+                      {%- if hw_max_door_size_choice_refs != blank -%}
+                        {%- for c in hw_max_door_size_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_max_door_size_allow == blank or hw_max_door_size_allow_pipe contains c_value_check -%}
+                              {%- assign c_label = c.label | default: c.label | default: c.title | default: c.title | default: c_value -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for item in hw_max_door_size_items -%}
+                          {%- assign item_stripped = item | strip -%}
+                          {%- if item_stripped != blank -%}
+                            <option value="{{ item_stripped | escape }}">{{ item_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_carriage_pack_type -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__carriage-pack-type">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__carriage-pack-type-label"
+                      for="{{ hw_cpt_select_id }}"
+                      id="{{ hw_cpt_select_id }}-label"
+                    >
+                      Carriage Pack Type
+                    </label>
+                    <select
+                      id="{{ hw_cpt_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__carriage-pack-type-select door-suggested-hardware-carriage-pack-type"
+                      data-hw-carriage-pack-type-select="1"
+                      aria-labelledby="{{ hw_cpt_select_id }}-label"
+                    >
+                      {%- if hw_carriage_pack_type_choice_refs != blank -%}
+                        {%- for c in hw_carriage_pack_type_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_carriage_pack_type_allow == blank or hw_carriage_pack_type_allow_pipe contains c_value_check -%}
+                              {%- assign c_label = c.label | default: c.label | default: c.title | default: c.title | default: c_value -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for item in hw_carriage_pack_type_items -%}
+                          {%- assign item_stripped = item | strip -%}
+                          {%- if item_stripped != blank -%}
+                            <option value="{{ item_stripped | escape }}">{{ item_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+
+                {%- if show_hw_strap_hinge_length -%}
+                  <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__strap-hinge-length">
+                    <label
+                      class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__strap-hinge-length-label"
+                      for="{{ hw_shl_select_id }}"
+                      id="{{ hw_shl_select_id }}-label"
+                    >
+                      Strap Hinge Length
+                    </label>
+                    <select
+                      id="{{ hw_shl_select_id }}"
+                      class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__strap-hinge-length-select door-suggested-hardware-strap-hinge-length"
+                      data-hw-strap-hinge-length-select="1"
+                      aria-labelledby="{{ hw_shl_select_id }}-label"
+                    >
+                      {%- if hw_strap_hinge_length_choice_refs != blank -%}
+                        {%- for c in hw_strap_hinge_length_choice_refs -%}
+                          {%- assign c_value = c.value | default: c.value -%}
+                          {%- if c_value != blank -%}
+                            {%- assign c_value_norm = c_value | downcase | replace: '-', '_' | replace: ' ', '_' | strip -%}
+                            {%- assign c_value_check = '|' | append: c_value_norm | append: '|' -%}
+                            {%- if hw_strap_hinge_length_allow == blank or hw_strap_hinge_length_allow_pipe contains c_value_check -%}
+                              {%- assign c_label = c.label | default: c.label | default: c.title | default: c.title | default: c_value -%}
+                              <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for item in hw_strap_hinge_length_items -%}
+                          {%- assign item_stripped = item | strip -%}
+                          {%- if item_stripped != blank -%}
+                            <option value="{{ item_stripped | escape }}">{{ item_stripped | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+              </article>
+
+              <div class="landing-product__price">
+                <div class="start_price">
+                  <strong id="landing-configured-price">$878.00</strong> as configured
+                </div>
+              </div>
+            </div>
+
+            <style>
+              .landing-product__hardware-config{margin-bottom: 32px; margin-top:24px;}
+              .landing-product__hardware-config .landing-product__content .description_heading{color: var(--primaryColor); font-size: 24px; font-weight: 400; line-height: 135%;margin-bottom:24px;}
+              .template-product.hardware .landing-product__content  .landing-product__metafield-description{margin-bottom:24px;}
+              .template-product.hardware .millwork-cart-row{margin-bottom:40px;}
+              .landing-product__hardware-config .door-suggested-hardware-card{display: block;}
+              .landing-product__hardware-config .door-suggested-hardware-card__finish-label{display: block; margin-bottom: 8px; font-weight: 600;}
+              .landing-product__hardware-config .door-suggested-hardware-card__finish-name{font-weight: 400; margin-left: 8px; display: inline-block;}
+              .landing-product__hardware-config .door-suggested-hardware-card__swatches{display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px;}
+              .landing-product__hardware-config .door-suggested-hardware-swatch{border: 0; padding: 0; background: transparent; cursor: pointer; line-height: 0; position: relative; z-index: 1;}
+              .landing-product__hardware-config .door-suggested-hardware-swatch__chip{display: block; width: 80px; height: 80px; border-radius: 0; border: 2px solid transparent; background-color: var(--secondary100Color, #f3f4f6); pointer-events: none;}
+              .landing-product__hardware-config .door-suggested-hardware-swatch__chip:has(> img){background: none !important;}
+              .landing-product__hardware-config .door-suggested-hardware-swatch__chip .door-suggested-hardware-swatch__image{border-radius:100%;width:100%;height:100%;object-fit:cover;}
+              .landing-product__hardware-config .door-suggested-hardware-swatch--selected .door-suggested-hardware-swatch__chip{border-color: var(--secondary500Color);}
+              .landing-product__hardware-config .door-suggested-hardware-card__hw-field{display: flex; gap: 8px; margin-bottom: 32px; align-items: center; flex-wrap: wrap;}
+              .landing-product__hardware-config .door-suggested-hardware-card__hw-label{display: inline-block; font-size: 16px; font-weight: 600; line-height: 150%; width:140px;}
+              .landing-product__hardware-config .door-suggested-hardware-card__hw-select{max-width: 220px; min-width: 220px; width: 100%;}
+              .landing-product__hardware-config select.door-suggested-hardware-card__hw-select.door-native-select--enhanced{display: none !important;}
+              .landing-product__hardware-config .door-div-select{position: relative; display: inline-block; width: 100%; min-width: 220px; max-width: 220px;}
+              .landing-product__hardware-config .door-div-select__btn{border: 1px solid var(--secondary400Color); padding: 8px 16px; border-radius: 8px; font-family: var(--font-stack-body); font-weight: 400; font-size: 16px; line-height: 150%; letter-spacing: 0; color: var(--sootBlackColor); width: 100%; background: var(--silkWhiteColor); display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer;}
+              .landing-product__hardware-config .door-div-select__btn span.door-div-select__label{white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+              .landing-product__hardware-config .door-div-select--open .door-div-select__btn{border-radius: 8px 8px 0 0; border-color: var(--secondary400Color); border-bottom-color: transparent;}
+              .landing-product__hardware-config .door-div-select__list{display: none; position: absolute; left: 0; right: 0; top: calc(100% - 3px); z-index: 50; border: 1px solid var(--secondary400Color); border-radius: 0 0 8px 8px; background: var(--silkWhiteColor); border-top: 0; padding: 0; max-height: 260px; overflow: auto; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);}
+              .landing-product__hardware-config .door-div-select--open .door-div-select__list{display: block;}
+              .landing-product__hardware-config .door-div-select .door-div-select__icon svg{rotate: 0deg;}
+              .landing-product__hardware-config .door-div-select--open .door-div-select__icon svg{rotate: 180deg;}
+              .landing-product__hardware-config .door-div-select__item{padding: 8px 16px; font-weight: 400; font-size: 16px; line-height: 150%; letter-spacing: 0; color: var(--secondary400Color); transition: 0.3s ease; width: 100%; text-align: left; border: 0; background: transparent; cursor: pointer; font-family: var(--font-stack-body);}
+              .landing-product__hardware-config .door-div-select__item:hover{background: var(--secondary100Color);}
+              .landing-product__hardware-config .door-div-select__item[aria-selected='true']{background: var(--greysColor); color: var(--sootBlackColor); }
+              @media(max-width:991.98px){}
+              @media(max-width:576px){
+                .landing-product__hardware-config .door-suggested-hardware-card__hw-label,
+                .landing-product__hardware-config .door-div-select{width:100%;min-width: 100%; max-width: 100%;}
+                .landing-product__hardware-config .door-suggested-hardware-swatch__chip{width: 60px; height: 60px;}
+              }
+            </style>
+
+            <script>
+              window.__landingHardwareFirstFinish = {{ hw_first_finish_value | json }};
+              window.__landingHardwareFirstFinishLabel = {{ hw_first_finish_display | json }};
+              window.__landingHardwareFirstFunction = {{ hw_first_function_value | json }};
+              window.__landingHardwareFirstFunctionLabel = {{ hw_first_function_label | json }};
+              window.__landingHardwareFirstCloserColor = {{ hw_first_closer_color_value | json }};
+              window.__landingHardwareFirstCloserColorLabel = {{ hw_first_closer_color_label | json }};
+              window.__landingHardwareFirstThickness = {{ hw_first_thickness_value | json }};
+              window.__landingHardwareFirstThicknessLabel = {{ hw_first_thickness_label | json }};
+              window.__landingHardwareFirstSwingDirection = {{ hw_first_swing_direction_value | json }};
+              window.__landingHardwareFirstSwingDirectionLabel = {{ hw_first_swing_direction_label | json }};
+              window.__landingHardwareFirstBackset = {{ hw_first_backset_value | json }};
+              window.__landingHardwareFirstBacksetLabel = {{ hw_first_backset_label | json }};
+              window.__landingHardwareFirstTrackLength = {{ hw_first_track_length_value | json }};
+              window.__landingHardwareFirstTrackLengthLabel = {{ hw_first_track_length_label | json }};
+              window.__landingHardwareFirstConnectedDoors = {{ hw_first_connected_doors_value | json }};
+              window.__landingHardwareFirstConnectedDoorsLabel = {{ hw_first_connected_doors_label | json }};
+              window.__landingHardwareFirstUpperTrackLength = {{ hw_first_upper_track_length_value | json }};
+              window.__landingHardwareFirstUpperTrackLengthLabel = {{ hw_first_upper_track_length_label | json }};
+              window.__landingHardwareFirstMaxDoorSize = {{ hw_first_max_door_size_value | json }};
+              window.__landingHardwareFirstMaxDoorSizeLabel = {{ hw_first_max_door_size_label | json }};
+              window.__landingHardwareFirstCarriagePackType = {{ hw_first_carriage_pack_type_value | json }};
+              window.__landingHardwareFirstCarriagePackTypeLabel = {{ hw_first_carriage_pack_type_label | json }};
+              window.__landingHardwareFirstStrapHingeLength = {{ hw_first_strap_hinge_length_value | json }};
+              window.__landingHardwareFirstStrapHingeLengthLabel = {{ hw_first_strap_hinge_length_label | json }};
+
+              (function () {
+                function ensurePropertyInput(form, key, value) {
+                  if (!form) return;
+                  var name = 'properties[' + key + ']';
+                  var el = form.querySelector('input[name="' + name + '"]');
+                  if (!el) {
+                    el = document.createElement('input');
+                    el.type = 'hidden';
+                    el.name = name;
+                    form.appendChild(el);
+                  }
+                  el.value = String(value == null ? '' : value);
+                }
+
+                function initLandingHardwareSwatches() {
+                  var root = document.querySelector('[data-landing-hardware-config="1"]');
+                  if (!root || root.getAttribute('data-hw-swatch-init') === '1') return;
+
+                  var card = root.querySelector('.door-suggested-hardware-card');
+                  if (!card) return;
+
+                  root.setAttribute('data-hw-swatch-init', '1');
+                  var finishLabel = root.querySelector('[data-finish-label]');
+                  var forms = Array.prototype.slice.call(document.querySelectorAll('form.millwork-form') || []);
+
+                  function syncCartProperties() {
+                    var finishVal = String(card.getAttribute('data-hw-finish-value') || '');
+                    var finishLbl = String(card.getAttribute('data-hw-finish-label') || '');
+                    var fnSelect = root.querySelector('[data-hw-function-select]');
+                    var functionVal = '';
+                    var functionLbl = '';
+                    if (fnSelect && fnSelect.selectedIndex >= 0) {
+                      var opt = fnSelect.options[fnSelect.selectedIndex];
+                      if (opt) {
+                        functionVal = String(opt.value || '');
+                        functionLbl = String(opt.textContent || '').trim();
+                        card.setAttribute('data-hw-function-value', functionVal);
+                        card.setAttribute('data-hw-function-label', functionLbl);
+                      }
+                    }
+                    var ccSelect = root.querySelector('[data-hw-closer-color-select]');
+                    var closerColorVal = '';
+                    var closerColorLbl = '';
+                    if (ccSelect && ccSelect.selectedIndex >= 0) {
+                      var optCc = ccSelect.options[ccSelect.selectedIndex];
+                      if (optCc) {
+                        closerColorVal = String(optCc.value || '');
+                        closerColorLbl = String(optCc.textContent || '').trim();
+                        card.setAttribute('data-hw-closer-color-value', closerColorVal);
+                        card.setAttribute('data-hw-closer-color-label', closerColorLbl);
+                      }
+                    }
+                    var thickSelect = root.querySelector('[data-hw-thickness-select]');
+                    var thicknessVal = '';
+                    var thicknessLbl = '';
+                    if (thickSelect && thickSelect.selectedIndex >= 0) {
+                      var optTh = thickSelect.options[thickSelect.selectedIndex];
+                      if (optTh) {
+                        thicknessVal = String(optTh.value || '');
+                        thicknessLbl = String(optTh.textContent || '').trim();
+                        card.setAttribute('data-hw-thickness-value', thicknessVal);
+                        card.setAttribute('data-hw-thickness-label', thicknessLbl);
+                      }
+                    }
+                    var sdSelect = root.querySelector('[data-hw-swing-direction-select]');
+                    var swingDirectionVal = '';
+                    var swingDirectionLbl = '';
+                    if (sdSelect && sdSelect.selectedIndex >= 0) {
+                      var optSd = sdSelect.options[sdSelect.selectedIndex];
+                      if (optSd) {
+                        swingDirectionVal = String(optSd.value || '');
+                        swingDirectionLbl = String(optSd.textContent || '').trim();
+                        card.setAttribute('data-hw-swing-direction-value', swingDirectionVal);
+                        card.setAttribute('data-hw-swing-direction-label', swingDirectionLbl);
+                      }
+                    }
+                    var bsSelect = root.querySelector('[data-hw-backset-select]');
+                    var backsetVal = '';
+                    var backsetLbl = '';
+                    if (bsSelect && bsSelect.selectedIndex >= 0) {
+                      var optBs = bsSelect.options[bsSelect.selectedIndex];
+                      if (optBs) {
+                        backsetVal = String(optBs.value || '');
+                        backsetLbl = String(optBs.textContent || '').trim();
+                        card.setAttribute('data-hw-backset-value', backsetVal);
+                        card.setAttribute('data-hw-backset-label', backsetLbl);
+                      }
+                    }
+                    var tlSelect = root.querySelector('[data-hw-track-length-select]');
+                    var trackLengthVal = '';
+                    var trackLengthLbl = '';
+                    if (tlSelect && tlSelect.selectedIndex >= 0) {
+                      var optTl = tlSelect.options[tlSelect.selectedIndex];
+                      if (optTl) {
+                        trackLengthVal = String(optTl.value || '');
+                        trackLengthLbl = String(optTl.textContent || '').trim();
+                        card.setAttribute('data-hw-track-length-value', trackLengthVal);
+                        card.setAttribute('data-hw-track-length-label', trackLengthLbl);
+                      }
+                    }
+                    var cdSelect = root.querySelector('[data-hw-connected-doors-select]');
+                    var connectedDoorsVal = '';
+                    var connectedDoorsLbl = '';
+                    if (cdSelect && cdSelect.selectedIndex >= 0) {
+                      var optCd = cdSelect.options[cdSelect.selectedIndex];
+                      if (optCd) {
+                        connectedDoorsVal = String(optCd.value || '');
+                        connectedDoorsLbl = String(optCd.textContent || '').trim();
+                        card.setAttribute('data-hw-connected-doors-value', connectedDoorsVal);
+                        card.setAttribute('data-hw-connected-doors-label', connectedDoorsLbl);
+                      }
+                    }
+                    var utlSelect = root.querySelector('[data-hw-upper-track-length-select]');
+                    var upperTrackLengthVal = '';
+                    var upperTrackLengthLbl = '';
+                    if (utlSelect && utlSelect.selectedIndex >= 0) {
+                      var optUtl = utlSelect.options[utlSelect.selectedIndex];
+                      if (optUtl) {
+                        upperTrackLengthVal = String(optUtl.value || '');
+                        upperTrackLengthLbl = String(optUtl.textContent || '').trim();
+                        card.setAttribute('data-hw-upper-track-length-value', upperTrackLengthVal);
+                        card.setAttribute('data-hw-upper-track-length-label', upperTrackLengthLbl);
+                      }
+                    }
+                    var mdsSelect = root.querySelector('[data-hw-max-door-size-select]');
+                    var maxDoorSizeVal = '';
+                    var maxDoorSizeLbl = '';
+                    if (mdsSelect && mdsSelect.selectedIndex >= 0) {
+                      var optMds = mdsSelect.options[mdsSelect.selectedIndex];
+                      if (optMds) {
+                        maxDoorSizeVal = String(optMds.value || '');
+                        maxDoorSizeLbl = String(optMds.textContent || '').trim();
+                        card.setAttribute('data-hw-max-door-size-value', maxDoorSizeVal);
+                        card.setAttribute('data-hw-max-door-size-label', maxDoorSizeLbl);
+                      }
+                    }
+                    var cptSelect = root.querySelector('[data-hw-carriage-pack-type-select]');
+                    var carriagePackTypeVal = '';
+                    var carriagePackTypeLbl = '';
+                    if (cptSelect && cptSelect.selectedIndex >= 0) {
+                      var optCpt = cptSelect.options[cptSelect.selectedIndex];
+                      if (optCpt) {
+                        carriagePackTypeVal = String(optCpt.value || '');
+                        carriagePackTypeLbl = String(optCpt.textContent || '').trim();
+                        card.setAttribute('data-hw-carriage-pack-type-value', carriagePackTypeVal);
+                        card.setAttribute('data-hw-carriage-pack-type-label', carriagePackTypeLbl);
+                      }
+                    }
+                    var shlSelect = root.querySelector('[data-hw-strap-hinge-length-select]');
+                    var strapHingeLengthVal = '';
+                    var strapHingeLengthLbl = '';
+                    if (shlSelect && shlSelect.selectedIndex >= 0) {
+                      var optShl = shlSelect.options[shlSelect.selectedIndex];
+                      if (optShl) {
+                        strapHingeLengthVal = String(optShl.value || '');
+                        strapHingeLengthLbl = String(optShl.textContent || '').trim();
+                        card.setAttribute('data-hw-strap-hinge-length-value', strapHingeLengthVal);
+                        card.setAttribute('data-hw-strap-hinge-length-label', strapHingeLengthLbl);
+                      }
+                    }
+                    forms.forEach(function (form) {
+                      if (finishLbl || finishVal) ensurePropertyInput(form, 'Finish', finishLbl || finishVal);
+                      if (functionLbl || functionVal) ensurePropertyInput(form, 'Hardware Function', functionLbl || functionVal);
+                      if (closerColorLbl || closerColorVal) ensurePropertyInput(form, 'Closer Color', closerColorLbl || closerColorVal);
+                      if (thicknessLbl || thicknessVal) ensurePropertyInput(form, 'Door Thickness', thicknessLbl || thicknessVal);
+                      if (swingDirectionLbl || swingDirectionVal) ensurePropertyInput(form, 'Swing Direction', swingDirectionLbl || swingDirectionVal);
+                      if (backsetLbl || backsetVal) ensurePropertyInput(form, 'Door Backset', backsetLbl || backsetVal);
+                      if (trackLengthLbl || trackLengthVal) ensurePropertyInput(form, 'Track Length', trackLengthLbl || trackLengthVal);
+                      if (connectedDoorsLbl || connectedDoorsVal) ensurePropertyInput(form, 'Number of Connected Doors', connectedDoorsLbl || connectedDoorsVal);
+                      if (upperTrackLengthLbl || upperTrackLengthVal) ensurePropertyInput(form, 'Upper Track Length', upperTrackLengthLbl || upperTrackLengthVal);
+                      if (maxDoorSizeLbl || maxDoorSizeVal) ensurePropertyInput(form, 'Max Door Size', maxDoorSizeLbl || maxDoorSizeVal);
+                      if (carriagePackTypeLbl || carriagePackTypeVal) ensurePropertyInput(form, 'Carriage Pack Type', carriagePackTypeLbl || carriagePackTypeVal);
+                      if (strapHingeLengthLbl || strapHingeLengthVal) ensurePropertyInput(form, 'Strap Hinge Length', strapHingeLengthLbl || strapHingeLengthVal);
+                    });
+                  }
+
+                  function selectSwatch(sw) {
+                    if (!sw) return;
+                    root.querySelectorAll('.door-suggested-hardware-swatch').forEach(function (s) {
+                      s.classList.remove('door-suggested-hardware-swatch--selected');
+                    });
+                    sw.classList.add('door-suggested-hardware-swatch--selected');
+                    var fv = sw.getAttribute('data-finish-value') || '';
+                    var fl = sw.getAttribute('data-finish-label') || sw.getAttribute('title') || sw.getAttribute('aria-label') || fv;
+                    if (finishLabel) finishLabel.textContent = fl;
+                    card.setAttribute('data-hw-finish-value', fv);
+                    card.setAttribute('data-hw-finish-label', fl);
+                    syncCartProperties();
+                  }
+
+                  root.addEventListener('click', function (e) {
+                    var sw = e.target && e.target.closest ? e.target.closest('.door-suggested-hardware-swatch') : null;
+                    if (!sw || !root.contains(sw)) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    selectSwatch(sw);
+                  });
+
+                  var fnSelect = root.querySelector('[data-hw-function-select]');
+                  if (fnSelect) {
+                    fnSelect.addEventListener('change', syncCartProperties);
+                    fnSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var ccSelect = root.querySelector('[data-hw-closer-color-select]');
+                  if (ccSelect) {
+                    ccSelect.addEventListener('change', syncCartProperties);
+                    ccSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var thickSelect = root.querySelector('[data-hw-thickness-select]');
+                  if (thickSelect) {
+                    thickSelect.addEventListener('change', syncCartProperties);
+                    thickSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var sdSelect = root.querySelector('[data-hw-swing-direction-select]');
+                  if (sdSelect) {
+                    sdSelect.addEventListener('change', syncCartProperties);
+                    sdSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var bsSelect = root.querySelector('[data-hw-backset-select]');
+                  if (bsSelect) {
+                    bsSelect.addEventListener('change', syncCartProperties);
+                    bsSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var tlSelect = root.querySelector('[data-hw-track-length-select]');
+                  if (tlSelect) {
+                    tlSelect.addEventListener('change', syncCartProperties);
+                    tlSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var cdSelect = root.querySelector('[data-hw-connected-doors-select]');
+                  if (cdSelect) {
+                    cdSelect.addEventListener('change', syncCartProperties);
+                    cdSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var utlSelect = root.querySelector('[data-hw-upper-track-length-select]');
+                  if (utlSelect) {
+                    utlSelect.addEventListener('change', syncCartProperties);
+                    utlSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var mdsSelect = root.querySelector('[data-hw-max-door-size-select]');
+                  if (mdsSelect) {
+                    mdsSelect.addEventListener('change', syncCartProperties);
+                    mdsSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var cptSelect = root.querySelector('[data-hw-carriage-pack-type-select]');
+                  if (cptSelect) {
+                    cptSelect.addEventListener('change', syncCartProperties);
+                    cptSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  var shlSelect = root.querySelector('[data-hw-strap-hinge-length-select]');
+                  if (shlSelect) {
+                    shlSelect.addEventListener('change', syncCartProperties);
+                    shlSelect.addEventListener('input', syncCartProperties);
+                  }
+
+                  forms.forEach(function (form) {
+                    form.addEventListener('submit', syncCartProperties);
+                  });
+
+                  var selectedSwatch = root.querySelector('.door-suggested-hardware-swatch--selected')
+                    || root.querySelector('.door-suggested-hardware-swatch');
+                  if (selectedSwatch) {
+                    selectSwatch(selectedSwatch);
+                  } else if (window.__landingHardwareFirstFinish) {
+                    card.setAttribute('data-hw-finish-value', String(window.__landingHardwareFirstFinish));
+                    card.setAttribute('data-hw-finish-label', String(window.__landingHardwareFirstFinishLabel || window.__landingHardwareFirstFinish));
+                    if (finishLabel) finishLabel.textContent = String(window.__landingHardwareFirstFinishLabel || window.__landingHardwareFirstFinish);
+                  }
+
+                  syncCartProperties();
+
+                  if (typeof window.__landingHardwareEnhanceSelect === 'function') {
+                    if (fnSelect) window.__landingHardwareEnhanceSelect(fnSelect);
+                    if (ccSelect) window.__landingHardwareEnhanceSelect(ccSelect);
+                    if (thickSelect) window.__landingHardwareEnhanceSelect(thickSelect);
+                    if (sdSelect) window.__landingHardwareEnhanceSelect(sdSelect);
+                    if (bsSelect) window.__landingHardwareEnhanceSelect(bsSelect);
+                    if (tlSelect) window.__landingHardwareEnhanceSelect(tlSelect);
+                    if (cdSelect) window.__landingHardwareEnhanceSelect(cdSelect);
+                    if (utlSelect) window.__landingHardwareEnhanceSelect(utlSelect);
+                    if (mdsSelect) window.__landingHardwareEnhanceSelect(mdsSelect);
+                    if (cptSelect) window.__landingHardwareEnhanceSelect(cptSelect);
+                    if (shlSelect) window.__landingHardwareEnhanceSelect(shlSelect);
+                  }
+                }
+
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', initLandingHardwareSwatches);
+                } else {
+                  initLandingHardwareSwatches();
+                }
+              })();
+            </script>
+            <script src="{{ 'door-conf2-update.js' | asset_url }}" defer></script>
+            <script src="{{ 'landing-product-save.js' | asset_url }}" defer></script>
+            <script>
+              window.__landingHardwareDefaults = {% if product.metafields.custom.hardware_default_selection != blank %}{{ product.metafields.custom.hardware_default_selection.value | default: product.metafields.custom.hardware_default_selection | json }}{% else %}null{% endif %};
+
+              (function () {
+                var defaults = window.__landingHardwareDefaults;
+                if (typeof defaults === 'string') {
+                  try { defaults = JSON.parse(defaults); } catch (e) { defaults = null; }
+                }
+                if (!defaults || typeof defaults !== 'object') return;
+
+                function norm(s) {
+                  return String(s == null ? '' : s)
+                    .toLowerCase()
+                    .replace(/[\u2018\u2019\u201c\u201d'"]/g, '')
+                    .replace(/[^a-z0-9]+/g, '_')
+                    .replace(/^_+|_+$/g, '');
+                }
+
+                function getDesired(keys) {
+                  for (var i = 0; i < keys.length; i++) {
+                    var k = keys[i];
+                    if (Object.prototype.hasOwnProperty.call(defaults, k)) {
+                      var v = defaults[k];
+                      if (v != null && String(v).trim() !== '') return String(v);
+                    }
+                  }
+                  return null;
+                }
+
+                var SELECT_FIELDS = [
+                  { keys: ['hardware_function', 'door_config_options.function', 'function'], sel: 'select.door-suggested-hardware-function, select[data-hw-function-select]', valueAttr: 'data-hw-function-value', labelAttr: 'data-hw-function-label', prop: 'Hardware Function' },
+                  { keys: ['door_config_options.closer_color', 'closer_color', 'hardware_closer_color'], sel: 'select.door-suggested-hardware-closer-color, select[data-hw-closer-color-select]', valueAttr: 'data-hw-closer-color-value', labelAttr: 'data-hw-closer-color-label', prop: 'Closer Color' },
+                  { keys: ['hardware_thickness_option', 'door_config_options.hardware_thickness_option', 'thickness'], sel: 'select.door-suggested-hardware-thickness, select[data-hw-thickness-select]', valueAttr: 'data-hw-thickness-value', labelAttr: 'data-hw-thickness-label', prop: 'Door Thickness' },
+                  { keys: ['door_config_options.swing_direction', 'swing_direction'], sel: 'select.door-suggested-hardware-swing-direction, select[data-hw-swing-direction-select]', valueAttr: 'data-hw-swing-direction-value', labelAttr: 'data-hw-swing-direction-label', prop: 'Swing Direction' },
+                  { keys: ['hardware_backset', 'door_config_options.door_backset', 'door_backset', 'backset'], sel: 'select.door-suggested-hardware-backset, select[data-hw-backset-select]', valueAttr: 'data-hw-backset-value', labelAttr: 'data-hw-backset-label', prop: 'Door Backset' },
+                  { keys: ['door_config_options.door_hanger_tracker_length', 'door_hanger_tracker_length', 'track_length'], sel: 'select.door-suggested-hardware-track-length, select[data-hw-track-length-select]', valueAttr: 'data-hw-track-length-value', labelAttr: 'data-hw-track-length-label', prop: 'Track Length' },
+                  { keys: ['door_config_options.number_of_connected_doors', 'number_of_connected_doors', 'connected_doors'], sel: 'select.door-suggested-hardware-connected-doors, select[data-hw-connected-doors-select]', valueAttr: 'data-hw-connected-doors-value', labelAttr: 'data-hw-connected-doors-label', prop: 'Number of Connected Doors' },
+                  { keys: ['door_config_options.upper_track_length', 'upper_track_length'], sel: 'select.door-suggested-hardware-upper-track-length, select[data-hw-upper-track-length-select]', valueAttr: 'data-hw-upper-track-length-value', labelAttr: 'data-hw-upper-track-length-label', prop: 'Upper Track Length' },
+                  { keys: ['door_config_options.max_door_size', 'max_door_size'], sel: 'select.door-suggested-hardware-max-door-size, select[data-hw-max-door-size-select]', valueAttr: 'data-hw-max-door-size-value', labelAttr: 'data-hw-max-door-size-label', prop: 'Max Door Size' },
+                  { keys: ['door_config_options.carriage_pack_type', 'carriage_pack_type'], sel: 'select.door-suggested-hardware-carriage-pack-type, select[data-hw-carriage-pack-type-select]', valueAttr: 'data-hw-carriage-pack-type-value', labelAttr: 'data-hw-carriage-pack-type-label', prop: 'Carriage Pack Type' },
+                  { keys: ['hardware_strap_hinge_length', 'door_config_options.strap_hinge_length', 'strap_hinge_length'], sel: 'select.door-suggested-hardware-strap-hinge-length, select[data-hw-strap-hinge-length-select]', valueAttr: 'data-hw-strap-hinge-length-value', labelAttr: 'data-hw-strap-hinge-length-label', prop: 'Strap Hinge Length' }
+                ];
+
+                function dispatchChange(el) {
+                  try {
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                  } catch (e) {
+                    try {
+                      var ev = document.createEvent('HTMLEvents');
+                      ev.initEvent('change', true, false);
+                      el.dispatchEvent(ev);
+                    } catch (e2) {}
+                  }
+                }
+
+                function clearProperty(prop) {
+                  if (!prop) return;
+                  var name = 'properties[' + prop + ']';
+                  Array.prototype.forEach.call(document.querySelectorAll('form.millwork-form input[name="' + name + '"]'), function (input) {
+                    input.value = '';
+                  });
+                }
+
+                function applySelect(card, def) {
+                  var desired = getDesired(def.keys);
+                  if (desired == null) return;
+                  var sel = card.querySelector(def.sel);
+                  if (!sel || !sel.options) return;
+                  var dn = norm(desired);
+                  var match = null;
+                  for (var i = 0; i < sel.options.length; i++) {
+                    var o = sel.options[i];
+                    if (norm(o.value) === dn || norm(o.textContent) === dn) { match = o; break; }
+                  }
+                  if (match) {
+                    sel.value = match.value;
+                    dispatchChange(sel);
+                  } else {
+                    sel.selectedIndex = -1;
+                    if (def.valueAttr) card.setAttribute(def.valueAttr, '');
+                    if (def.labelAttr) card.setAttribute(def.labelAttr, '');
+                    clearProperty(def.prop);
+                    dispatchChange(sel);
+                    clearProperty(def.prop);
+                  }
+                }
+
+                function applyFinish(card) {
+                  var desired = getDesired(['hardware_finish', 'door_config_options.finish', 'finish']);
+                  if (desired == null) return;
+                  var dn = norm(desired);
+                  var swatches = Array.prototype.slice.call(card.querySelectorAll('.door-suggested-hardware-swatch'));
+                  var match = null;
+                  swatches.forEach(function (sw) {
+                    if (match) return;
+                    var v = sw.getAttribute('data-finish-value') || '';
+                    var l = sw.getAttribute('data-finish-label') || sw.getAttribute('title') || sw.getAttribute('aria-label') || '';
+                    if (norm(v) === dn || norm(l) === dn) match = sw;
+                  });
+                  if (match) {
+                    match.click();
+                  } else {
+                    swatches.forEach(function (sw) { sw.classList.remove('door-suggested-hardware-swatch--selected'); });
+                    card.setAttribute('data-hw-finish-value', '');
+                    card.setAttribute('data-hw-finish-label', '');
+                    var fl = card.querySelector('[data-finish-label]');
+                    if (fl) fl.textContent = '';
+                    clearProperty('Finish');
+                  }
+                }
+
+                function applyAll() {
+                  var root = document.querySelector('[data-landing-hardware-config="1"]');
+                  if (!root) return;
+                  var card = root.querySelector('.door-suggested-hardware-card');
+                  if (!card) return;
+                  applyFinish(card);
+                  SELECT_FIELDS.forEach(function (def) { applySelect(card, def); });
+                }
+
+                function boot() {
+                  applyAll();
+                  setTimeout(applyAll, 300);
+                }
+
+                if (document.readyState === 'complete') {
+                  boot();
+                } else {
+                  window.addEventListener('load', boot);
+                }
+              })();
+            </script>
+          {%- endif -%}
+
+          <form class="millwork-form door-hidden" method="post" action="/cart/add" aria-hidden="true" tabindex="-1">
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <div class="qty-wrapper">
+              <input type="number" name="quantity" min="1" value="1" inputmode="numeric" tabindex="-1">
+            </div>
+          </form>
+          {% render 'landing-product-save' %}
+        {% endif %}
+
+        {% if product.metafields.custom.after_price_description != blank %}
+          {% if product.type == 'Hardware' %}
+            <h6 class="description_heading">{{ product.metafields.custom.description_heading }}</h6>
+          {% endif %}
+          <div class="landing-product__metafield-description rte">
+            {{ product.metafields.custom.after_price_description | metafield_tag }}
+          </div>
+        {% endif %}
+
+        {% if product.type == 'Millwork' %}
+          <script>
+            window.millwork_current_sku = {{ product.selected_or_first_available_variant.sku | json }};
+          </script>
+          {%- paginate shop.metaobjects.millwork_product_pricing.values by 250 -%}
+          <script type="application/json" id="millwork-pricing-records-json">
+            [
+            {% for row in shop.metaobjects.millwork_product_pricing.values %}
+              {% unless forloop.first %},{% endunless %}
+              {%- assign _row_formula = row.calculate_by_formula.value | default: row.calculate_by_formula -%}
+              {%- assign _row_details = row.details.value | default: row.details -%}
+              {%- if _row_details == blank -%}
+                {%- assign _row_details = _row_formula -%}
+              {%- endif -%}
+              {
+                "sku": {{
+                  row.sku.value
+                  | default: row.sku
+                  | default: row.display_name.value
+                  | default: row.display_name
+                  | json
+                }},
+                "handle": {{ row.system.handle | default: row.handle | json }},
+                "display_name": {{ row.display_name.value | default: row.display_name | json }},
+                "base_price": {{ row.base_price.value | default: row.base_price | json }},
+                "wood_prices_by_tier": {% if row.wood_prices_by_tier.value != blank %}{{ row.wood_prices_by_tier.value | json }}{% elsif row.wood_prices_by_tier != blank %}{{ row.wood_prices_by_tier | json }}{% else %}{}{% endif %},
+                "calculate": {{ row.calculate.value | default: row.calculate | json }},
+                "details": {% if _row_details != blank %}{{ _row_details | json }}{% else %}null{% endif %},
+                "calculate_by_formula": {% if _row_formula != blank %}{{ _row_formula | json }}{% else %}null{% endif %}
+              }
+            {% endfor %}
+            ]
+          </script>
+
+          <script>
+            (function () {
+              var el = document.getElementById('millwork-pricing-records-json');
+              var raw = el ? (el.textContent || el.innerHTML || '[]').trim() : '[]';
+              try {
+                window.millwork_pricing_records = JSON.parse(raw);
+              } catch (eParse) {
+                window.millwork_pricing_records = [];
+              }
+            })();
+          </script>
+          {%- endpaginate -%}
+
+          <script id="millwork-wood-catalog-json" type="application/json">
+            [
+              {% for entry in shop.metaobjects.millwork_wood_catalog.values %}
+                {% unless forloop.first %},{% endunless %}
+                {
+                  "species_key": {{ entry.species_key.value | json }},
+                  "display_name": {{ entry.display_name.value | json }},
+                  "image_url": {{ entry.image_url.value | json }},
+                  "tier_id": {{ entry.tier_id.value | json }}
+                }
+              {% endfor %}
+            ]
+          </script>
+
+          <script>
+            window.millwork_wood_catalog = JSON.parse(
+              document.getElementById('millwork-wood-catalog-json').textContent || '[]'
+            );
+          </script>
+
+          {%- comment -%}
+            Millwork Baluster Length — from door_config_options config_option key millwork_baluster_length.
+          {%- endcomment -%}
+          {%- liquid
+            assign _mw_door_opts = product.metafields.custom.door_config_options.value
+            assign mw_baluster_opt = null
+            assign mw_custom_length_opt = null
+            assign mw_baluster_select_id = 'millwork-baluster-length-' | append: product.id
+            assign mw_custom_length_select_id = 'millwork-custom-length-' | append: product.id
+            assign mw_custom_thickness_select_id = 'millwork-custom-thickness-' | append: product.id
+            assign show_millwork_baluster_length = false
+            assign show_millwork_custom_length = false
+            assign mw_labor_includes_length = false
+            assign mw_baluster_option_count = 0
+            assign mw_baluster_label = 'Baluster Length'
+            assign mw_custom_length_label = 'Length'
+          -%}
+          {%- if _mw_door_opts != blank -%}
+            {%- for opt in _mw_door_opts -%}
+              {%- assign opt_key = opt.key | default: opt['key'] | downcase | strip | replace: '-', '_' | replace: ' ', '_' -%}
+              {%- if opt_key == 'millwork_baluster_length' and mw_baluster_opt == null -%}
+                {%- assign mw_baluster_opt = opt -%}
+              {%- elsif opt_key == 'millwork_custom_length' and mw_custom_length_opt == null -%}
+                {%- assign mw_custom_length_opt = opt -%}
+              {%- elsif opt_key == 'labor_includes_length' -%}
+                {%- assign mw_labor_includes_length = true -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+          {%- if mw_custom_length_opt != blank -%}
+            {%- assign mw_custom_length_label_field = mw_custom_length_opt.label | default: mw_custom_length_opt['label'] -%}
+            {%- assign mw_custom_length_label = mw_custom_length_label_field | default: 'Length' -%}
+            {%- assign show_millwork_custom_length = true -%}
+          {%- endif -%}
+          {%- if mw_baluster_opt != blank -%}
+            {%- assign mw_baluster_label_field = mw_baluster_opt.label | default: mw_baluster_opt['label'] -%}
+            {%- assign mw_baluster_label = mw_baluster_label_field | default: 'Baluster Length' -%}
+            {%- assign mw_baluster_choice_refs = mw_baluster_opt.choices1.value | default: mw_baluster_opt.choices.value -%}
+            {%- if mw_baluster_choice_refs != blank -%}
+              {%- for c in mw_baluster_choice_refs -%}
+                {%- assign c_value = c.value | default: c.value -%}
+                {%- if c_value != blank -%}
+                  {%- assign mw_baluster_option_count = mw_baluster_option_count | plus: 1 -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endif -%}
+          {%- if mw_baluster_option_count > 0 -%}
+            {%- assign show_millwork_baluster_length = true -%}
+          {%- endif -%}
+
+          {%- comment -%}
+            Millwork Length — direct from product metafield custom.millwork_length_option only.
+          {%- endcomment -%}
+          {%- liquid
+            assign _mw_length_catalog = shop.metaobjects.millwork_length.values | default: shop.metaobjects['millwork_length'].values
+            assign _mw_ml_list = product.metafields.custom.millwork_length_option.value | default: product.metafields.custom.millwork_length_option
+            assign mw_length_select_id = 'millwork-length-' | append: product.id
+            assign show_millwork_length = false
+            assign mw_length_option_count = 0
+          -%}
+          {%- if _mw_ml_list != blank -%}
+            {%- for lo_ref in _mw_ml_list -%}
+              {%- assign lo_mo = lo_ref | metaobject | default: lo_ref -%}
+              {%- assign lo_hdl = lo_mo.system.handle | default: '' | strip -%}
+              {%- assign mo_entry = nil -%}
+              {%- if lo_hdl != blank -%}
+                {%- assign mo_entry = shop.metaobjects.millwork_length[lo_hdl] | default: shop.metaobjects['millwork_length'][lo_hdl] -%}
+              {%- endif -%}
+              {%- if mo_entry == blank and lo_mo.system.id != blank and _mw_length_catalog != blank -%}
+                {%- for cat_entry in _mw_length_catalog -%}
+                  {%- if cat_entry.system.id == lo_mo.system.id -%}
+                    {%- assign mo_entry = cat_entry -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+              {%- if mo_entry == blank -%}
+                {%- assign mo_entry = lo_mo -%}
+              {%- endif -%}
+              {%- if mo_entry != blank -%}
+                {%- assign lo_key = mo_entry['key'].value | default: mo_entry.key.value | default: mo_entry['key'] | default: mo_entry.key | strip -%}
+                {%- assign lo_val = mo_entry['value'].value | default: mo_entry.value.value | default: mo_entry['value'] | default: mo_entry.value | strip -%}
+                {%- if lo_key == 'MetaobjectListDrop' -%}{%- assign lo_key = '' -%}{%- endif -%}
+                {%- if lo_val == 'MetaobjectListDrop' -%}{%- assign lo_val = '' -%}{%- endif -%}
+                {%- if lo_key != blank or lo_val != blank -%}
+                  {%- assign mw_length_option_count = mw_length_option_count | plus: 1 -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+          {%- if mw_length_option_count > 0 -%}
+            {%- assign show_millwork_length = true -%}
+          {%- endif -%}
+
+          <div class="millwork-accordion">
+            <details class="m-collapsible">
+              <summary class="m-collapsible--button millwork-select-summary">
+                <div class="millwork-select-summary__left">
+                  <div id="millwork-selected-preview" class="millwork-select-summary__thumb">
+                    <img id="millwork-selected-image" src="" alt="">
+                  </div>
+                  <div>
+                    <div class="millwork-select-summary__text">
+                      <div class="millwork-select-summary__value" id="millwork-selected-label">Choose wood</div>
+                      <strong id="landing-starting-price1"></strong>
+                    </div>
+                    {% comment %}
+                      <div>
+                        <strong id="landing-starting-price1">{{ product.price | money_without_trailing_zeros }}</strong>
+                      </div>
+                    {% endcomment %}
+                  </div>
+                  {% comment %}
+                    <div class="millwork-select-summary__text">
+                      <div class="millwork-select-summary__value" id="millwork-selected-label">Choose an option</div>
+                    </div>
+                  {% endcomment %}
+                </div>
+                <span class="millwork-select-summary__caret" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.5 7.5L10 12L14.5 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </summary>
+              <div class="m-collapsible--content">
+                <div class="m-collapsible--content__inner">
+                  {% comment %}
+                    <div id="millwork-selected-preview" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;" >
+                      <img id="millwork-selected-image" src="" alt="" >
+                      <div>
+                        <div class="millwork-select-summary__text">
+                          <div class="millwork-select-summary__value" id="millwork-selected-label">Choose wood</div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endcomment %}
+                  <div class="millwork-options">
+                    {%- assign category_csv = '' -%}
+                    {%- for entry in shop.metaobjects.millwork_wood_catalog.values -%}
+                      {%- assign cat = entry.category.value | default: '' | strip | downcase -%}
+                      {%- if cat != blank -%}
+                        {%- assign category_csv = category_csv | append: cat | append: '|' -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {%- assign categories = category_csv | split: '|' | uniq -%}
+
+                    {%- for category in categories -%}
+                      {%- assign category = category | strip | downcase -%}
+                      {%- if category != blank -%}
+                        <div class="millwork-options-group" data-category="{{ category | escape }}">
+                          <div class="millwork-group-title">{{ category | capitalize }} Exposure</div>
+                          {%- if category == 'any' -%}
+                            <div class="millwork-group-desc">
+                              Great for all locations, including direct exposure to rain, sun, snow, etc.
+                            </div>
+                          {%- elsif category == 'partial' -%}
+                            <div class="millwork-group-desc">
+                              Partially exposed to some elements, such as rain, sun, snow, etc.
+                            </div>
+                          {%- elsif category == 'protected' -%}
+                            <div class="millwork-group-desc">
+                              Best for protected locations with limited direct weather exposure.
+                            </div>
+                          {%- else -%}
+                            <div class="millwork-group-desc">Choose from available wood species in this group.</div>
+                          {%- endif -%}
+
+                          {% for entry in shop.metaobjects.millwork_wood_catalog.values %}
+                            {% assign entry_category = entry.category.value | default: '' | strip | downcase %}
+                            {% if entry_category == category %}
+                              <div
+                                class="millwork-option-item"
+                                data-value="{{ entry.display_name.value | escape }}"
+                                data-species-key="{{ entry.species_key.value | escape }}"
+                                data-tier-id="{{ entry.tier_id.value | escape }}"
+                                data-image="{{ entry.image_url.value | escape }}"
+                                role="button"
+                                tabindex="0"
+                              >
+                                {% if entry.image_url.value != blank %}
+                                  <img
+                                    class="millwork-option-image"
+                                    src="{{ entry.image_url.value | escape }}"
+                                    alt="{{ entry.display_name.value | escape }}"
+                                  >
+                                {% endif %}
+                                <span class="millwork-option-label">{{ entry.display_name.value }}</span>
+                              </div>
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                  <input type="hidden" id="millwork-selected" value="">
+                  <input type="hidden" id="millwork-selected-price" value="">
+                  <input type="hidden" id="millwork-selected-unit-price" value="">
+                  <input type="hidden" id="millwork-selected-addon-price" value="">
+                </div>
+              </div>
+            </details>
+          </div>
+
+          {%- if show_millwork_custom_length -%}
+            <div class="landing-product__hardware-config landing-product__millwork-extra-config" data-millwork-custom-length-config="1">
+              <div class="millwork-custom-dimensions-row">
+                <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__millwork-custom-length">
+                  <label
+                    class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__millwork-custom-length-label"
+                    for="{{ mw_custom_length_select_id }}"
+                    id="{{ mw_custom_length_select_id }}-label"
+                  >
+                    {{ mw_custom_length_label | escape }}
+                  </label>
+                  <select
+                    id="{{ mw_custom_length_select_id }}"
+                    class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__millwork-custom-length-select door-millwork-custom-length-select"
+                    data-millwork-custom-length-select="1"
+                    data-config-option-id="millwork_custom_length"
+                    aria-labelledby="{{ mw_custom_length_select_id }}-label"
+                  >
+                    <option value="" selected disabled>Select</option>
+                    {%- for i in (1..100) -%}
+                      <option value="{{ i }}">{{ i }}</option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+                <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__millwork-custom-thickness">
+                  <label
+                    class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__millwork-custom-thickness-label"
+                    for="{{ mw_custom_thickness_select_id }}"
+                    id="{{ mw_custom_thickness_select_id }}-label"
+                  >
+                    Thickness
+                  </label>
+                  <select
+                    id="{{ mw_custom_thickness_select_id }}"
+                    class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__millwork-custom-thickness-select door-millwork-custom-thickness-select"
+                    data-millwork-custom-thickness-select="1"
+                    aria-labelledby="{{ mw_custom_thickness_select_id }}-label"
+                  >
+                    <option value="" selected disabled>Select</option>
+                    <option value="0">0</option>
+                    <option value="0.0625">1/16</option>
+                    <option value="0.125">1/8</option>
+                    <option value="0.25">1/4</option>
+                    <option value="0.5">1/2</option>
+                    <option value="0.1875">3/16</option>
+                    <option value="0.375">3/8</option>
+                    <option value="0.75">3/4</option>
+                    <option value="0.3125">5/16</option>
+                    <option value="0.625">5/8</option>
+                    <option value="0.4375">7/16</option>
+                    <option value="0.875">7/8</option>
+                    <option value="0.5625">9/16</option>
+                    <option value="0.6875">11/16</option>
+                    <option value="0.8125">13/16</option>
+                    <option value="0.9375">15/16</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if show_millwork_baluster_length -%}
+            <div class="landing-product__hardware-config landing-product__millwork-extra-config" data-millwork-baluster-length-config="1">
+              <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__millwork-baluster-length">
+                <label
+                  class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__millwork-baluster-length-label"
+                  for="{{ mw_baluster_select_id }}"
+                  id="{{ mw_baluster_select_id }}-label"
+                >
+                  {{ mw_baluster_label | escape }}
+                </label>
+                <select
+                  id="{{ mw_baluster_select_id }}"
+                  class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__millwork-baluster-length-select door-millwork-baluster-length-select"
+                  data-millwork-baluster-length-select="1"
+                  data-config-option-id="millwork_baluster_length"
+                  aria-labelledby="{{ mw_baluster_select_id }}-label"
+                >
+                  <option value="" selected disabled>Select</option>
+                  {%- for c in mw_baluster_choice_refs -%}
+                    {%- assign c_value = c.value | default: c.value -%}
+                    {%- if c_value != blank -%}
+                      {%- assign c_label = c.label | default: c.label | default: c.title | default: c.title | default: c_value -%}
+                      <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </select>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if show_millwork_length -%}
+            <div class="landing-product__hardware-config landing-product__millwork-extra-config" data-millwork-length-config="1">
+              <div class="door-suggested-hardware-card__hw-field door-suggested-hardware-card__millwork-length">
+                <label
+                  class="door-suggested-hardware-card__hw-label door-suggested-hardware-card__millwork-length-label"
+                  for="{{ mw_length_select_id }}"
+                  id="{{ mw_length_select_id }}-label"
+                >
+                  Millwork Length
+                </label>
+                <select
+                  id="{{ mw_length_select_id }}"
+                  class="door-input-select door-suggested-hardware-card__hw-select door-suggested-hardware-card__millwork-length-select door-millwork-length-select"
+                  data-millwork-length-select="1"
+                  aria-labelledby="{{ mw_length_select_id }}-label"
+                >
+                  {%- if _mw_ml_list != blank -%}
+                    {%- for lo_ref in _mw_ml_list -%}
+                      {%- assign lo_mo = lo_ref | metaobject | default: lo_ref -%}
+                      {%- assign lo_hdl = lo_mo.system.handle | default: '' | strip -%}
+                      {%- assign mo_entry = nil -%}
+                      {%- if lo_hdl != blank -%}
+                        {%- assign mo_entry = shop.metaobjects.millwork_length[lo_hdl]
+                          | default: shop.metaobjects['millwork_length'][lo_hdl]
+                        -%}
+                      {%- endif -%}
+                      {%- if mo_entry == blank and lo_mo.system.id != blank and _mw_length_catalog != blank -%}
+                        {%- for cat_entry in _mw_length_catalog -%}
+                          {%- if cat_entry.system.id == lo_mo.system.id -%}
+                            {%- assign mo_entry = cat_entry -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                      {%- if mo_entry == blank -%}
+                        {%- assign mo_entry = lo_mo -%}
+                      {%- endif -%}
+                      {%- if mo_entry != blank -%}
+                        {%- assign c_value = mo_entry['key'].value
+                          | default: mo_entry.key.value
+                          | default: mo_entry['key']
+                          | default: mo_entry.key
+                          | strip
+                        -%}
+                        {%- assign c_label = mo_entry['value'].value
+                          | default: mo_entry.value.value
+                          | default: mo_entry['value']
+                          | default: mo_entry.value
+                          | default: c_value
+                          | strip
+                        -%}
+                        {%- if c_value == 'MetaobjectListDrop' -%}{%- assign c_value = '' -%}{%- endif -%}
+                        {%- if c_label == 'MetaobjectListDrop' -%}{%- assign c_label = '' -%}{%- endif -%}
+                        {%- if c_value != blank or c_label != blank -%}
+                          {%- assign c_value = c_value | default: c_label -%}
+                          {%- assign c_label = c_label | default: c_value -%}
+                          <option value="{{ c_value | escape }}">{{ c_label | escape }}</option>
+                        {%- endif -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                </select>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if show_millwork_length or show_millwork_baluster_length or show_millwork_custom_length -%}
+            <style>
+              .landing-product__millwork-extra-config {
+                margin-top: 24px;
+                margin-bottom: 0;
+              }
+              .landing-product__millwork-extra-config .door-suggested-hardware-card__hw-field {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 32px;
+                align-items: center;
+                flex-wrap: wrap;
+              }
+              .millwork-custom-dimensions-row {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 16px 24px;
+                width: 100%;
+                margin-bottom: 32px;
+              }
+              .millwork-custom-dimensions-row .door-suggested-hardware-card__hw-field {
+                display: flex;
+                margin-bottom: 0;
+                flex: 1 1 auto;
+                align-items: center;
+              }
+              .landing-product__millwork-extra-config .door-suggested-hardware-card__hw-label {
+                display: inline-block;
+                font-size: 16px;
+                font-weight: 600;
+                line-height: 150%;
+                width: 140px;
+              }
+              .landing-product__millwork-extra-config .door-suggested-hardware-card__hw-select {
+                max-width: 220px;
+                min-width: 220px;
+                width: 100%;
+              }
+              .landing-product__millwork-extra-config select.door-suggested-hardware-card__hw-select.door-native-select--enhanced {
+                display: none !important;
+              }
+              .landing-product__millwork-extra-config .door-div-select {
+                position: relative;
+                display: inline-block;
+                width: 100%;
+                min-width: 220px;
+                max-width: 220px;
+              }
+              .landing-product__millwork-extra-config .door-div-select__btn {
+                border: 1px solid var(--secondary400Color);
+                padding: 8px 16px;
+                border-radius: 8px;
+                font-family: var(--font-stack-body);
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 150%;
+                color: var(--sootBlackColor);
+                width: 100%;
+                background: var(--silkWhiteColor);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                cursor: pointer;
+              }
+              .landing-product__millwork-extra-config .door-div-select__btn span.door-div-select__label {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+              }
+              .landing-product__millwork-extra-config .door-div-select--open .door-div-select__btn {
+                border-radius: 8px 8px 0 0;
+                border-bottom-color: transparent;
+              }
+              .landing-product__millwork-extra-config .door-div-select__list {
+                display: none;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: calc(100% - 3px);
+                z-index: 50;
+                border: 1px solid var(--secondary400Color);
+                border-radius: 0 0 8px 8px;
+                background: var(--silkWhiteColor);
+                border-top: 0;
+                max-height: 260px;
+                overflow: auto;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+              }
+              .landing-product__millwork-extra-config .door-div-select--open .door-div-select__list {
+                display: block;
+              }
+              .landing-product__millwork-extra-config .door-div-select__item {
+                padding: 8px 16px;
+                font-size: 16px;
+                line-height: 150%;
+                width: 100%;
+                text-align: left;
+                border: 0;
+                background: transparent;
+                cursor: pointer;
+                font-family: var(--font-stack-body);
+              }
+              .landing-product__millwork-extra-config .door-div-select__item:hover {
+                background: var(--secondary100Color);
+              }
+              .landing-product__millwork-extra-config .door-div-select__item[aria-selected='true'] {
+                background: var(--greysColor);
+                color: var(--sootBlackColor);
+              }
+              @media (max-width: 576px) {
+                .landing-product__millwork-extra-config .door-suggested-hardware-card__hw-label,
+                .landing-product__millwork-extra-config .door-div-select {
+                  width: 100%;
+                  min-width: 100%;
+                  max-width: 100%;
+                }
+              }
+            </style>
+            <script src="{{ 'door-conf2-update.js' | asset_url }}" defer></script>
+            <script src="{{ 'landing-product-save.js' | asset_url }}" defer></script>
+          {%- endif -%}
+
+          {% if product.type == 'Millwork' %}
+            <div class="landing-product__price mt-32">
+              <div class="start_price">
+                <strong id="landing-starting-price" class="p-xl fw-600 primaryFont">
+                  {{- product.price | money_without_trailing_zeros -}}
+                </strong>
+                as configured
+              </div>
+              {% if product.selected_or_first_available_variant.sku != blank %}
+                <div class="product-sku">
+                  <strong>Model </strong>
+                  <div class="model-no">
+                    <span id="variant-sku">
+                      {{ product.selected_or_first_available_variant.sku }}
+                    </span>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+            <form class="millwork-form door-hidden" method="post" action="/cart/add" aria-hidden="true" tabindex="-1">
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              <div class="qty-wrapper">
+                <input type="number" name="quantity" min="1" value="1" inputmode="numeric" tabindex="-1">
+              </div>
+            </form>
+            {% render 'landing-product-save' %}
+          {% endif %}
+
+        {% else %}
+          {% if product.type != 'Hardware' %}
+            <a
+              href="{{ product.url | within: collection }}"
+              class="button button--primary landing-product__cta common-btn"
+            >
+              Customize and Buy
+            </a>
+          {% endif %}
+        {% endif %}
+
+        {% if product.metafields.custom.subheading %}
+          <p class="landing-product__subheading p-xl color-primarys">
+            {{ product.metafields.custom.subheading }}
+          </p>
+        {% endif %}
+
+        {% if product.type != 'Hardware' %}
+          <div class="landing-product__description">
+            <h6 class="description_heading">{{ product.metafields.custom.description_heading }}</h6>
+            {{ product.description }}
+          </div>
+        {% endif %}
+        {%- comment -%} Optional richtext block (theme editor) — appears before Key features {%- endcomment -%}
+        {%- assign pre_key_features_blocks = section.blocks | where: 'type', 'key_features_pre_richtext' -%}
+        {%- if pre_key_features_blocks != blank -%}
+          {%- assign pre_key_features_block = pre_key_features_blocks.first -%}
+          {%- if pre_key_features_block.settings.heading != blank or pre_key_features_block.settings.body != blank -%}
+            <div class="landing-product__key-features-pre rte" {{ pre_key_features_block.shopify_attributes }}>
+              {%- if pre_key_features_block.settings.heading != blank -%}
+                <h6 class="landing-product__key-features-pre-heading">
+                  {{ pre_key_features_block.settings.heading | escape }}
+                </h6>
+              {%- endif -%}
+              {%- if pre_key_features_block.settings.body != blank -%}
+                <div class="landing-product__key-features-pre-body">
+                  {{ pre_key_features_block.settings.body }}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- assign mf = product.metafields.custom.key_features_group -%}
+        {%- assign group_value = mf.value | default: mf | append: '' | strip -%}
+        {%- if group_value != blank -%}
+          {% render 'key-features-accordion', blocks: section.blocks, group_value: group_value %}
+        {%- endif -%}
+
+        {%- comment -%}
+          Door Setup accordion (no collection filter; shown when block is present)
+        {%- endcomment -%}
+        {%- if product != blank -%}
+          {%- assign door_setup_blocks = section.blocks | where: 'type', 'door_setup' -%}
+          {%- if door_setup_blocks != blank -%}
+            {%- assign block = door_setup_blocks.first -%}
+            <div class="kfa door-setup m-faqs-section__content" {{ block.shopify_attributes }}>
+              <details
+                class="m-collapsible door-setup-collapsible mb-0"
+                {% if block.settings.open_by_default %}
+                  open
+                {% endif %}
+              >
+                <summary class="m-collapsible--button door-setup-collapsible--button">
+                  <span>{{ block.settings.heading | default: 'Door Setup' | escape }}</span>
+                  <span class="m-collapsible--icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <rect x="7" width="2" height="16" rx="1" fill="#00476C"></rect>
+                      <rect x="16" y="7" width="2" height="16" rx="1" transform="rotate(90 16 7)" fill="#00476C" class="vertical"></rect>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="m-collapsible--content door-setup-collapsible--content">
+                  <div class="m-collapsible--content__inner rte">
+                    {%- if block.settings.intro != blank -%}
+                      <div class="door-setup__intro rte">
+                        {{ block.settings.intro }}
+                      </div>
+                    {%- endif -%}
+
+                    {%- if block.settings.items != blank -%}
+                      <div class="door-setup__links rte">
+                        {{ block.settings.items }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </details>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+
+        {% for block in section.blocks %}
+          {% case block.type %}
+              {% comment %}
+                {% when 'accordion' %}
+                    {% render 'product-accordion', block: block %}
+              {% endcomment %}
+          {% endcase %}
+
+          {% if block.type == 'feature_bar' %}
+            {% render 'product-feature-bar', block: block %}
+          {% endif %}
+        {% endfor %}
+        {%- if product.type == 'Hardware' or product.type == 'Millwork' -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  .door-setup .m-collapsible .m-collapsible--content.door-setup-collapsible--content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Plus button
+    document.querySelectorAll('.qty-btn.plus').forEach(function (button) {
+      button.addEventListener('click', function () {
+        let input = this.parentElement.querySelector('input[name="quantity"]');
+        let currentVal = parseInt(input.value) || 1;
+
+        input.value = currentVal + 1;
+
+        // Trigger change event
+        input.dispatchEvent(new Event('change'));
+      });
+    });
+
+    // Minus button
+    document.querySelectorAll('.qty-btn.minus').forEach(function (button) {
+      button.addEventListener('click', function () {
+        let input = this.parentElement.querySelector('input[name="quantity"]');
+        let currentVal = parseInt(input.value) || 1;
+        let min = parseInt(input.getAttribute('min')) || 1;
+
+        if (currentVal > min) {
+          input.value = currentVal - 1;
+
+          // Trigger change event
+          input.dispatchEvent(new Event('change'));
+        }
+      });
+    });
+  });
+</script>
+{% if product.type == 'Millwork' %}
+  <script>
+    (function () {
+      function skuComparable(v) {
+        return String(v == null ? '' : v).trim().toLowerCase();
+      }
+      function skuStrict(v) {
+        return skuComparable(v).replace(/[^a-z0-9]/g, '');
+      }
+
+      function toMoney(v) {
+        var n = parseFloat(v);
+        if (isNaN(n)) n = 0;
+        return '$' + n.toFixed(2);
+      }
+
+      function formatMillworkDisplayPrice(v) {
+        var n = parseFloat(v);
+        if (isNaN(n) || n <= 0) return '';
+        return toMoney(n);
+      }
+
+      function parseJsonObjectLike(raw) {
+        if (raw == null || raw === '') return null;
+        if (typeof raw === 'boolean') return null;
+        if (typeof raw === 'string') {
+          var trimmed = raw.trim();
+          if (!trimmed || trimmed === 'true' || trimmed === 'false') return null;
+          try { raw = JSON.parse(trimmed); } catch (eJson) { return null; }
+        }
+        if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+        return raw;
+      }
+
+      function looksLikeSkuDetails(obj) {
+        if (!obj || typeof obj !== 'object') return false;
+        return obj.width != null
+          || obj.length != null
+          || obj.thickness != null
+          || obj.label_factor != null
+          || obj.labor_rate != null;
+      }
+
+      function parseSkuDetails(row) {
+        var keys = ['calculate_by_formula', 'details', 'pricing_details', 'sku_details'];
+        if (row) {
+          for (var i = 0; i < keys.length; i++) {
+            var candidate = parseJsonObjectLike(readFieldFromRow(row, [keys[i]]));
+            if (looksLikeSkuDetails(candidate)) return candidate;
+          }
+        }
+        return {};
+      }
+
+      function parseTierMap(row) {
+        var map = row && row.wood_prices_by_tier ? row.wood_prices_by_tier : readFieldFromRow(row, ['wood_prices_by_tier']);
+        if (typeof map === 'string') {
+          try { map = JSON.parse(map); } catch (e1) { map = {}; }
+        }
+        if (map && map.wood_prices_by_tier) map = map.wood_prices_by_tier;
+        if (typeof map === 'string') {
+          try { map = JSON.parse(map); } catch (e2) { map = {}; }
+        }
+        return (map && typeof map === 'object') ? map : {};
+      }
+
+      function ceilingToIncrement(value, increment) {
+        var n = parseFloat(value);
+        var step = parseFloat(increment);
+        if (isNaN(n)) return 0;
+        if (isNaN(step) || step <= 0) step = 0.05;
+        return Math.ceil(n / step) * step;
+      }
+
+      function computeMillworkFormulaParts(details, lengthOverride, footCost) {
+        details = details || {};
+        var width = parseFloat(details.width);
+        var length = lengthOverride != null ? parseFloat(lengthOverride) : parseFloat(details.length);
+        var thickness = parseFloat(details.thickness);
+        var foot = parseFloat(footCost);
+        var labelFactor = parseFloat(details.label_factor);
+        var laborRate = parseFloat(details.labor_rate);
+        var fixed1 = parseFloat(details.fixed_1);
+        var fixed2 = parseFloat(details.fixed_2);
+        if (isNaN(fixed1) || fixed1 <= 0) fixed1 = 12;
+        if (isNaN(fixed2) || fixed2 <= 0) fixed2 = 0.05;
+        if (isNaN(width) || isNaN(length) || isNaN(thickness) || isNaN(foot) || isNaN(labelFactor) || isNaN(laborRate)) {
+          return null;
+        }
+        var areaFactor = (width * length) / 144;
+        var materialRaw = areaFactor * thickness * foot;
+        var materialPart = materialRaw / 0.18;
+        var simpleLabor = usesSimpleLaborFormula();
+        var laborPart = simpleLabor
+          ? laborRate * labelFactor
+          : laborRate * labelFactor * length / fixed1;
+        var subtotal = materialPart + laborPart;
+        var unitPrice = ceilingToIncrement(subtotal, fixed2);
+        return {
+          width: width,
+          length: length,
+          thickness: thickness,
+          footCost: foot,
+          labelFactor: labelFactor,
+          laborRate: laborRate,
+          fixed1: fixed1,
+          fixed2: fixed2,
+          simpleLabor: simpleLabor,
+          areaFactor: areaFactor,
+          materialRaw: materialRaw,
+          materialPart: materialPart,
+          laborPart: laborPart,
+          subtotalBeforeCeiling: subtotal,
+          ceilingIncrement: fixed2,
+          unitPrice: unitPrice
+        };
+      }
+
+      /**
+       * labor_includes_length in door_config_options → T2*D*G/fixed_1
+       * Otherwise custom/baluster length UI → T2*D; fixed-length products → T2*D*G/fixed_1
+       */
+      function calculateMillworkFormulaPrice(details, lengthOverride, footCost) {
+        var parts = computeMillworkFormulaParts(details, lengthOverride, footCost);
+        return parts ? parts.unitPrice : 0;
+      }
+
+      function isTruthyField(val) {
+        if (val === true || val === 1) return true;
+        var s = String(val == null ? '' : val).trim().toLowerCase();
+        return s === 'true' || s === '1' || s === 'yes';
+      }
+
+      function isFalsyField(val) {
+        if (val === false || val === 0) return true;
+        var s = String(val == null ? '' : val).trim().toLowerCase();
+        return s === 'false' || s === '0' || s === 'no';
+      }
+
+      function readCalculatePricingFlag(pricingRow) {
+        var raw = readFieldFromRow(pricingRow, ['calculate', 'use_calculate', 'calculate_pricing']);
+        if (isTruthyField(raw)) return true;
+        if (isFalsyField(raw)) return false;
+        return false;
+      }
+
+      function getTierDirectPrice(tierId) {
+        var price = parseFloat(tierMap[tierId]);
+        return isNaN(price) ? 0 : price;
+      }
+
+      function getTierFootCost(tierId) {
+        return getTierDirectPrice(tierId);
+      }
+
+      function readFieldFromRow(row, keys) {
+        if (!row) return null;
+        for (var i = 0; i < keys.length; i++) {
+          var k = keys[i];
+          var direct = row[k];
+          if (direct != null && String(direct).trim() !== '') return direct;
+        }
+        return null;
+      }
+
+      function findRowBySku(rows, sku) {
+        var want = skuComparable(sku);
+        var wantStrict = skuStrict(sku);
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i] || {};
+          var rowSku = skuComparable(readFieldFromRow(row, ['sku', 'product_key']));
+          var rowHandle = skuComparable(readFieldFromRow(row, ['handle']));
+          var rowDisplay = skuComparable(readFieldFromRow(row, ['display_name', 'title', 'name', 'product_key']));
+          if (rowSku && rowSku === want) return row;
+          if (rowHandle && rowHandle === want) return row;
+          if (rowDisplay && rowDisplay === want) return row;
+          if (rowSku && skuStrict(rowSku) === wantStrict) return row;
+          if (rowHandle && skuStrict(rowHandle) === wantStrict) return row;
+          if (rowDisplay && skuStrict(rowDisplay) === wantStrict) return row;
+        }
+        return null;
+      }
+
+      function resolveRuntimeSku() {
+        var s = skuComparable(window.millwork_current_sku || '');
+        if (s) return s;
+        var fromLabel = skuComparable((document.getElementById('variant-sku') || {}).textContent || '');
+        if (fromLabel) return fromLabel;
+        var fromMetaKey = skuComparable({{ product.metafields.custom.pricing_record_key.value | json }});
+        if (fromMetaKey) return fromMetaKey;
+        return '';
+      }
+
+      var root = document.querySelector('.millwork-accordion');
+      if (!root) return;
+
+      var items = Array.from(root.querySelectorAll('.millwork-option-item'));
+      var hiddenInput = root.querySelector('#millwork-selected');
+      var hiddenPriceInput = root.querySelector('#millwork-selected-price');
+      var hiddenUnitPriceInput = root.querySelector('#millwork-selected-unit-price');
+      var hiddenAddonInput = root.querySelector('#millwork-selected-addon-price');
+      var selectedLabel = document.getElementById('millwork-selected-label');
+      var selectedImage = document.getElementById('millwork-selected-image');
+      var priceEl = document.getElementById('landing-starting-price1');
+      var configuredPriceEl = document.getElementById('landing-starting-price');
+      var forms = Array.from(document.querySelectorAll('form.millwork-form'));
+      var millworkDetails = root.querySelector('details.m-collapsible');
+      var lengthSelect = document.querySelector('[data-millwork-length-select]');
+      var customLengthSelect = document.querySelector('[data-millwork-custom-length-select]');
+      var customThicknessSelect = document.querySelector('[data-millwork-custom-thickness-select]');
+      var balusterSelect = document.querySelector('[data-millwork-baluster-length-select]');
+      var balusterPropertyLabel = {{ mw_baluster_label | json }};
+      var customLengthPropertyLabel = {{ mw_custom_length_label | json }};
+      var laborIncludesLength = {{ mw_labor_includes_length | json }};
+
+      function usesSimpleLaborFormula() {
+        if (laborIncludesLength) return false;
+        return !!(customLengthSelect || balusterSelect);
+      }
+
+      var sku = '';
+      var row = null;
+      var tierMap = {};
+      var skuDetails = {};
+      var useCalculatePricing = false;
+
+      function refreshPricingContext() {
+        sku = resolveRuntimeSku();
+        var records = Array.isArray(window.millwork_pricing_records) ? window.millwork_pricing_records : [];
+        row = findRowBySku(records, sku);
+        tierMap = parseTierMap(row || {});
+        skuDetails = parseSkuDetails(row);
+        useCalculatePricing = readCalculatePricingFlag(row);
+      }
+
+      refreshPricingContext();
+
+      function getSelectedCustomLengthOnly() {
+        if (!customLengthSelect || customLengthSelect.selectedIndex < 0) return null;
+        var customOpt = customLengthSelect.options[customLengthSelect.selectedIndex];
+        if (!customOpt) return null;
+        var customVal = String(customOpt.value || '').trim();
+        if (!customVal) return null;
+        var customNum = parseFloat(customVal);
+        return isNaN(customNum) || customNum <= 0 ? null : customNum;
+      }
+
+      function getSelectedMetaobjectLengthInches() {
+        if (!lengthSelect || lengthSelect.selectedIndex < 0) return null;
+        var lengthOpt = lengthSelect.options[lengthSelect.selectedIndex];
+        if (!lengthOpt) return null;
+        var lengthVal = String(lengthOpt.value || '').trim();
+        var lengthNum = parseFloat(lengthVal);
+        if (!isNaN(lengthNum) && lengthNum > 0) return lengthNum;
+        var lengthLabel = String(lengthOpt.textContent || '').trim();
+        var match = lengthLabel.match(/(\d+(?:\.\d+)?)/);
+        if (match) {
+          lengthNum = parseFloat(match[1]);
+          if (!isNaN(lengthNum) && lengthNum > 0) return lengthNum;
+        }
+        return null;
+      }
+
+      function roundLengthWithThicknessAddon(baseLength, thicknessAddon) {
+        var base = parseFloat(baseLength);
+        var addon = parseFloat(thicknessAddon);
+        if (isNaN(base)) return 0;
+        if (isNaN(addon)) addon = 0;
+        var combined = base + addon;
+        var whole = Math.floor(combined);
+        var frac = combined - whole;
+        if (frac > 0.5) return whole + 1;
+        return whole;
+      }
+
+      function getSelectedBalusterLengthOnly() {
+        if (!balusterSelect || balusterSelect.selectedIndex < 0) return null;
+        var balusterOpt = balusterSelect.options[balusterSelect.selectedIndex];
+        if (!balusterOpt) return null;
+        var balusterVal = String(balusterOpt.value || '').trim();
+        if (!balusterVal) return null;
+        var balusterNum = parseFloat(balusterVal);
+        if (!isNaN(balusterNum) && balusterNum > 0) return balusterNum;
+        var balusterLabel = String(balusterOpt.textContent || '').trim();
+        var balusterMatch = balusterLabel.match(/(\d+(?:\.\d+)?)/);
+        if (balusterMatch) {
+          balusterNum = parseFloat(balusterMatch[1]);
+          if (!isNaN(balusterNum) && balusterNum > 0) return balusterNum;
+        }
+        return null;
+      }
+
+      function getBalusterLengthBaseForFormula() {
+        var balusterBase = getSelectedBalusterLengthOnly();
+        if (balusterBase != null) return balusterBase;
+        var fallback = parseFloat(skuDetails.length);
+        return isNaN(fallback) ? 12 : fallback;
+      }
+
+      function getCustomLengthBaseForFormula() {
+        var customBase = getSelectedCustomLengthOnly();
+        if (customBase != null) return customBase;
+        var fallback = parseFloat(skuDetails.length);
+        return isNaN(fallback) ? 12 : fallback;
+      }
+
+      function getResolvedLengthInches() {
+        if (customLengthSelect) {
+          var baseLength = getCustomLengthBaseForFormula();
+          var thicknessAddon = getSelectedCustomThickness();
+          if (thicknessAddon != null && !isNaN(thicknessAddon)) {
+            return roundLengthWithThicknessAddon(baseLength, thicknessAddon);
+          }
+          return baseLength;
+        }
+
+        if (balusterSelect) {
+          return getBalusterLengthBaseForFormula();
+        }
+
+        var metaLength = getSelectedMetaobjectLengthInches();
+        if (metaLength != null && !isNaN(metaLength)) return metaLength;
+
+        var fallback = parseFloat(skuDetails.length);
+        return isNaN(fallback) ? 0 : fallback;
+      }
+
+      function getSelectedCustomThickness() {
+        if (!customThicknessSelect || customThicknessSelect.selectedIndex < 0) return null;
+        var thicknessOpt = customThicknessSelect.options[customThicknessSelect.selectedIndex];
+        if (!thicknessOpt) return null;
+        var thicknessVal = String(thicknessOpt.value || '').trim();
+        if (thicknessVal === '') return null;
+        var thicknessNum = parseFloat(thicknessVal);
+        return isNaN(thicknessNum) ? null : thicknessNum;
+      }
+
+      function getPricingDetails() {
+        return Object.assign({}, skuDetails);
+      }
+
+      function resolveDirectTierUnitPrice(tierId) {
+        refreshPricingContext();
+        return getTierDirectPrice(tierId);
+      }
+
+      function resolveFormulaUnitPrice(tierId) {
+        refreshPricingContext();
+        var length = getResolvedLengthInches();
+        var footCost = getTierFootCost(tierId);
+        return calculateMillworkFormulaPrice(getPricingDetails(), length, footCost);
+      }
+
+      function resolveConfiguredUnitPrice(tierId) {
+        if (useCalculatePricing) {
+          return resolveFormulaUnitPrice(tierId);
+        }
+        return resolveDirectTierUnitPrice(tierId);
+      }
+
+      function getQty() {
+        if (!forms.length) return 1;
+        var input = forms[0].querySelector('input[name="quantity"]');
+        var q = parseInt(input && input.value, 10);
+        return Number.isFinite(q) && q > 0 ? q : 1;
+      }
+
+      function ensurePropertyInput(form, key, value) {
+        if (!form) return;
+        var name = 'properties[' + key + ']';
+        var el = form.querySelector('input[name="' + name + '"]');
+        if (!el) {
+          el = document.createElement('input');
+          el.type = 'hidden';
+          el.name = name;
+          form.appendChild(el);
+        }
+        el.value = String(value == null ? '' : value);
+      }
+
+      function syncMillworkLengthProperty() {
+        if (!lengthSelect || lengthSelect.selectedIndex < 0) return;
+        var lengthOpt = lengthSelect.options[lengthSelect.selectedIndex];
+        if (!lengthOpt) return;
+        var lengthVal = String(lengthOpt.value || '');
+        var lengthLbl = String(lengthOpt.textContent || '').trim();
+        forms.forEach(function (form) {
+          ensurePropertyInput(form, 'Millwork Length', lengthLbl || lengthVal);
+        });
+      }
+
+      function syncMillworkBalusterLengthProperty() {
+        if (!balusterSelect || balusterSelect.selectedIndex < 0) return;
+        var balusterOpt = balusterSelect.options[balusterSelect.selectedIndex];
+        if (!balusterOpt) return;
+        var balusterVal = String(balusterOpt.value || '').trim();
+        if (!balusterVal) return;
+        var balusterLbl = String(balusterOpt.textContent || '').trim();
+        var propertyKey = String(balusterPropertyLabel || 'Baluster Length');
+        forms.forEach(function (form) {
+          ensurePropertyInput(form, propertyKey, balusterLbl || balusterVal);
+        });
+      }
+
+      function syncMillworkCustomLengthProperty() {
+        if (!customLengthSelect) return;
+        var propertyKey = String(customLengthPropertyLabel || 'Length');
+        var customBase = getSelectedCustomLengthOnly();
+        var thicknessAddon = getSelectedCustomThickness();
+
+        if (customBase != null) {
+          var valueToStore = customBase;
+          if (thicknessAddon != null && !isNaN(thicknessAddon)) {
+            valueToStore = getResolvedLengthInches();
+          }
+          forms.forEach(function (form) {
+            ensurePropertyInput(form, propertyKey, String(valueToStore));
+          });
+          return;
+        }
+
+        if (thicknessAddon != null && !isNaN(thicknessAddon)) {
+          forms.forEach(function (form) {
+            ensurePropertyInput(form, propertyKey, String(getResolvedLengthInches()));
+          });
+        }
+      }
+
+      function syncMillworkCustomThicknessProperty() {
+        if (!customThicknessSelect || customThicknessSelect.selectedIndex < 0) return;
+        var thicknessOpt = customThicknessSelect.options[customThicknessSelect.selectedIndex];
+        if (!thicknessOpt) return;
+        var thicknessVal = String(thicknessOpt.value || '').trim();
+        if (thicknessVal === '') return;
+        var thicknessLbl = String(thicknessOpt.textContent || '').trim();
+        forms.forEach(function (form) {
+          ensurePropertyInput(form, 'Thickness', thicknessLbl || thicknessVal);
+        });
+      }
+
+      function syncMillworkOptionProperties() {
+        syncMillworkLengthProperty();
+        syncMillworkCustomLengthProperty();
+        syncMillworkCustomThicknessProperty();
+        syncMillworkBalusterLengthProperty();
+      }
+
+      function syncForms(value, tierId, addon, unitTotal, lineTotal, qty) {
+        forms.forEach(function (form) {
+          ensurePropertyInput(form, 'Wood Species', value);
+          ensurePropertyInput(form, 'Wood Tier', tierId);
+          ensurePropertyInput(form, 'Quantity', qty);
+          ensurePropertyInput(form, 'Wood Add-on', addon.toFixed(2));
+          ensurePropertyInput(form, 'Configured Unit Price', unitTotal.toFixed(2));
+          ensurePropertyInput(form, 'Configured Line Total', lineTotal.toFixed(2));
+        });
+        syncMillworkOptionProperties();
+      }
+
+      function setSelected(el, closePanel) {
+        if (!el) return;
+
+        items.forEach(function (i) { i.classList.remove('is-selected'); });
+        el.classList.add('is-selected');
+
+        var value = el.getAttribute('data-value') || '';
+        var image = el.getAttribute('data-image') || '';
+        var tierId = el.getAttribute('data-tier-id') || '';
+        var unitTotal = resolveConfiguredUnitPrice(tierId);
+        var addon = unitTotal;
+        var qty = getQty();
+        var total = unitTotal * qty;
+
+        if (hiddenInput) hiddenInput.value = value;
+        if (hiddenPriceInput) hiddenPriceInput.value = total.toFixed(2);
+        if (hiddenUnitPriceInput) hiddenUnitPriceInput.value = unitTotal.toFixed(2);
+        if (hiddenAddonInput) hiddenAddonInput.value = addon.toFixed(2);
+        if (selectedLabel) selectedLabel.textContent = value || 'Choose an option';
+        if (selectedImage) {
+          if (image) {
+            selectedImage.src = image;
+            selectedImage.style.display = 'block';
+          } else {
+            selectedImage.style.display = 'none';
+          }
+        }
+
+        if (priceEl) priceEl.textContent = formatMillworkDisplayPrice(unitTotal);
+        if (configuredPriceEl) configuredPriceEl.textContent = formatMillworkDisplayPrice(total);
+        var estimated = document.getElementById('door-estimated-price');
+        if (estimated) estimated.textContent = formatMillworkDisplayPrice(total);
+        syncForms(value, tierId, addon, unitTotal, total, qty);
+        if (closePanel && millworkDetails) millworkDetails.removeAttribute('open');
+      }
+
+      items.forEach(function (el) {
+        el.addEventListener('click', function () { setSelected(el, true); });
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setSelected(el, true);
+          }
+        });
+      });
+
+      forms.forEach(function (form) {
+        var wrappers = Array.from(form.querySelectorAll('.qty-wrapper'));
+        wrappers.forEach(function (wrapper) {
+          var input = wrapper.querySelector('input[name="quantity"]');
+          if (!input) return;
+
+          function refreshPrice() {
+            var active = root.querySelector('.millwork-option-item.is-selected') || items[0];
+            if (active) setSelected(active, false);
+          }
+          input.addEventListener('change', refreshPrice);
+          input.addEventListener('input', refreshPrice);
+        });
+
+        // Ensure latest qty/selection totals are persisted before cart submit.
+        form.addEventListener('submit', function () {
+          var active = root.querySelector('.millwork-option-item.is-selected') || items[0];
+          if (active) setSelected(active, false);
+          syncMillworkOptionProperties();
+        });
+      });
+
+      function refreshSelectedMillworkPrice() {
+        var active = root.querySelector('.millwork-option-item.is-selected') || items[0];
+        if (active) setSelected(active, false);
+      }
+
+      if (lengthSelect) {
+        lengthSelect.addEventListener('change', function () {
+          syncMillworkLengthProperty();
+          refreshPricingContext();
+          if (useCalculatePricing) refreshSelectedMillworkPrice();
+        });
+        lengthSelect.addEventListener('input', function () {
+          syncMillworkLengthProperty();
+          refreshPricingContext();
+          if (useCalculatePricing) refreshSelectedMillworkPrice();
+        });
+        function enhanceMillworkLengthSelect() {
+          if (typeof window.__bootMillworkLengthConfig === 'function') {
+            window.__bootMillworkLengthConfig();
+          } else if (typeof window.__landingHardwareEnhanceSelect === 'function') {
+            window.__landingHardwareEnhanceSelect(lengthSelect);
+          } else {
+            setTimeout(enhanceMillworkLengthSelect, 100);
+          }
+        }
+        enhanceMillworkLengthSelect();
+        syncMillworkLengthProperty();
+      }
+
+      if (balusterSelect) {
+        balusterSelect.addEventListener('change', function () {
+          syncMillworkBalusterLengthProperty();
+          refreshPricingContext();
+          if (useCalculatePricing) refreshSelectedMillworkPrice();
+        });
+        balusterSelect.addEventListener('input', function () {
+          syncMillworkBalusterLengthProperty();
+          refreshPricingContext();
+          if (useCalculatePricing) refreshSelectedMillworkPrice();
+        });
+        function enhanceMillworkBalusterLengthSelect() {
+          if (typeof window.__bootMillworkLengthConfig === 'function') {
+            window.__bootMillworkLengthConfig();
+          } else if (typeof window.__landingHardwareEnhanceSelect === 'function') {
+            window.__landingHardwareEnhanceSelect(balusterSelect);
+          } else {
+            setTimeout(enhanceMillworkBalusterLengthSelect, 100);
+          }
+        }
+        enhanceMillworkBalusterLengthSelect();
+        syncMillworkBalusterLengthProperty();
+      }
+
+      if (customLengthSelect) {
+        customLengthSelect.addEventListener('change', function () {
+          syncMillworkCustomLengthProperty();
+          refreshPricingContext();
+          if (useCalculatePricing) refreshSelectedMillworkPrice();
+        });
+        customLengthSelect.addEventListener('input', function () {
+          syncMillworkCustomLengthProperty();
+          refreshPricingContext();
+          if (useCalculatePricing) refreshSelectedMillworkPrice();
+        });
+        function enhanceMillworkCustomLengthSelect() {
+          if (typeof window.__bootMillworkLengthConfig === 'function') {
+            window.__bootMillworkLengthConfig();
+          } else if (typeof window.__landingHardwareEnhanceSelect === 'function') {
+            window.__landingHardwareEnhanceSelect(customLengthSelect);
+          } else {
+            setTimeout(enhanceMillworkCustomLengthSelect, 100);
+          }
+        }
+        enhanceMillworkCustomLengthSelect();
+        syncMillworkCustomLengthProperty();
+      }
+
+      if (customThicknessSelect) {
+        customThicknessSelect.addEventListener('change', function () {
+          syncMillworkCustomThicknessProperty();
+          syncMillworkCustomLengthProperty();
+          refreshPricingContext();
+          if (useCalculatePricing) refreshSelectedMillworkPrice();
+        });
+        customThicknessSelect.addEventListener('input', function () {
+          syncMillworkCustomThicknessProperty();
+          syncMillworkCustomLengthProperty();
+          refreshPricingContext();
+          if (useCalculatePricing) refreshSelectedMillworkPrice();
+        });
+        function enhanceMillworkCustomThicknessSelect() {
+          if (typeof window.__bootMillworkLengthConfig === 'function') {
+            window.__bootMillworkLengthConfig();
+          } else if (typeof window.__landingHardwareEnhanceSelect === 'function') {
+            window.__landingHardwareEnhanceSelect(customThicknessSelect);
+          } else {
+            setTimeout(enhanceMillworkCustomThicknessSelect, 100);
+          }
+        }
+        enhanceMillworkCustomThicknessSelect();
+        syncMillworkCustomThicknessProperty();
+      }
+
+      function bootMillworkPricing(attempt) {
+        attempt = attempt || 0;
+        refreshPricingContext();
+        var active = root.querySelector('.millwork-option-item.is-selected') || items[0];
+        if (!active || !items.length) return;
+        setSelected(active, false);
+        var tierId = active.getAttribute('data-tier-id') || '';
+        var unitTotal = resolveConfiguredUnitPrice(tierId);
+        if (unitTotal <= 0 && attempt < 6 && useCalculatePricing) {
+          setTimeout(function () { bootMillworkPricing(attempt + 1); }, attempt * 100);
+        }
+      }
+
+      bootMillworkPricing(0);
+    })();
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Main product",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "key_features_pre_richtext",
+      "name": "Rich text ",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading (optional)"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Content"
+        }
+      ]
+    },
+
+    {
+      "type": "door_setup",
+      "name": "Door Setup",
+      "limit": 20,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Door Setup"
+        },
+        {
+          "type": "richtext",
+          "id": "intro",
+          "label": "Intro text"
+        },
+        {
+          "type": "richtext",
+          "id": "items",
+          "label": "Items / links"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": true
+        }
+      ]
+    },
+
+    {
+      "type": "key_features_accordion",
+      "name": "Key features item",
+      "limit": 30,
+      "settings": [
+        {
+          "type": "select",
+          "id": "group_number",
+          "label": "Show for group number",
+          "default": "1",
+          "options": [
+            { "value": "1", "label": "1" },
+            { "value": "2", "label": "2" },
+            { "value": "3", "label": "3" },
+            { "value": "4", "label": "4" },
+            { "value": "5", "label": "5" },
+            { "value": "6", "label": "6" },
+            { "value": "7", "label": "7" },
+            { "value": "8", "label": "8" },
+            { "value": "9", "label": "9" },
+            { "value": "10", "label": "10" },
+            { "value": "11", "label": "11" },
+            { "value": "12", "label": "12" },
+            { "value": "13", "label": "13" },
+            { "value": "14", "label": "14" },
+            { "value": "15", "label": "15" },
+            { "value": "16", "label": "16" },
+            { "value": "17", "label": "17" },
+            { "value": "18", "label": "18" },
+            { "value": "19", "label": "19" },
+            { "value": "20", "label": "20" },
+            { "value": "21", "label": "21" },
+            { "value": "22", "label": "22" },
+            { "value": "23", "label": "23" },
+            { "value": "24", "label": "24" },
+            { "value": "25", "label": "25" },
+            { "value": "26", "label": "26" },
+            { "value": "27", "label": "27" },
+            { "value": "28", "label": "28" },
+            { "value": "29", "label": "29" },
+            { "value": "30", "label": "30" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Key Features"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (optional)"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    },
+
+    {
+      "type": "accordion",
+      "name": "Accordion item",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    },
+
+    {
+      "type": "feature_bar",
+      "name": "Feature bar",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Feature 1"
+        },
+        {
+          "type": "html",
+          "id": "icon_1",
+          "label": "Icon (SVG)"
+        },
+        {
+          "type": "text",
+          "id": "title_1",
+          "label": "Title",
+          "default": "USA Made"
+        },
+        {
+          "type": "text",
+          "id": "text_1",
+          "label": "Description",
+          "default": "Made by hand in upstate New York."
+        },
+
+        {
+          "type": "header",
+          "content": "Feature 2"
+        },
+        {
+          "type": "html",
+          "id": "icon_2",
+          "label": "Icon (SVG)"
+        },
+        {
+          "type": "text",
+          "id": "title_2",
+          "label": "Title",
+          "default": "5–6 Weeks"
+        },
+        {
+          "type": "text",
+          "id": "text_2",
+          "label": "Description",
+          "default": "Lead time from approved drawing."
+        },
+
+        {
+          "type": "header",
+          "content": "Feature 3"
+        },
+        {
+          "type": "html",
+          "id": "icon_3",
+          "label": "Icon (SVG)"
+        },
+        {
+          "type": "text",
+          "id": "title_3",
+          "label": "Title",
+          "default": "Insured Delivery"
+        },
+        {
+          "type": "text",
+          "id": "text_3",
+          "label": "Description",
+          "default": "Shipped nationwide."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<script>
+  document.querySelectorAll('.door-setup-collapsible').forEach((el) => {
+    const btn = el.querySelector('.door-setup-collapsible--button');
+    const content = el.querySelector('.door-setup-collapsible--content');
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault(); // IMPORTANT: stop default <details> toggle
+
+      const isOpen = el.classList.contains('is-expanded');
+
+      // Close all
+      document.querySelectorAll('.door-setup-collapsible').forEach((item) => {
+        const c = item.querySelector('.door-setup-collapsible--content');
+
+        // set current height first (fix for smooth closing)
+        c.style.maxHeight = c.scrollHeight + 'px';
+
+        // force reflow
+        c.offsetHeight;
+
+        item.classList.remove('is-expanded');
+        c.style.maxHeight = '0px';
+      });
+
+      if (!isOpen) {
+        el.classList.add('is-expanded');
+        content.style.maxHeight = content.scrollHeight + 'px';
+      }
+    });
+  });
+  document.querySelectorAll('.door-setup-collapsible').forEach((el) => {
+    const btn = el.querySelector('.door-setup-collapsible--button');
+
+    btn.addEventListener('click', () => {
+      const isOpen = el.getAttribute('open') === 'true';
+
+      // close all (optional)
+      document.querySelectorAll('.door-setup-collapsible').forEach((item) => {
+        item.setAttribute('open', 'false');
+      });
+
+      // toggle current
+      el.setAttribute('open', isOpen ? 'false' : 'true');
+    });
+  });
+</script>

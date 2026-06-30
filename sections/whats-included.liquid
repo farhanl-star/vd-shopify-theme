@@ -1,0 +1,110 @@
+{% schema %}
+{
+  "name": "What's Included",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left Image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What’s included"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p><strong>The Gate.</strong> Each unit is custom-built.</p><p><strong>Hardware.</strong> Includes hinges, latch, etc.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "What's Included"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="whats-included">
+  <div class="container">
+    
+    <div class="wi-left">
+      {% if section.settings.left_image %}
+        <img src="{{ section.settings.left_image | image_url }}" alt="">
+      {% else %}
+        <div class="placeholder"></div>
+      {% endif %}
+    </div>
+
+    <div class="wi-right">
+      <h2>{{ section.settings.heading }}</h2>
+
+      <div class="wi-content">
+        {{ section.settings.content }}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.whats-included {
+  padding: 60px 20px;
+  background: #fff;
+}
+
+.whats-included .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.wi-left {
+  flex: 1;
+}
+
+.wi-left img {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.placeholder {
+  width: 100%;
+  height: 300px;
+  background: #ddd;
+  border-radius: 6px;
+}
+
+.wi-right {
+  flex: 1;
+}
+
+.wi-right h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.wi-content p {
+  margin-bottom: 12px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.wi-content strong {
+  display: block;
+  font-weight: 600;
+  color: #000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .whats-included .container {
+    flex-direction: column;
+  }
+}
+</style>
